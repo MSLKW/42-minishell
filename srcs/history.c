@@ -1,27 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/02/17 18:53:58 by maxliew          ###   ########.fr       */
+/*   Created: 2025/02/17 18:39:34 by maxliew           #+#    #+#             */
+/*   Updated: 2025/02/17 19:01:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(void)
+void	ft_show_history(void)
 {
-	char	*line;
+	HIST_ENTRY **list = history_list(); // illegal function
+	int	index;
 
-	while(1)
+	index = 0;
+	while (*list != NULL)
 	{
-		line = ft_get_line();
-		printf("\"%s\"\n", line);
-		free(line);
-		ft_show_history();
+		printf(" %i %s\n", index, (*list)->line);
+		index++;
+		list++;
 	}
-	ft_clear_history();
+}
+
+void	ft_clear_history(void)
+{
+	rl_clear_history();
 }

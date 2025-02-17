@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/02/12 16:51:35 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/02/17 18:43:24 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@
 
 // ===== Minishell Functions =====
 
-// 
+// parse.c
+char	*ft_get_line(void);
+
+// history.c
+void	ft_show_history(void);
+void	ft_clear_history(void);
 
 #endif

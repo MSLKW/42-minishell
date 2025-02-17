@@ -1,10 +1,13 @@
 NAME := minishell
 
 CC := cc
-CFLAGS := -Wall -Wextra -Werror -lreadline
+CFLAGS := -Wall -Wextra -Werror
+LIBRARIES := -lreadline
 
 SRCS_DIR := ./srcs/
 SRCS_FILES :=	minishell.c \
+				parse.c \
+				history.c \
 				
 DEPS_FILES :=	minishell.h
 
@@ -15,13 +18,13 @@ OBJS = $(SRCS:.c=.o)
 LIBFT = libft/libft.a
 
 $(NAME): $(OBJS) $(DEPS) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) $(LIBRARIES)
 
 $(LIBFT):
 	make -C ./libft
 
 %.o: %.c
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -o $@ -c $< $(LIBRARIES)
 
 .PHONY = all clean fclean re
 
