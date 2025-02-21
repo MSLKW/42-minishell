@@ -1,27 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   debug.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/02/21 13:08:26 by maxliew          ###   ########.fr       */
+/*   Created: 2025/02/21 13:48:08 by maxliew           #+#    #+#             */
+/*   Updated: 2025/02/21 13:50:22 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(void)
+void	ft_display(t_list *list)
 {
-	char	*line;
+	t_list	*head;
 
-	while(1)
+	head = list;
+	while (head != NULL)
 	{
-		line = ft_get_line();
-		printf("\"%s\"\n", line);
-		free(line);
-		ft_show_history();
+		ft_printf("%s\n", head->content);
+		head = head->next;
 	}
-	ft_clear_history();
 }

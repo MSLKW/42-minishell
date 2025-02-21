@@ -1,27 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   interactive_mode.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/02/21 13:08:26 by maxliew          ###   ########.fr       */
+/*   Created: 2025/02/21 12:58:47 by maxliew           #+#    #+#             */
+/*   Updated: 2025/02/21 13:04:17 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(void)
+void	ctrlc_handler(int sig)
 {
-	char	*line;
+	
+}
 
-	while(1)
-	{
-		line = ft_get_line();
-		printf("\"%s\"\n", line);
-		free(line);
-		ft_show_history();
-	}
-	ft_clear_history();
+void	ctrld_handler(int sig)
+{
+	
 }

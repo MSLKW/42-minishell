@@ -24,7 +24,7 @@ $(LIBFT):
 	make -C ./libft
 
 %.o: %.c
-	$(CC) $(CFLAGS) -o $@ -c $< $(LIBRARIES)
+	$(CC) $(CFLAGS) -o $@ -c $<
 
 .PHONY = all clean fclean re
 
