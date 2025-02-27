@@ -6,12 +6,13 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:16:06 by maxliew           #+#    #+#             */
-/*   Updated: 2025/02/27 23:32:24 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/02/27 23:37:16 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+// can't get new lines when finishing quote
 char	*ft_get_line(void)
 {
 	char	*concat_line;
