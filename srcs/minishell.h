@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/02/17 18:43:24 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/02/27 23:27:47 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,23 @@
 // Custom Libraries
 # include "../libft/libft.h"
 
+// Custom Macros
+
+# define true 1
+# define false 0
+
+// ===== Minishell Types =====
+
+typedef int t_bool;
+
+// ===== Minishell Structures =====
+
+
 // ===== Minishell Functions =====
 
 // parse.c
 char	*ft_get_line(void);
+t_bool	is_line_quote_ended(char *line);
 
 // history.c
 void	ft_show_history(void);
