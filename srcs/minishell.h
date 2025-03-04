@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/02/27 23:27:47 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/03/04 20:51:11 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,39 @@ typedef int t_bool;
 
 // ===== Minishell Structures =====
 
+enum	token_handler {
+	NONE,
+	DQUOTE,
+	SQUOTE
+};
+
+enum 	token_type {
+	WHITESPACE,
+	ALPHANUMERIC,
+	SET_VALUE,
+	PIPE,
+	REDIRECTION_INPUT,
+	REDIRECTION_OUTPUT,
+	REDIRECTION_APPEND,
+	REDIRECTION_DELIMITER,
+};
+
+typedef struct s_token {
+	char			*content;
+	enum token_handler	handler;
+	enum token_type	type;
+}	t_token;
 
 // ===== Minishell Functions =====
 
 // parse.c
 char	*ft_get_line(void);
 t_bool	is_line_quote_ended(char *line);
+t_list	*tokenize_line(char *line);
+t_token	*handle_dquote(char *line, int *index);
+t_token	*handle_squote(char *line, int *index);
+t_token	*handle_none(char *line, int *index);
+void	debug_token_list(t_list *token_list);
 
 // history.c
 void	ft_show_history(void);

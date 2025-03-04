@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/02/21 13:08:26 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/03/04 20:56:16 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ int	main(void)
 	while(1)
 	{
 		line = ft_get_line();
-		printf("\"%s\"\n", line);
+		ft_printf("tokenize_line\n");
+		t_list *tokens = tokenize_line(line);
+		ft_printf("debug_token_list\n");
+		debug_token_list(tokens);
 		free(line);
 		ft_show_history();
 	}
