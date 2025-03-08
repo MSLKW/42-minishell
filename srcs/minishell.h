@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/03/05 10:47:49 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/03/08 18:48:25 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,14 @@ enum 	token_type {
 	ERROR,
 	WHITESPACE,
 	ALPHANUMERIC,
+	ASCII,
 	SET_VALUE,
 	PIPE,
 	REDIRECTION_INPUT,
 	REDIRECTION_OUTPUT,
 	REDIRECTION_APPEND,
 	REDIRECTION_DELIMITER,
+	VARIABLE,
 };
 
 typedef struct s_token {
@@ -71,12 +73,18 @@ typedef struct s_token {
 	enum token_type	type;
 }	t_token;
 
+typedef struct s_ast {
+	t_token	*token;
+	t_list	*node_list;
+} t_ast;
+
 // ===== Minishell Functions =====
 
 // parse.c
 char	*ft_get_line(void);
-t_bool	is_line_quote_ended(char *line);
+t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index);
 void	debug_token_list(t_list *token_list);
+void	display_token(t_token *token);
 
 // tokenize.c
 t_list	*tokenize_line(char *line);
@@ -88,5 +96,16 @@ enum token_type	get_token_type(char *content);
 // history.c
 void	ft_show_history(void);
 void	ft_clear_history(void);
+
+// execute.c
+char	*find_cmd_path(char *cmd, char *envp[]);
+
+// helper.c
+int	ft_isalpha_str(char *str);
+int	ft_isalnum_str(char *str);
+
+// ast.c
+t_ast	*find_pipes(t_list	*token_list);
+void	display_ast_tree(t_ast *ast_node);
 
 #endif

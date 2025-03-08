@@ -9,6 +9,9 @@ SRCS_FILES :=	minishell.c \
 				parse.c \
 				history.c \
 				tokenize.c \
+				execute.c \
+				helper.c \
+				ast.c \
 				
 DEPS_FILES :=	minishell.h
 

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/03/05 10:47:17 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/03/08 18:35:29 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ t_list	*tokenize_line(char *line)
 	t_list	*token_list;
 
 	index = 0;
-	token_list = ft_lstnew(NULL);
+	token_list = NULL;
 	while (line[index] != '\0')
 	{
 		if (line[index] == '\"')
@@ -94,7 +94,7 @@ t_token	*handle_none(char *line, int *index)
 	}
 	else
 	{
-		while (line[*index + size] != ' ' && line[*index + size] != '\0')
+		while (line[*index + size] != ' ' && line[*index + size] != '\"' && line[*index + size] != '\'' && line[*index + size] != '\0')
 			size++;
 	}
 	content = ft_substr(line, *index, size);
@@ -119,7 +119,7 @@ enum token_type	get_token_type(char *content)
 	if (content[index] == ' ')
 		return (WHITESPACE);
 	else if (ft_strchr(content, '='))
-		return (SET_VALUE);
+		return (SET_VALUE); // variable needs to be alpha, value can be alphanumeric
 	else if (ft_strchr(content, '|') && size == 1)
 		return (PIPE);
 	else if (ft_strchr(content, '<') && size == 1)
@@ -130,13 +130,9 @@ enum token_type	get_token_type(char *content)
 		return (REDIRECTION_APPEND);
 	else if (ft_strnstr(content, "<<", size) && size == 2)
 		return (REDIRECTION_DELIMITER);
-	else if (ft_isalnum(content[index]) == TRUE)
-	{
-		while (ft_isalnum(content[index]) == TRUE && content[index] != '\0')
-			index++;
-		if (ft_isalnum(content[index]) == FALSE && content[index] != '\0')
-			return (ERROR);
+	else if (size >= 2 && content[0] == '$' && ft_isalpha_str(content + 1) == TRUE)
+		return (VARIABLE);
+	else if (ft_isalnum_str(content) == TRUE)
 		return (ALPHANUMERIC);
-	}
-	return (ERROR);
+	return (ASCII);
 }
