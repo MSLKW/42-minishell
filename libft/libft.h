@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 10:54:28 by maxliew           #+#    #+#             */
-/*   Updated: 2024/03/08 17:11:44 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/10 23:57:13 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 
 # include <unistd.h>
 # include <stdlib.h>
+# include <stdarg.h>
+
+# define FILE_DESCRIPTOR 1
+# define LONG_MAX 2147483647
 # define NULL_SIZE 1
 # define CAPITALIZATION_DIFF 32
 # define UINT_MAX 4294967296
@@ -74,5 +78,21 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *));
 void	ft_lstclear(t_list **lst, void (*del)(void *));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
+
+// printf
+
+int		ft_printf(const char *text, ...);
+int		process_format_specifier(char f_spec, va_list ap);
+void	ft_put_u_nbr_fd(unsigned int n, int fd, int *char_count);
+void	ft_put_hex(unsigned long num, const char format, int *char_count);
+int		count_digits(int n);
+
+int		fspec_c(va_list ap);
+int		fspec_s(va_list ap);
+int		fspec_p(va_list ap);
+int		fspec_d(va_list ap);
+int		fspec_i(va_list ap);
+int		fspec_u(va_list ap);
+int		fspec_x(va_list ap, const char format);
 
 #endif
