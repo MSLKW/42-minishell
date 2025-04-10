@@ -1,88 +1,42 @@
 NAME = libft.a
 
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g
+CC = cc
+CFLAGS = -Wall -Wextra -Werror
 
-SRCDIR = srcs/
-OBJDIR = objs/
-SRC_FILES = \
-		ft_isalpha \
- 		ft_isdigit \
- 		ft_isalnum \
- 		ft_isascii \
- 		ft_isprint \
-		ft_strlen \
-		ft_memset \
-		ft_bzero \
-		ft_memcpy \
-		ft_memmove \
-		ft_strlcpy \
-		ft_strlcat \
-		ft_toupper \
-		ft_tolower \
-		ft_strchr \
-		ft_strrchr \
-		ft_strncmp \
-		ft_memchr \
-		ft_memcmp \
-		ft_strnstr \
-		ft_atoi \
-		ft_calloc \
-		ft_strdup \
-		ft_substr \
-		ft_strjoin \
-		ft_strtrim \
-		ft_split \
-		ft_itoa \
-		ft_strmapi \
-		ft_striteri \
-		ft_putchar_fd \
-		ft_putstr_fd \
-		ft_putendl_fd \
-		ft_putnbr_fd \
-		ft_lstnew \
-		ft_lstadd_front \
-		ft_lstsize \
-		ft_lstlast \
-		ft_lstadd_back \
-		ft_lstdelone \
-		ft_lstclear \
-		ft_lstiter \
-		ft_lstmap \
-		get_next_line_utils \
-		get_next_line \
-		ft_printf \
-		ft_switch \
-		ft_putchar \
-		ft_print_char \
-		ft_putstr \
-		ft_print_str \
-		ft_itoa_base \
-		ft_print_ptr \
-		ft_print_dec_int \
-		ft_print_u_int \
-		ft_print_hex \
+DEPS = libft.h
 
-SRCS = $(addprefix $(SRCDIR), $(SRC_FILES:=.c))
-OBJS = $(addprefix $(OBJDIR), $(notdir $(SRCS:.c=.o)))
+SRCS_DIR = ./
+SRCS_FILES = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c ft_isascii.c ft_isdigit.c ft_isprint.c\
+ft_memchr.c ft_memcmp.c ft_memcpy.c ft_memmove.c ft_memset.c ft_strchr.c ft_strdup.c ft_strlcat.c ft_strlcpy.c\
+ft_strlen.c ft_strncmp.c ft_strnstr.c ft_strrchr.c ft_tolower.c ft_toupper.c ft_substr.c ft_strjoin.c ft_strtrim.c\
+ft_split.c ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c ft_itoa.c ft_strmapi.c ft_striteri.c
 
-all: $(NAME)
+SRCS = $(addprefix $(SRCS_DIR), $(SRCS_FILES))
 
-$(NAME): $(OBJS)
-	@ar rcs $(NAME) $(OBJS)
+OBJS = $(SRCS:.c=.o)
 
-$(OBJDIR)%.o: $(SRCDIR)%.c | $(OBJDIR)
-	@$(CC) $(CFLAGS) -c $< -o $@
+BONUS_FILES = ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c ft_lstadd_back.c ft_lstdelone.c \
+ft_lstclear.c ft_lstiter.c ft_lstmap.c
+BONUS = $(addprefix $(SRCS_DIR), $(BONUS_FILES))
+BONUS_OBJS = $(BONUS:.c=.o)
 
-$(OBJDIR):
-	@mkdir -p $(OBJDIR)
+.PHONY = all clean fclean re
 
-clean:
-	@rm -rf $(OBJDIR)
+$(NAME): $(OBJS) $(DEPS)
+	ar -rc $(NAME) $(OBJS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+all: $(NAME) clean
 
 fclean: clean
-	@rm -f $(NAME)
+	rm -f $(NAME)
+
+clean:
+	rm -f $(OBJS) $(BONUS_OBJS)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+bonus: $(BONUS_OBJS) $(DEPS)
+	ar -rc $(NAME) $(BONUS_OBJS)
