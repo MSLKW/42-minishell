@@ -6,16 +6,16 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:54:55 by maxliew           #+#    #+#             */
-/*   Updated: 2024/03/08 20:12:03 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/12 22:42:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
+t_lst	*ft_lstmap(t_lst *lst, void *(*f)(void *), void (*del)(void *))
 {
-	t_list	*map_list;
-	t_list	*new_node;
+	t_lst	*map_list;
+	t_lst	*new_node;
 
 	if (lst == NULL)
 		return (NULL);

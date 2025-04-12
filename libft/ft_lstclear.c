@@ -6,16 +6,16 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:13:16 by maxliew           #+#    #+#             */
-/*   Updated: 2024/03/07 18:07:50 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/12 22:42:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_lstclear(t_list **lst, void (*del)(void *))
+void	ft_lstclear(t_lst **lst, void (*del)(void *))
 {
-	t_list	*next_list;
-	t_list	*temp;
+	t_lst	*next_list;
+	t_lst	*temp;
 
 	if (lst == NULL || del == NULL)
 		return ;

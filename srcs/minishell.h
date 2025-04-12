@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/03/08 18:48:25 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/12 22:42:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ typedef struct s_token {
 
 typedef struct s_ast {
 	t_token	*token;
-	t_list	*node_list;
+	t_lst	*node_list;
 } t_ast;
 
 // ===== Minishell Functions =====
@@ -83,11 +83,11 @@ typedef struct s_ast {
 // parse.c
 char	*ft_get_line(void);
 t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index);
-void	debug_token_list(t_list *token_list);
+void	debug_token_list(t_lst *token_list);
 void	display_token(t_token *token);
 
 // tokenize.c
-t_list	*tokenize_line(char *line);
+t_lst	*tokenize_line(char *line);
 t_token	*handle_dquote(char *line, int *index);
 t_token	*handle_squote(char *line, int *index);
 t_token	*handle_none(char *line, int *index);
@@ -105,7 +105,7 @@ int	ft_isalpha_str(char *str);
 int	ft_isalnum_str(char *str);
 
 // ast.c
-t_ast	*find_pipes(t_list	*token_list);
+t_ast	*find_pipes(t_lst	*token_list);
 void	display_ast_tree(t_ast *ast_node);
 
 #endif

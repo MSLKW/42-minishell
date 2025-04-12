@@ -1,27 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstlast.c                                       :+:      :+:    :+:   */
+/*   ft_lstindex.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/07 12:07:54 by maxliew           #+#    #+#             */
+/*   Created: 2024/07/13 06:30:29 by maxliew           #+#    #+#             */
 /*   Updated: 2025/04/12 22:42:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_lst	*ft_lstlast(t_lst *lst)
+t_lst	*ft_lstindex(t_lst **lst, int to_index)
 {
-	t_lst	*next_list;
+	t_lst	*head;
+	int		index;
 
-	if (lst == NULL)
+	if (to_index < 0 || lst == NULL)
 		return (NULL);
-	next_list = lst;
-	while (next_list->next != NULL)
+	head = *lst;
+	index = 0;
+	while (index < to_index && head != NULL)
 	{
-		next_list = next_list->next;
+		index++;
+		head = head->next;
 	}
-	return (next_list);
+	return (head);
 }

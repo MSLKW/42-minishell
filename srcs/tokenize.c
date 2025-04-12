@@ -6,16 +6,16 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/03/08 18:35:29 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/12 22:42:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_list	*tokenize_line(char *line)
+t_lst	*tokenize_line(char *line)
 {
 	int	index;
-	t_list	*token_list;
+	t_lst	*token_list;
 
 	index = 0;
 	token_list = NULL;

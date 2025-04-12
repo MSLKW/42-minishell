@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/03/08 18:47:56 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/12 22:42:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	main(int argc, char *argv[], char *envp[])
 	while(1)
 	{
 		line = ft_get_line();
-		t_list *tokens = tokenize_line(line);
+		t_lst *tokens = tokenize_line(line);
 		t_ast *ast_node = find_pipes(tokens);
 		ft_printf("----- AST TREE -----\n");
 		display_ast_tree(ast_node);

@@ -6,17 +6,17 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 18:12:48 by maxliew           #+#    #+#             */
-/*   Updated: 2025/03/08 18:58:35 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/12 22:42:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_ast	*find_pipes(t_list	*token_list)
+t_ast	*find_pipes(t_lst	*token_list)
 {
 	t_ast	*top_ast_node;
 	t_ast	*head_ast_node;
-	t_list	*head_token;
+	t_lst	*head_token;
 	t_ast	*new_ast_node;
 	t_token	*token;
 	
@@ -57,7 +57,7 @@ t_ast	*find_pipes(t_list	*token_list)
 
 void	display_ast_tree(t_ast *ast_node)
 {
-	t_list	*head;
+	t_lst	*head;
 
 	ft_printf("AST NODE\n");
 	display_token(ast_node->token);

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:16:06 by maxliew           #+#    #+#             */
-/*   Updated: 2025/03/08 18:48:59 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/12 22:42:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,9 @@ t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index)
 	return (FALSE);
 }
 
-void	debug_token_list(t_list *token_list)
+void	debug_token_list(t_lst *token_list)
 {
-	t_list	*head;
+	t_lst	*head;
 
 	ft_printf("-----TOKEN LIST-----\n");
 	head = token_list;
