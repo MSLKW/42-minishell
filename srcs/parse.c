@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:16:06 by maxliew           #+#    #+#             */
-/*   Updated: 2025/03/08 18:48:59 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/09 23:10:57 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,11 @@ char	*ft_get_line(void)
 	cwd = getcwd(NULL, 0);
 	rl_on_new_line();
 	concat_line = readline(ft_strjoin(cwd, "$ "));
+	if (!concat_line)
+	{
+		free(cwd);
+		ctrld_handler();
+	}
 	int index = 0;
 	while (is_line_quote_ended(concat_line, FALSE, &index) == FALSE)
 	{

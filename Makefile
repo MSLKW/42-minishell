@@ -12,6 +12,7 @@ SRCS_FILES :=	minishell.c \
 				execute.c \
 				helper.c \
 				ast.c \
+				interactive_mode.c \
 				
 DEPS_FILES :=	minishell.h
 

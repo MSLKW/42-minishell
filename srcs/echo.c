@@ -1,29 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   interactive_mode.c                                 :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/21 12:58:47 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/09 23:09:56 by zernest          ###   ########.fr       */
+/*   Created: 2025/04/16 21:09:52 by zernest           #+#    #+#             */
+/*   Updated: 2025/04/16 22:05:20 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ctrlc_handler(int sig)
+int	builtin_echo(char **args)
 {
-	(void)sig;
+	int	i;
+	int	newline;
 
-	write (1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
-
-void	ctrld_handler(void)
-{
-	write(1, "exit\n", 5);
-	exit(0);
+	if (args[i] && ft_strncmp(args[i], "-n", 3) == 0)
+	{
+		newline = 0;
+		i++;
+	}
+	while (args[i])
+	{
+		ft_printf("%s", args[i]);
+		if (args[i + 1])
+			ft_printf(" ");
+		i++;
+	}
+	if (newline)
+		ft_printf("\n");
+	return (0);
 }

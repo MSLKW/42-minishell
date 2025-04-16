@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/03/08 18:48:25 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/09 23:11:26 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,5 +107,9 @@ int	ft_isalnum_str(char *str);
 // ast.c
 t_ast	*find_pipes(t_list	*token_list);
 void	display_ast_tree(t_ast *ast_node);
+
+// interactive_mode.c
+void	ctrlc_handler(int sig);
+void	ctrld_handler(void);
 
 #endif
