@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/03/08 18:48:25 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/21 16:54:46 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,45 +53,60 @@ enum	token_handler {
 	SQUOTE
 };
 
-enum 	token_type {
+enum 	primary_token_type {
 	ERROR,
 	WHITESPACE,
 	ALPHANUMERIC,
 	ASCII,
 	SET_VALUE,
 	PIPE,
+	REDIRECTION,
+	VARIABLE,
+};
+
+enum	secondary_token_type {
+	NOTHING,
+	COMMAND,
+	OPTION,
+	ARGUMENT,
 	REDIRECTION_INPUT,
 	REDIRECTION_OUTPUT,
 	REDIRECTION_APPEND,
 	REDIRECTION_DELIMITER,
-	VARIABLE,
 };
 
 typedef struct s_token {
 	char			*content;
-	enum token_handler	handler;
-	enum token_type	type;
+	enum	token_handler	handler;
+	enum	primary_token_type	primary_type;
+	enum	secondary_token_type secondary_type;
 }	t_token;
 
 typedef struct s_ast {
 	t_token	*token;
-	t_list	*node_list;
+	t_lst	*node_list;
 } t_ast;
+
+typedef struct	s_data {
+	int		argc;
+	char	**argv;
+	char	**envp;
+} t_data;
 
 // ===== Minishell Functions =====
 
 // parse.c
 char	*ft_get_line(void);
 t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index);
-void	debug_token_list(t_list *token_list);
-void	display_token(t_token *token);
 
 // tokenize.c
-t_list	*tokenize_line(char *line);
+t_lst	*tokenize_line(char *line, t_data *data);
 t_token	*handle_dquote(char *line, int *index);
 t_token	*handle_squote(char *line, int *index);
 t_token	*handle_none(char *line, int *index);
-enum token_type	get_token_type(char *content);
+enum primary_token_type	get_primary_token_type(char *content);
+t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data);
+t_lst	**assign_redirection_type(t_lst	**token_list);
 
 // history.c
 void	ft_show_history(void);
@@ -105,7 +120,24 @@ int	ft_isalpha_str(char *str);
 int	ft_isalnum_str(char *str);
 
 // ast.c
-t_ast	*find_pipes(t_list	*token_list);
+t_ast	*find_pipes(t_lst	*token_list);
 void	display_ast_tree(t_ast *ast_node);
+t_ast	*init_ast(t_lst	**token_list);
+t_ast	*init_pipe(t_lst **token_list, t_lst *pipe_token);
+t_ast	*init_redirection(t_lst **token_list, t_lst *redirection_token);
+t_ast	*init_command(t_lst	*command_token);
+t_ast	*init_argument(t_lst *argument_token);
+t_lst	*find_primary_token_right(t_lst *current_token_lst, enum primary_token_type token_type, int	size);
+t_lst	*find_primary_token_left(t_lst	**token_list, t_lst *current_token_lst, enum primary_token_type token_type, int size);
+t_lst	*find_secondary_token_right(t_lst *current_token_lst, enum secondary_token_type token_type, int size);
+t_lst	*find_secondary_token_left(t_lst	**token_list, t_lst *current_token_lst, enum secondary_token_type token_type, int size);
 
+
+// debug.c
+void	ft_display(t_lst *list);
+void	debug_token_list(t_lst *token_list);
+void	display_token(t_token *token);
+void	display_token_handler(enum token_handler handler);
+void	display_primary_token_type(enum primary_token_type type);
+void	display_secondary_token_type(enum secondary_token_type type);
 #endif

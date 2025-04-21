@@ -1,27 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstlast.c                                       :+:      :+:    :+:   */
+/*   ft_lstgetprevious.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/07 12:07:54 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/12 22:42:10 by maxliew          ###   ########.fr       */
+/*   Created: 2024/08/05 16:34:00 by maxliew           #+#    #+#             */
+/*   Updated: 2025/04/14 21:46:36 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_lst	*ft_lstlast(t_lst *lst)
+t_lst	*ft_lstgetprevious(t_lst **lst, t_lst *current_lst)
 {
-	t_lst	*next_list;
+	int	current_lst_index;
 
-	if (lst == NULL)
+	current_lst_index = ft_lstgetindex(lst, current_lst);
+	if (current_lst_index == 0)
 		return (NULL);
-	next_list = lst;
-	while (next_list->next != NULL)
-	{
-		next_list = next_list->next;
-	}
-	return (next_list);
+	return (ft_lstindex(lst, current_lst_index - 1));
 }

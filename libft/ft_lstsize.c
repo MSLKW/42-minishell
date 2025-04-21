@@ -6,15 +6,15 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 12:01:50 by maxliew           #+#    #+#             */
-/*   Updated: 2024/03/08 20:11:47 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/12 22:42:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_lstsize(t_list *lst)
+int	ft_lstsize(t_lst *lst)
 {
-	t_list	*next_list;
+	t_lst	*next_list;
 	int		count;
 
 	if (lst == NULL)

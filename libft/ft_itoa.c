@@ -6,13 +6,13 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 15:31:59 by maxliew           #+#    #+#             */
-/*   Updated: 2024/03/10 18:07:13 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/10 23:57:57 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static	int	count_digits(int n)
+int	count_digits(int n)
 {
 	int	count;
 
