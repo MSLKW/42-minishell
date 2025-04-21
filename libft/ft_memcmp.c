@@ -1,41 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper.c                                           :+:      :+:    :+:   */
+/*   ft_memcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 15:32:10 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/16 17:23:39 by maxliew          ###   ########.fr       */
+/*   Created: 2024/02/25 15:36:45 by maxliew           #+#    #+#             */
+/*   Updated: 2024/03/08 20:11:34 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	ft_isalpha_str(char *str)
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
 {
-	int	index;
+	size_t			index;
+	unsigned char	*s1_uchar;
+	unsigned char	*s2_uchar;
 
+	s1_uchar = (unsigned char *) s1;
+	s2_uchar = (unsigned char *) s2;
 	index = 0;
-	while (str[index] != '\0')
+	while (index < n)
 	{
-		if (ft_isalpha(str[index]) == FALSE)
-			return (FALSE);
+		if (s1_uchar[index] != s2_uchar[index])
+			return (s1_uchar[index] - s2_uchar[index]);
 		index++;
 	}
-	return (TRUE);
-}
-
-int	ft_isalnum_str(char *str)
-{
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (ft_isalnum(str[index]) == FALSE)
-			return (FALSE);
-		index++;
-	}
-	return (TRUE);
+	return (0);
 }

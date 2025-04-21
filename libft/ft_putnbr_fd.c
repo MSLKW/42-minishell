@@ -1,41 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper.c                                           :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 15:32:10 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/16 17:23:39 by maxliew          ###   ########.fr       */
+/*   Created: 2024/03/04 14:39:35 by maxliew           #+#    #+#             */
+/*   Updated: 2024/03/10 16:59:43 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	ft_isalpha_str(char *str)
+void	ft_putnbr_fd(int n, int fd)
 {
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
+	if (n == -2147483648)
 	{
-		if (ft_isalpha(str[index]) == FALSE)
-			return (FALSE);
-		index++;
+		ft_putstr_fd("-2147483648", fd);
+		return ;
 	}
-	return (TRUE);
-}
-
-int	ft_isalnum_str(char *str)
-{
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
+	if (n < 0)
 	{
-		if (ft_isalnum(str[index]) == FALSE)
-			return (FALSE);
-		index++;
+		ft_putchar_fd('-', fd);
+		n = -n;
 	}
-	return (TRUE);
+	if (n >= 10)
+	{
+		ft_putnbr_fd(n / 10, fd);
+		n = n % 10;
+	}
+	if (n < 10)
+	{
+		ft_putchar_fd(n + '0', fd);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:16:06 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/09 23:10:57 by zernest          ###   ########.fr       */
+/*   Updated: 2025/04/18 11:47:05 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,25 +86,4 @@ t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index)
 	else if (is_subshell == FALSE && quote_flag == 0 && parenthesis_count == 0)
 		return (TRUE);
 	return (FALSE);
-}
-
-void	debug_token_list(t_list *token_list)
-{
-	t_list	*head;
-
-	ft_printf("-----TOKEN LIST-----\n");
-	head = token_list;
-	while (head != NULL)
-	{
-		display_token(head->content);
-		head = head->next;
-	}
-}
-
-void	display_token(t_token *token)
-{
-	if (token == NULL)
-		printf("Token | content -> NULL\n");
-	else
-		printf("Token | content -> \"%s\" | handler -> %i | type -> %i\n", token->content, token->handler, token->type);
 }

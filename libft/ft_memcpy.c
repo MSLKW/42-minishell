@@ -1,41 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper.c                                           :+:      :+:    :+:   */
+/*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 15:32:10 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/16 17:23:39 by maxliew          ###   ########.fr       */
+/*   Created: 2024/02/25 15:36:47 by maxliew           #+#    #+#             */
+/*   Updated: 2024/03/08 15:06:39 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	ft_isalpha_str(char *str)
+void	*ft_memcpy(void *dest, const void *src, size_t n)
 {
-	int	index;
+	size_t			index;
+	unsigned char	*dest_uchar;
+	unsigned char	*src_uchar;
 
+	if (dest == NULL && src == NULL)
+		return (dest);
+	dest_uchar = (unsigned char *)dest;
+	src_uchar = (unsigned char *)src;
 	index = 0;
-	while (str[index] != '\0')
+	while (index < n)
 	{
-		if (ft_isalpha(str[index]) == FALSE)
-			return (FALSE);
+		dest_uchar[index] = src_uchar[index];
 		index++;
 	}
-	return (TRUE);
+	return (dest);
 }
-
-int	ft_isalnum_str(char *str)
-{
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (ft_isalnum(str[index]) == FALSE)
-			return (FALSE);
-		index++;
-	}
-	return (TRUE);
-}
+// while loop: maybe limit to end of src? (src != '\0')

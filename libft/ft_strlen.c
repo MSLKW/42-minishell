@@ -1,41 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper.c                                           :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 15:32:10 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/16 17:23:39 by maxliew          ###   ########.fr       */
+/*   Created: 2024/02/23 10:55:06 by maxliew           #+#    #+#             */
+/*   Updated: 2024/03/03 11:14:37 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-
-int	ft_isalpha_str(char *str)
+int	ft_strlen(const char *str)
 {
-	int	index;
+	int	count;
 
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (ft_isalpha(str[index]) == FALSE)
-			return (FALSE);
-		index++;
-	}
-	return (TRUE);
-}
-
-int	ft_isalnum_str(char *str)
-{
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (ft_isalnum(str[index]) == FALSE)
-			return (FALSE);
-		index++;
-	}
-	return (TRUE);
+	count = 0;
+	while (str[count] != '\0')
+		count++;
+	return (count);
 }

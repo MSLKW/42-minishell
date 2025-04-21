@@ -1,41 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper.c                                           :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 15:32:10 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/16 17:23:39 by maxliew          ###   ########.fr       */
+/*   Created: 2024/03/04 14:34:03 by maxliew           #+#    #+#             */
+/*   Updated: 2024/03/08 20:07:04 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	ft_isalpha_str(char *str)
+void	ft_putstr_fd(char *s, int fd)
 {
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
+	if (s == NULL)
+		return ;
+	while (*s != '\0')
 	{
-		if (ft_isalpha(str[index]) == FALSE)
-			return (FALSE);
-		index++;
+		ft_putchar_fd(*s, fd);
+		s++;
 	}
-	return (TRUE);
-}
-
-int	ft_isalnum_str(char *str)
-{
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (ft_isalnum(str[index]) == FALSE)
-			return (FALSE);
-		index++;
-	}
-	return (TRUE);
 }

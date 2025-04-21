@@ -1,41 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper.c                                           :+:      :+:    :+:   */
+/*   ft_lstsize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 15:32:10 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/16 17:23:39 by maxliew          ###   ########.fr       */
+/*   Created: 2024/03/07 12:01:50 by maxliew           #+#    #+#             */
+/*   Updated: 2025/04/12 22:42:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	ft_isalpha_str(char *str)
+int	ft_lstsize(t_lst *lst)
 {
-	int	index;
+	t_lst	*next_list;
+	int		count;
 
-	index = 0;
-	while (str[index] != '\0')
+	if (lst == NULL)
+		return (0);
+	next_list = lst;
+	count = 1;
+	while (next_list->next != NULL)
 	{
-		if (ft_isalpha(str[index]) == FALSE)
-			return (FALSE);
-		index++;
+		next_list = next_list->next;
+		count++;
 	}
-	return (TRUE);
-}
-
-int	ft_isalnum_str(char *str)
-{
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (ft_isalnum(str[index]) == FALSE)
-			return (FALSE);
-		index++;
-	}
-	return (TRUE);
+	return (count);
 }

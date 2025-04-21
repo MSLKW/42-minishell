@@ -1,41 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper.c                                           :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 15:32:10 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/16 17:23:39 by maxliew          ###   ########.fr       */
+/*   Created: 2024/02/23 11:35:13 by maxliew           #+#    #+#             */
+/*   Updated: 2024/03/08 13:31:01 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	ft_isalpha_str(char *str)
+size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 {
-	int	index;
+	size_t	index;
 
-	index = 0;
-	while (str[index] != '\0')
+	index = -1;
+	if (size == 0 || dest == NULL || src == NULL)
+		return (ft_strlen(src));
+	while (++index < size - 1 && src[index] != '\0')
 	{
-		if (ft_isalpha(str[index]) == FALSE)
-			return (FALSE);
-		index++;
+		dest[index] = src[index];
 	}
-	return (TRUE);
-}
-
-int	ft_isalnum_str(char *str)
-{
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (ft_isalnum(str[index]) == FALSE)
-			return (FALSE);
-		index++;
-	}
-	return (TRUE);
+	dest[index] = '\0';
+	return (ft_strlen(src));
 }

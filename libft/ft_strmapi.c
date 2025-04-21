@@ -1,41 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper.c                                           :+:      :+:    :+:   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 15:32:10 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/16 17:23:39 by maxliew          ###   ########.fr       */
+/*   Created: 2024/03/06 19:35:24 by maxliew           #+#    #+#             */
+/*   Updated: 2024/03/07 11:17:49 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	ft_isalpha_str(char *str)
+char	*ft_strmapi(const char *s, char (*f)(unsigned int, char))
 {
-	int	index;
+	unsigned int	index;
+	char			*new_str;
 
+	if (s == NULL || f == NULL)
+		return (NULL);
+	new_str = ft_strdup(s);
+	if (new_str == NULL)
+		return (NULL);
 	index = 0;
-	while (str[index] != '\0')
+	while (new_str[index] != '\0')
 	{
-		if (ft_isalpha(str[index]) == FALSE)
-			return (FALSE);
+		new_str[index] = f(index, s[index]);
 		index++;
 	}
-	return (TRUE);
-}
-
-int	ft_isalnum_str(char *str)
-{
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (ft_isalnum(str[index]) == FALSE)
-			return (FALSE);
-		index++;
-	}
-	return (TRUE);
+	return (new_str);
 }

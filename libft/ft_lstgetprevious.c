@@ -1,41 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper.c                                           :+:      :+:    :+:   */
+/*   ft_lstgetprevious.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 15:32:10 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/16 17:23:39 by maxliew          ###   ########.fr       */
+/*   Created: 2024/08/05 16:34:00 by maxliew           #+#    #+#             */
+/*   Updated: 2025/04/14 21:46:36 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	ft_isalpha_str(char *str)
+t_lst	*ft_lstgetprevious(t_lst **lst, t_lst *current_lst)
 {
-	int	index;
+	int	current_lst_index;
 
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (ft_isalpha(str[index]) == FALSE)
-			return (FALSE);
-		index++;
-	}
-	return (TRUE);
-}
-
-int	ft_isalnum_str(char *str)
-{
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (ft_isalnum(str[index]) == FALSE)
-			return (FALSE);
-		index++;
-	}
-	return (TRUE);
+	current_lst_index = ft_lstgetindex(lst, current_lst);
+	if (current_lst_index == 0)
+		return (NULL);
+	return (ft_lstindex(lst, current_lst_index - 1));
 }
