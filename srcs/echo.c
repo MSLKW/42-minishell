@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 21:09:52 by zernest           #+#    #+#             */
-/*   Updated: 2025/04/16 22:05:20 by zernest          ###   ########.fr       */
+/*   Updated: 2025/04/21 17:50:50 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 int	builtin_echo(char **args)
 {
 	int	i;
-	int	newline;
+	int	new_line;
 
 	if (args[i] && ft_strncmp(args[i], "-n", 3) == 0)
 	{
-		newline = 0;
+		new_line = 0;
 		i++;
 	}
 	while (args[i])
@@ -29,7 +29,7 @@ int	builtin_echo(char **args)
 			ft_printf(" ");
 		i++;
 	}
-	if (newline)
+	if (new_line)
 		ft_printf("\n");
 	return (0);
 }
