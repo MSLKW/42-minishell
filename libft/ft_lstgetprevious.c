@@ -6,18 +6,18 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:34:00 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/12 22:47:13 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/14 21:46:36 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_lst	*ft_lstgetprevious(t_lst **lst, t_lst *lst_to_find)
+t_lst	*ft_lstgetprevious(t_lst **lst, t_lst *current_lst)
 {
-	int	lst_to_find_index;
+	int	current_lst_index;
 
-	lst_to_find_index = ft_lstgetindex(lst, lst_to_find);
-	if (lst_to_find_index == 0)
+	current_lst_index = ft_lstgetindex(lst, current_lst);
+	if (current_lst_index == 0)
 		return (NULL);
-	return (ft_lstindex(lst, lst_to_find_index - 1));
+	return (ft_lstindex(lst, current_lst_index - 1));
 }
