@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
 /*   Updated: 2025/04/21 16:54:46 by maxliew          ###   ########.fr       */
@@ -132,6 +132,9 @@ t_lst	*find_primary_token_left(t_lst	**token_list, t_lst *current_token_lst, enu
 t_lst	*find_secondary_token_right(t_lst *current_token_lst, enum secondary_token_type token_type, int size);
 t_lst	*find_secondary_token_left(t_lst	**token_list, t_lst *current_token_lst, enum secondary_token_type token_type, int size);
 
+// interactive_mode.c
+void	ctrlc_handler(int sig);
+void	ctrld_handler(void);
 
 // debug.c
 void	ft_display(t_lst *list);
@@ -140,4 +143,5 @@ void	display_token(t_token *token);
 void	display_token_handler(enum token_handler handler);
 void	display_primary_token_type(enum primary_token_type type);
 void	display_secondary_token_type(enum secondary_token_type type);
+
 #endif
