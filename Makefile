@@ -11,10 +11,11 @@ SRCS_FILES :=	minishell.c \
 				tokenize.c \
 				execute.c \
 				helper.c \
-				ast.c \
+				ast_init.c \
 				interactive_mode.c \
 				debug.c \
-				
+				ast_search.c \
+
 DEPS_FILES :=	minishell.h
 
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_FILES))
