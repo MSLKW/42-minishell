@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:39:34 by maxliew           #+#    #+#             */
-/*   Updated: 2025/02/17 19:01:10 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/28 15:53:58 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_show_history(void)
 	int	index;
 
 	index = 0;
-	while (*list != NULL)
+	while (*list != NULL && index < 1000)
 	{
 		printf(" %i %s\n", index, (*list)->line);
 		index++;

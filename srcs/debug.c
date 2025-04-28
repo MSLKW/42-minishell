@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:48:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/18 12:07:39 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/28 15:59:23 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,4 +101,28 @@ void	display_secondary_token_type(enum secondary_token_type type)
 		printf("REDIRECTION_APPEND");
 	else if (type == REDIRECTION_DELIMITER)
 		printf("REDIRECTION_DELIMITER");
+}
+
+void	display_ast_tree(t_ast *ast_node)
+{
+	t_lst	*head;
+
+	ft_printf("--AST NODE TOKEN--\n");
+	if (ast_node == NULL || ast_node->token == NULL)
+	{
+		printf("NULL\n\n");
+		return ;
+	}
+	display_token(ast_node->token);
+	printf("--AST NODE LIST--\n");
+	if (ast_node->node_list == NULL)
+		ft_printf("AST_NODE does not have NODE_LIST\n");
+	head = ast_node->node_list;
+	while (head != NULL)
+	{
+		ft_printf("iterating over list\n");
+		if (head->content != NULL)
+			display_ast_tree(head->content);
+		head = head->next;
+	}
 }
