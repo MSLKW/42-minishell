@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/21 16:54:46 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/04/28 15:28:13 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,5 +143,12 @@ void	display_token(t_token *token);
 void	display_token_handler(enum token_handler handler);
 void	display_primary_token_type(enum primary_token_type type);
 void	display_secondary_token_type(enum secondary_token_type type);
+
+// BUILTINS --
+int		builtin_echo(char **args);
+int		builtin_pwd(void);
+int		builtin_cd(char **cmd);
+int		builtin_env(char **envp);
+int		builtin_exit(char** args);
 
 #endif
