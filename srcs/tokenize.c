@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/19 13:44:58 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/05 22:51:41 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,21 @@ t_bool	is_token_cmd(char *content, char *envp[])
 	return (TRUE);
 }
 
+t_bool	is_token_builtin(char *content)
+{
+	if (ft_strncmp(content, "echo", ft_strlen(content)) == 0 ||
+		ft_strncmp(content, "cd", ft_strlen(content)) == 0 ||
+		ft_strncmp(content, "pwd", ft_strlen(content)) == 0 ||
+		ft_strncmp(content, "export", ft_strlen(content)) == 0 ||
+		ft_strncmp(content, "unset", ft_strlen(content)) == 0 ||
+		ft_strncmp(content, "env", ft_strlen(content)) == 0 ||
+		ft_strncmp(content, "exit", ft_strlen(content)) == 0
+	)
+		return (TRUE);
+	else
+		return (FALSE);
+}
+
 t_bool	is_token_option(char *content)
 {
 	if (content == NULL)
@@ -182,7 +197,7 @@ t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data)
 		{
 			if (token->primary_type == ALPHANUMERIC && cmd_line_flag == 0)
 			{
-				if (is_token_cmd(token->content, data->envp) == TRUE)
+				if (is_token_cmd(token->content, data->envp) == TRUE || is_token_builtin(token->content) == TRUE)
 				{
 					token->secondary_type = COMMAND;
 					cmd_line_flag = 1;
@@ -191,7 +206,7 @@ t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data)
 			else if (token->primary_type == ASCII && cmd_line_flag == 1)
 			{
 				if (is_token_option(token->content) == TRUE)
-					token->secondary_type = OPTION;
+					token->secondary_type = ARGUMENT; // SUPPOSED TO BE OPTION BUT TURNED ARGUMENT
 			}
 			else if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII) && cmd_line_flag == 1)
 				token->secondary_type = ARGUMENT;
