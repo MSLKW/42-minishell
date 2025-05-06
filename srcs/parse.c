@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:16:06 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/18 11:47:05 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/06 15:44:20 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ char	*ft_get_line(void)
 		free(cwd);
 		ctrld_handler();
 	}
+	if (concat_line[0] != '\0')
+		add_history(concat_line);
 	int index = 0;
 	while (is_line_quote_ended(concat_line, FALSE, &index) == FALSE)
 	{
