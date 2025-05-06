@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/06 15:49:10 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/06 16:37:46 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	main(int argc, char *argv[], char *envp[])
 	t_data	*data;
 	const char	*history_file;
 
-	*history_file = ".minishell_history";
+	history_file = "minishell_history";
 	signal(SIGINT, ctrlc_handler);
 	data = ft_calloc(1, sizeof(data));
 	if (data == NULL)
@@ -38,7 +38,8 @@ int	main(int argc, char *argv[], char *envp[])
 		free(line);
 		ft_show_history();
 	}
-	ft_clear_history();
+	write_history(history_file);
+	rl_clear_history();
 	// if (find_cmd_path("abc", envp) == NULL)
 	// 	printf("NULL\n");
 	// else

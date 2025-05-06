@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/28 15:28:13 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/06 16:13:55 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,5 +150,6 @@ int		builtin_pwd(void);
 int		builtin_cd(char **cmd);
 int		builtin_env(char **envp);
 int		builtin_exit(char** args);
+int		builtin_unset_env(char *key, char ***envp_copy);
 
 #endif
