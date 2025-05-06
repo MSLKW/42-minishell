@@ -154,5 +154,6 @@ int		builtin_pwd(void);
 int		builtin_cd(char **cmd);
 int		builtin_env(char **envp);
 int		builtin_exit(char** args);
+int		builtin_unset_env(char *key, char ***envp_copy);
 
 #endif
