@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/06 16:13:55 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/05 22:43:50 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ enum 	primary_token_type {
 enum	secondary_token_type {
 	NOTHING,
 	COMMAND,
-	OPTION,
+	OPTION, // NOT USED
 	ARGUMENT,
 	REDIRECTION_INPUT,
 	REDIRECTION_OUTPUT,
@@ -119,14 +119,17 @@ char	*find_cmd_path(char *cmd, char *envp[]);
 int	ft_isalpha_str(char *str);
 int	ft_isalnum_str(char *str);
 
-// ast.c
+// ast_init.c
 t_ast	*find_pipes(t_lst	*token_list);
-void	display_ast_tree(t_ast *ast_node);
 t_ast	*init_ast(t_lst	**token_list);
 t_ast	*init_pipe(t_lst **token_list, t_lst *pipe_token);
 t_ast	*init_redirection(t_lst **token_list, t_lst *redirection_token);
+t_ast	*init_input_redirection(t_lst **token_list, t_lst *redirection_token);
+t_ast	*init_output_redirection(t_lst **token_list, t_lst *redirection_token);
 t_ast	*init_command(t_lst	*command_token);
 t_ast	*init_argument(t_lst *argument_token);
+
+// ast_search.c
 t_lst	*find_primary_token_right(t_lst *current_token_lst, enum primary_token_type token_type, int	size);
 t_lst	*find_primary_token_left(t_lst	**token_list, t_lst *current_token_lst, enum primary_token_type token_type, int size);
 t_lst	*find_secondary_token_right(t_lst *current_token_lst, enum secondary_token_type token_type, int size);
@@ -143,6 +146,7 @@ void	display_token(t_token *token);
 void	display_token_handler(enum token_handler handler);
 void	display_primary_token_type(enum primary_token_type type);
 void	display_secondary_token_type(enum secondary_token_type type);
+void	display_ast_tree(t_ast *ast_node);
 
 // BUILTINS --
 int		builtin_echo(char **args);
