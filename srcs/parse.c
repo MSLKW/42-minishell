@@ -6,13 +6,49 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:16:06 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/18 11:47:05 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/06 16:24:55 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // can't get new lines when finishing quote
+// char	*ft_get_line_old(void)
+// {
+// 	char	*concat_line;
+// 	char	*line_read;
+// 	char	*new_line_read;
+// 	char	*temp;
+// 	char	*cwd;
+
+// 	cwd = getcwd(NULL, 0);
+// 	rl_on_new_line();
+// 	concat_line = readline(ft_strjoin(cwd, "$ "));
+// 	if (!concat_line)
+// 	{
+// 		free(cwd);
+// 		ctrld_handler();
+// 	}
+// 	if (concat_line[0] != '\0')
+// 		add_history(concat_line);
+// 	int index = 0;
+// 	while (is_line_quote_ended(concat_line, FALSE, &index) == FALSE)
+// 	{
+// 		rl_on_new_line();
+// 		line_read = readline(">");
+// 		new_line_read = ft_strjoin("\n", line_read);
+// 		temp = ft_strjoin(concat_line, new_line_read);
+// 		free(concat_line);
+// 		free(new_line_read);
+// 		free(line_read);
+// 		concat_line = temp;
+// 		ft_printf("line: \"%s\"\n", concat_line);
+// 		index = 0;
+// 	}
+// 	add_history(concat_line);
+// 	return (concat_line);
+// }
+
 char	*ft_get_line(void)
 {
 	char	*concat_line;
@@ -20,20 +56,32 @@ char	*ft_get_line(void)
 	char	*new_line_read;
 	char	*temp;
 	char	*cwd;
+	char	*prompt;
 
 	cwd = getcwd(NULL, 0);
+	prompt = ft_strjoin(cwd, "$ ");
+	free(cwd);
 	rl_on_new_line();
-	concat_line = readline(ft_strjoin(cwd, "$ "));
-	if (!concat_line)
-	{
-		free(cwd);
+
+	concat_line = readline(prompt);
+	free(prompt);
+
+	if (!concat_line) // Ctrl+D
 		ctrld_handler();
-	}
+
+	if (concat_line[0] != '\0') // only add non-empty lines
+		add_history(concat_line);
+
 	int index = 0;
 	while (is_line_quote_ended(concat_line, FALSE, &index) == FALSE)
 	{
 		rl_on_new_line();
 		line_read = readline(">");
+		if (!line_read)
+		{
+			free(concat_line);
+			ctrld_handler();
+		}
 		new_line_read = ft_strjoin("\n", line_read);
 		temp = ft_strjoin(concat_line, new_line_read);
 		free(concat_line);
@@ -43,7 +91,6 @@ char	*ft_get_line(void)
 		ft_printf("line: \"%s\"\n", concat_line);
 		index = 0;
 	}
-	add_history(concat_line);
 	return (concat_line);
 }
 
