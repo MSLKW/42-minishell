@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/07 13:23:36 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/07 22:55:34 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	main(int argc, char *argv[], char *envp[])
 	data->argc = argc;
 	data->argv = argv;
 	data->envp = envp;
+	// data->env_var = NULL;
 	while(1)
 	{
 		line = ft_get_line();
@@ -36,14 +37,10 @@ int	main(int argc, char *argv[], char *envp[])
 		t_ast *ast_node = init_ast(&tokens);
 		ft_printf("----- AST TREE -----\n");
 		display_ast_tree(ast_node);
+		execute_cmd(ast_node, data);
 		free(line);
 		ft_show_history();
 	}
 	write_history(history_file);
 	rl_clear_history();
-	// if (find_cmd_path("abc", envp) == NULL)
-	// 	printf("NULL\n");
-	// else
-	// 	printf("%s\n", find_cmd_path("abc", envp));
-	// execve(find_cmd_path("echo", envp), argv, envp);
 }
