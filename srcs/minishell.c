@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/06 16:37:46 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/07 13:23:36 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	main(int argc, char *argv[], char *envp[])
 	t_data	*data;
 	const char	*history_file;
 
-	history_file = "minishell_history";
+	history_file = "./minishell_history.txt";
 	signal(SIGINT, ctrlc_handler);
 	data = ft_calloc(1, sizeof(data));
 	if (data == NULL)
@@ -26,10 +26,11 @@ int	main(int argc, char *argv[], char *envp[])
 	data->argc = argc;
 	data->argv = argv;
 	data->envp = envp;
-
 	while(1)
 	{
 		line = ft_get_line();
+		if (line[0] != '\0')
+			add_history(line);
 		t_lst *tokens = tokenize_line(line, data);
 		debug_token_list(tokens);
 		t_ast *ast_node = init_ast(&tokens);

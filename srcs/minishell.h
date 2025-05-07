@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/05 22:43:50 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/07 15:19:27 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,9 @@ typedef struct	s_data {
 
 // parse.c
 char	*ft_get_line(void);
+char	*ft_get_prompt(void);
+char	*ft_get_prompt_cwd(void);
+char	*ft_get_prompt_environment(void);
 t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index);
 
 // tokenize.c
