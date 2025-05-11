@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/06 16:37:46 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/08 18:08:18 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	main(int argc, char *argv[], char *envp[])
 	t_data	*data;
 	const char	*history_file;
 
+	signal(SIGQUIT, SIG_IGN);
 	history_file = "minishell_history";
 	signal(SIGINT, ctrlc_handler);
 	data = ft_calloc(1, sizeof(data));
@@ -33,6 +34,7 @@ int	main(int argc, char *argv[], char *envp[])
 		t_lst *tokens = tokenize_line(line, data);
 		debug_token_list(tokens);
 		t_ast *ast_node = init_ast(&tokens);
+		execute_ast(ast, &data);
 		ft_printf("----- AST TREE -----\n");
 		display_ast_tree(ast_node);
 		free(line);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/05 22:43:50 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/08 17:56:30 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,8 @@ void	ft_clear_history(void);
 
 // execute.c
 char	*find_cmd_path(char *cmd, char *envp[]);
+int		execute_ast(t_ast *ast, t_data * data);
+char	**build_cmd_args(t_ast *node);
 
 // helper.c
 int	ft_isalpha_str(char *str);
