@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/08 17:56:30 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/13 16:02:20 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ typedef struct	s_data {
 	int		argc;
 	char	**argv;
 	char	**envp;
+	int		last_exit_code;
 } t_data;
 
 // ===== Minishell Functions =====
@@ -114,8 +115,11 @@ void	ft_clear_history(void);
 
 // execute.c
 char	*find_cmd_path(char *cmd, char *envp[]);
-int		execute_ast(t_ast *ast, t_data * data);
+
+// execute_new.c
+int		execute_ast(t_ast *ast, t_data *data);
 char	**build_cmd_args(t_ast *node);
+int		execute_command(t_ast *node, t_data *data);
 
 // helper.c
 int	ft_isalpha_str(char *str);
@@ -157,5 +161,8 @@ int		builtin_cd(char **cmd);
 int		builtin_env(char **envp);
 int		builtin_exit(char** args);
 int		builtin_unset_env(char *key, char ***envp_copy);
+
+//dollar_sign_expansions.c
+char	*expand_dollar_question(char *arg, int last_exit_code);
 
 #endif
