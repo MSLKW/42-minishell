@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   ast_init.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:57:03 by maxliew           #+#    #+#             */
 /*   Updated: 2025/05/07 12:45:01 by maxliew          ###   ########.fr       */
@@ -30,6 +30,13 @@ t_ast	*init_ast(t_lst	**token_list)
 		return (node);
 	}
 	token_lst = find_primary_token_right(head, REDIRECTION, ft_lstsize(*token_list));
+	// DEBUGGING 
+	if (token_lst && token_lst->content)
+	{
+		t_token *tok = (t_token *)token_lst->content;
+		printf("FOUND COMMAND: %s\n", tok->content);
+	}
+	// DEBUG ^
 	if (token_lst != NULL)
 	{
 		node = init_redirection(token_list, token_lst);

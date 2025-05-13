@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/07 22:55:10 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/13 16:02:20 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ typedef struct	s_data {
 	int		argc;
 	char	**argv;
 	char	**envp;
+	int		last_exit_code;
 	t_lst	*env_var;
 }	t_data;
 
@@ -128,6 +129,11 @@ char	*find_cmd_path(char *cmd, char *envp[]);
 void	execute_cmd(t_ast *cmd_ast, t_data *data);
 void	execute_builtin(char *cmd_name, char **args, t_data *data);
 char	**get_args_from_ast(t_lst *node_list);
+
+// execute_new.c
+int		execute_ast(t_ast *ast, t_data *data);
+char	**build_cmd_args(t_ast *node);
+int		execute_command(t_ast *node, t_data *data);
 
 // helper.c
 int	ft_isalpha_str(char *str);
@@ -170,5 +176,8 @@ int		builtin_env(char **envp);
 int		builtin_exit(char** args);
 int		builtin_unset_env(char *key, char ***envp_copy);
 int 	builtin_export(char *arg, char ***envp);
+
+//dollar_sign_expansions.c
+char	*expand_dollar_question(char *arg, int last_exit_code);
 
 #endif
