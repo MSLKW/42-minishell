@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:01:48 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/07 23:02:51 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/13 16:17:26 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int	builtin_cd(char **path)
 {
+	// if path is more than one, too many args error
 	if (!path[0])
 	{
 		printf("cd: missing argument\n");
