@@ -15,6 +15,11 @@ SRCS_FILES :=	minishell.c \
 				interactive_mode.c \
 				debug.c \
 				ast_search.c \
+				env.c \
+				echo.c \
+				cd.c \
+				pwd.c \
+				exit.c \
 
 DEPS_FILES :=	minishell.h
 

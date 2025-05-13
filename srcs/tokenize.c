@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/05 22:51:41 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/07 22:43:38 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,8 +165,8 @@ enum primary_token_type	get_primary_token_type(char *content)
 		return (ERROR);
 	if (content[index] == ' ')
 		return (WHITESPACE);
-	else if (ft_strchr(content, '='))
-		return (SET_VALUE); // variable needs to be alpha, value can be alphanumeric
+	else if (ft_strchr(content, '=') != NULL && ft_isalpha(content[0]) == TRUE)
+		return (SET_VALUE); // variable first letter needs to be alpha, value can be ASCII
 	else if (ft_strchr(content, '|') && size == 1)
 		return (PIPE);
 	else if ((ft_strchr(content, '<') || ft_strchr(content, '>')) && size == 1)
@@ -203,12 +203,13 @@ t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data)
 					cmd_line_flag = 1;
 				}
 			}
-			else if (token->primary_type == ASCII && cmd_line_flag == 1)
-			{
-				if (is_token_option(token->content) == TRUE)
-					token->secondary_type = ARGUMENT; // SUPPOSED TO BE OPTION BUT TURNED ARGUMENT
-			}
-			else if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII) && cmd_line_flag == 1)
+			// else if (token->primary_type == ASCII && cmd_line_flag == 1)
+			// {
+			// 	if (is_token_option(token->content) == TRUE)
+			// 		token->secondary_type = ARGUMENT; // SUPPOSED TO BE OPTION BUT TURNED ARGUMENT
+			// }
+			else if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII || token->primary_type == SET_VALUE) 
+				&& cmd_line_flag == 1)
 				token->secondary_type = ARGUMENT;
 			else
 				cmd_line_flag = 0;

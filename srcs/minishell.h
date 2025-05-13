@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/05 22:43:50 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/07 22:55:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,18 +85,27 @@ typedef struct s_token {
 typedef struct s_ast {
 	t_token	*token;
 	t_lst	*node_list;
-} t_ast;
+}	t_ast;
+
+typedef struct s_env_var {
+	char	*identifier;
+	char	*value;
+}	t_env_var;
 
 typedef struct	s_data {
 	int		argc;
 	char	**argv;
 	char	**envp;
-} t_data;
+	t_lst	*env_var;
+}	t_data;
 
 // ===== Minishell Functions =====
 
 // parse.c
 char	*ft_get_line(void);
+char	*ft_get_prompt(void);
+char	*ft_get_prompt_cwd(void);
+char	*ft_get_prompt_environment(void);
 t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index);
 
 // tokenize.c
@@ -104,6 +113,8 @@ t_lst	*tokenize_line(char *line, t_data *data);
 t_token	*handle_dquote(char *line, int *index);
 t_token	*handle_squote(char *line, int *index);
 t_token	*handle_none(char *line, int *index);
+t_bool	is_token_cmd(char *content, char *envp[]);
+t_bool	is_token_builtin(char *content);
 enum primary_token_type	get_primary_token_type(char *content);
 t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data);
 t_lst	**assign_redirection_type(t_lst	**token_list);
@@ -114,6 +125,9 @@ void	ft_clear_history(void);
 
 // execute.c
 char	*find_cmd_path(char *cmd, char *envp[]);
+void	execute_cmd(t_ast *cmd_ast, t_data *data);
+void	execute_builtin(char *cmd_name, char **args, t_data *data);
+char	**get_args_from_ast(t_lst *node_list);
 
 // helper.c
 int	ft_isalpha_str(char *str);
@@ -155,5 +169,6 @@ int		builtin_cd(char **cmd);
 int		builtin_env(char **envp);
 int		builtin_exit(char** args);
 int		builtin_unset_env(char *key, char ***envp_copy);
+int 	builtin_export(char *arg, char ***envp);
 
 #endif

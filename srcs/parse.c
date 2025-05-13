@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:16:06 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/06 16:24:55 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/07 15:29:42 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,28 +55,22 @@ char	*ft_get_line(void)
 	char	*line_read;
 	char	*new_line_read;
 	char	*temp;
-	char	*cwd;
 	char	*prompt;
 
-	cwd = getcwd(NULL, 0);
-	prompt = ft_strjoin(cwd, "$ ");
-	free(cwd);
-	rl_on_new_line();
+	prompt = ft_get_prompt();
 
+	rl_on_new_line();
 	concat_line = readline(prompt);
 	free(prompt);
 
 	if (!concat_line) // Ctrl+D
 		ctrld_handler();
 
-	if (concat_line[0] != '\0') // only add non-empty lines
-		add_history(concat_line);
-
 	int index = 0;
 	while (is_line_quote_ended(concat_line, FALSE, &index) == FALSE)
 	{
 		rl_on_new_line();
-		line_read = readline(">");
+		line_read = readline("> ");
 		if (!line_read)
 		{
 			free(concat_line);
@@ -88,10 +82,78 @@ char	*ft_get_line(void)
 		free(new_line_read);
 		free(line_read);
 		concat_line = temp;
-		ft_printf("line: \"%s\"\n", concat_line);
 		index = 0;
 	}
 	return (concat_line);
+}
+
+char	*ft_get_prompt(void)
+{
+	char	*cwd;
+	char	*dir;
+	char	*prompt;
+	char	*prompt_env;
+	
+	prompt_env = ft_get_prompt_environment();
+	if (prompt_env == NULL)
+		return (NULL);
+	cwd = ft_get_prompt_cwd();
+	if (cwd == NULL)
+	{
+		free(prompt_env);
+		return (NULL);
+	}
+	dir = ft_strjoin(cwd, "\033[0m$ ");
+	prompt = ft_strjoin(prompt_env, dir);
+	free(cwd);
+	free(dir);
+	free(prompt_env);
+	return (prompt);
+}
+
+char	*ft_get_prompt_cwd(void)
+{
+	char	*cwd;
+	char	*home_cwd;
+	int		start_i;
+	char	*dir_minus_home;
+
+	home_cwd = getenv("HOME");
+	cwd = getcwd(NULL, 0);
+	if (home_cwd == NULL || cwd == NULL)
+		return (NULL);
+	if (ft_strnstr(cwd, home_cwd, ft_strlen(cwd)) != NULL)
+	{
+		start_i = ft_strlen(home_cwd);
+		dir_minus_home = ft_substr(cwd, start_i, ft_strlen(cwd) - start_i);
+		free(cwd);
+		cwd = ft_strjoin("\033[36m~", dir_minus_home);
+	}
+	return (cwd);
+}
+
+char	*ft_get_prompt_environment(void)
+{
+	char	*name_env;
+	char	*logname_env;
+	char	*part1;
+	char	*part2;
+	char	*part3;
+
+	name_env = getenv("NAME");
+	logname_env = getenv("LOGNAME");
+	if (name_env == NULL || logname_env == NULL)
+		return (NULL);
+	char	*part0 = ft_strjoin("\033[32m", logname_env);
+	part1 = ft_strjoin(part0, "@");
+	part2 = ft_strjoin(part1, name_env);
+	part3 = ft_strjoin(part2, "\033[0m:");
+	// free(name_env);
+	// free(logname_env);
+	free(part0);
+	free(part1);
+	free(part2);
+	return (part3);
 }
 
 t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index)
