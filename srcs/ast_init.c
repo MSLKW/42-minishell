@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:57:03 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/13 02:31:45 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/07 12:45:01 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,7 @@ t_ast	*init_ast(t_lst	**token_list)
 	if (token_list == NULL || *token_list == NULL)
 		return (NULL);
 	head = *token_list;
-	printf("looking for pipe\n");
 	token_lst = find_primary_token_right(head, PIPE, ft_lstsize(*token_list));
-	printf("token_lst: %p\n", token_lst);
 	if (token_lst != NULL)
 	{
 		node = init_pipe(token_list, token_lst);
@@ -31,7 +29,6 @@ t_ast	*init_ast(t_lst	**token_list)
 			return (NULL);
 		return (node);
 	}
-	printf("looking for redirection\n");
 	token_lst = find_primary_token_right(head, REDIRECTION, ft_lstsize(*token_list));
 	// DEBUGGING 
 	if (token_lst && token_lst->content)
@@ -47,7 +44,6 @@ t_ast	*init_ast(t_lst	**token_list)
 			return (NULL);
 		return (node);
 	}
-	printf("looking for command\n");
 	token_lst = find_secondary_token_right(head, COMMAND, ft_lstsize(*token_list));
 	if (token_lst != NULL)
 	{
@@ -56,7 +52,6 @@ t_ast	*init_ast(t_lst	**token_list)
 			return (NULL);
 		return (node);
 	}
-	printf("nothing found\n");
 	return (NULL);
 }
 
@@ -65,6 +60,9 @@ t_ast	*init_pipe(t_lst **token_list, t_lst *pipe_token)
 	t_ast	*result;
 	t_lst	*redirection_token;
 	t_lst	*command_token;
+	t_ast	*redirection_ast;
+	t_lst	*more_pipe_token;
+	t_ast	*pipe_ast;
 
 	result = ft_calloc(1, sizeof(t_ast));
 	if (result == NULL)
@@ -73,7 +71,7 @@ t_ast	*init_pipe(t_lst **token_list, t_lst *pipe_token)
 	redirection_token = find_primary_token_left(token_list, pipe_token, REDIRECTION, ft_lstsize(*token_list));
 	if (redirection_token != NULL)
 	{
-		t_ast	*redirection_ast = init_redirection(token_list, redirection_token);
+		redirection_ast = init_redirection(token_list, redirection_token);
 		ft_lstadd_back(&result->node_list, ft_lstnew(redirection_ast));
 	}
 	else if (redirection_token == NULL)
@@ -82,15 +80,13 @@ t_ast	*init_pipe(t_lst **token_list, t_lst *pipe_token)
 		if (command_token != NULL)
 		{
 			t_ast	*command_ast = init_command(command_token);
-			printf("add command to node_list\n");
 			ft_lstadd_back(&result->node_list, ft_lstnew(command_ast));
 		}
 	}
-	t_lst	*more_pipe_token = find_primary_token_right(pipe_token->next, PIPE, ft_lstsize(*token_list));
+	more_pipe_token = find_primary_token_right(pipe_token->next, PIPE, ft_lstsize(*token_list));
 	if (more_pipe_token != NULL)
 	{
-		t_ast	*pipe_ast = init_pipe(token_list, more_pipe_token);
-		printf("adding pipe to node_list\n");
+		pipe_ast = init_pipe(token_list, more_pipe_token);
 		ft_lstadd_back(&result->node_list, ft_lstnew(pipe_ast));
 	}
 	else if (more_pipe_token == NULL)
@@ -98,7 +94,7 @@ t_ast	*init_pipe(t_lst **token_list, t_lst *pipe_token)
 		redirection_token = find_primary_token_right(pipe_token, REDIRECTION, ft_lstsize(*token_list));
 		if (redirection_token != NULL)
 		{
-			t_ast	*redirection_ast = init_redirection(token_list, redirection_token);
+			redirection_ast = init_redirection(token_list, redirection_token);
 			ft_lstadd_back(&result->node_list, ft_lstnew(redirection_ast));
 		}
 		else if (redirection_token == NULL)
@@ -107,7 +103,6 @@ t_ast	*init_pipe(t_lst **token_list, t_lst *pipe_token)
 			if (command_token != NULL)
 			{
 				t_ast	*command_ast = init_command(command_token);
-				printf("add command to node_list\n");
 				ft_lstadd_back(&result->node_list, ft_lstnew(command_ast));
 			}
 		}

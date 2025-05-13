@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 21:09:52 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/13 05:53:27 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/07 23:00:35 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int	is_n_flag(char *arg)
 	return (1);
 }
 
+// echo "hello""world" | should output "helloworld" but output "hello world"
 int	builtin_echo(char **args)
 {
 	int i = 1;
