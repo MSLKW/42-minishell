@@ -1,45 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export.c                                           :+:      :+:    :+:   */
+/*   dollar_sign_expansions.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/28 15:45:01 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/13 01:28:56 by zernest          ###   ########.fr       */
+/*   Created: 2025/03/13 15:56:47 by zernest           #+#    #+#             */
+/*   Updated: 2025/05/13 16:05:05 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int builtin_export(char *arg, char ***envp)
+char	*expand_dollar_question(char *arg, int last_exit_code)
 {
-	int	i;
-	char **new_env;
-
-	i = 0;
 	if (!arg)
-	{
-		//THIS PART TO PRINT ENVIRONMENT WIP
-		return(0);
-	}
-	while ((*envp)[i])
-		i++;
-	new_env = malloc(sizeof(char *) * (i + 2));
-	if (!new_env)
-		return (1);
-
-	i = 0;
-	while ((*envp)[i])
-	{
-		new_env[i] = (*envp)[i];
-		i++;
-	}
-	new_env[i] = ft_strdup(arg);
-	new_env[i + 1] = NULL;
-
-	free(*envp);
-	*envp = new_env;
-
-	return (0);
+		return (NULL);
+	if (ft_strncmp(arg, "$?", 3) == 0)
+		return (ft_itoa(last_exit_code));
+	return (ft_strdup(arg));
 }

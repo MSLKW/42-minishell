@@ -18,7 +18,9 @@ int	main(int argc, char *argv[], char *envp[])
 	t_data	*data;
 	const char	*history_file;
 
-	history_file = "./minishell_history.txt";
+	signal(SIGQUIT, SIG_IGN);
+	history_file = "minishell_history";
+
 	signal(SIGINT, ctrlc_handler);
 	data = ft_calloc(1, sizeof(data));
 	if (data == NULL)
@@ -35,6 +37,7 @@ int	main(int argc, char *argv[], char *envp[])
 		t_lst *tokens = tokenize_line(line, data);
 		debug_token_list(tokens);
 		t_ast *ast_node = init_ast(&tokens);
+		execute_ast(ast_node, data);
 		ft_printf("----- AST TREE -----\n");
 		display_ast_tree(ast_node);
 		execute_cmd(ast_node, data);

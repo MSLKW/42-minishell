@@ -30,6 +30,29 @@ int	builtin_pwd(void)
 	return (0);
 }
 
+int	builtin_echo(char **args)
+{
+	int	i;
+	int	new_line;
+
+	i = 0;
+	if (args[i] && ft_strncmp(args[i], "-n", 3) == 0)
+	{
+		new_line = 0;
+		i++;
+	}
+	while (args[i])
+	{
+		ft_printf("%s", args[i]);
+		if (args[i + 1])
+			ft_printf(" ");
+		i++;
+	}
+	if (new_line)
+		ft_printf("\n");
+	return (0);
+}
+
 int	builtin_cdd(char *cmd)
 {
 	if (!cmd)
@@ -138,6 +161,8 @@ int main(int ac, char **av, char **envp)
 			builtin_cdd(input + 3);
 		else if (strcmp(input, "env") == 0)
 			builtin_envtest(envp);
+		else if (strcmp(input, "echo") == 0)
+			builtin_echo(av);
 		else if (strcmp(input, "exit") == 0)
 		{
 			char **args = split_input(input);
@@ -147,7 +172,7 @@ int main(int ac, char **av, char **envp)
 		else if (strncmp(input, "export ", 7) == 0)
 			builtin_exporttest(input + 7, &envp);
 		else
-			printf("no command");
+			printf("no command\n");
 	}
 	return (0);
 }
