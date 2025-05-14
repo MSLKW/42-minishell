@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/07 22:43:38 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/14 21:00:51 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,13 @@ t_bool	is_token_builtin(char *content)
 		return (FALSE);
 }
 
+t_bool	is_token_executable(char *content)
+{
+	if (ft_strlen(content) >= 2 && content[0] == '.' && content[1] == '/')
+		return (TRUE);
+	return (FALSE);
+}
+
 t_bool	is_token_option(char *content)
 {
 	if (content == NULL)
@@ -153,6 +160,31 @@ t_bool	is_token_option(char *content)
 		// }
 	return (FALSE);
 }
+t_env_var	*split_setvalue(char *content)
+{
+	char	**str_arr;
+
+	str_arr = ft_split(content, '=');
+	if (str_arr == NULL)
+		return (NULL);
+	return (init_env_variable(str_arr[0], str_arr[1]));
+}
+
+t_bool	is_token_setvalue(char *content)
+{
+	t_env_var	*env_var;
+
+	if (ft_strchr(content, '=') != NULL)
+	{
+		env_var = split_setvalue(content);
+		if (env_var != NULL)
+		{
+			free(env_var);
+			return (TRUE);
+		}
+	}
+	return (FALSE);
+}
 
 enum primary_token_type	get_primary_token_type(char *content)
 {
@@ -165,8 +197,8 @@ enum primary_token_type	get_primary_token_type(char *content)
 		return (ERROR);
 	if (content[index] == ' ')
 		return (WHITESPACE);
-	else if (ft_strchr(content, '=') != NULL && ft_isalpha(content[0]) == TRUE)
-		return (SET_VALUE); // variable first letter needs to be alpha, value can be ASCII
+	else if (is_token_setvalue(content) == TRUE)
+		return (SET_VALUE); // variable first letter needs to be alpha, then variable itself needs to be alphanum, value can be ASCII
 	else if (ft_strchr(content, '|') && size == 1)
 		return (PIPE);
 	else if ((ft_strchr(content, '<') || ft_strchr(content, '>')) && size == 1)
@@ -195,14 +227,18 @@ t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data)
 		token = head->content;
 		if (token->primary_type != WHITESPACE)
 		{
-			if (token->primary_type == ALPHANUMERIC && cmd_line_flag == 0)
+			if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII ) && cmd_line_flag == 0)
 			{
-				if (is_token_cmd(token->content, data->envp) == TRUE || is_token_builtin(token->content) == TRUE)
+				if (is_token_cmd(token->content, data->envp) == TRUE || is_token_builtin(token->content) == TRUE || is_token_executable(token->content) == TRUE)
 				{
 					token->secondary_type = COMMAND;
 					cmd_line_flag = 1;
 				}
 			}
+			// else if (token->primary_type == ASCII && cmd_line_flag == 0 && )
+			// {
+
+			// }
 			// else if (token->primary_type == ASCII && cmd_line_flag == 1)
 			// {
 			// 	if (is_token_option(token->content) == TRUE)

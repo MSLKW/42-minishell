@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/13 16:06:50 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/14 21:08:59 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,11 +114,18 @@ int	execute_command(t_ast *node, t_data *data)
 	pid = fork();
 	if (pid == 0)
 	{
-		cmd_path = find_cmd_path(args[0], data->envp);
-		if (!cmd_path)
+		if (is_token_executable(args[0]) == TRUE)
 		{
-			ft_printf("command not found: %s\n", args[0]);
-			exit (127);
+			cmd_path = args[0];
+		}
+		else
+		{
+			cmd_path = find_cmd_path(args[0], data->envp);
+			if (!cmd_path)
+			{
+				ft_printf("command not found: %s\n", args[0]);
+				exit (127);
+			}
 		}
 		execve(cmd_path, args, data->envp);
 		perror("execve");
