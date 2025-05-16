@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:48:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/14 18:58:55 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/16 23:53:38 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,17 @@ void	ft_lststrdisplay(t_lst *list)
 {
 	t_lst	*head;
 
+	ft_printf("---lst start---\n");
 	head = list;
 	while (head != NULL)
 	{
-		ft_printf("%s\n", head->content);
+		if (head->content != NULL)
+			ft_printf("%s\n", head->content);
+		else if (head->content == NULL)
+			ft_printf("CONTENT IS NULL\n");
 		head = head->next;
 	}
+	ft_printf("---lst end---\n");
 }
 
 void	debug_token_list(t_lst *token_list)

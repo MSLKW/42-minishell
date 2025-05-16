@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/14 20:46:50 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/17 00:08:06 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,20 +59,24 @@ int	main(int argc, char *argv[], char *envp[])
 // 	if (data == NULL)
 // 		return (1);
 // 	data->env_var_lst = ft_lstnew(NULL);
-// 	set_env_variable(data->env_var_lst, init_env_variable(".bc", "123"));
+// 	set_env_variable(data->env_var_lst, init_env_variable("var", "123"));
 // 	set_env_variable(data->env_var_lst, init_env_variable("sigh", "fight"));
-// 	set_env_variable(data->env_var_lst, init_env_variable(".tight", "bye"));
-// 	set_env_variable(data->env_var_lst, init_env_variable("a5", "6"));
+// 	set_env_variable(data->env_var_lst, init_env_variable("tight", "bye"));
+// 	set_env_variable(data->env_var_lst, init_env_variable("a5", ""));
 // 	set_env_variable(data->env_var_lst, init_env_variable("hey", "hello"));
+// 	// display_env_var(data);
+// 	// unset_env_variable("a5", &data->env_var_lst);
+// 	// printf("\n");
 // 	display_env_var(data);
-// 	unset_env_variable("a5", &data->env_var_lst);
-// 	printf("\n");
-// 	display_env_var(data);
-// 	t_env_var *env_var = get_env_variable("hey", data->env_var_lst);
-// 	if (env_var == NULL)
+// 	// t_env_var *env_var = get_env_variable("hey", data->env_var_lst);
+// 	// if (env_var == NULL)
+// 	// {
+// 	// 	printf("env_var is null\n");
+// 	// 	return (1);
+// 	// }
+// 	// printf("main | env_var key: %s | val: %s\n", env_var->key, env_var->value);
+// 	if (argc == 2)
 // 	{
-// 		printf("env_var is null\n");
-// 		return (1);
+// 		printf("result: %s\n", variable_expansion(argv[1], data));
 // 	}
-// 	printf("main | env_var key: %s | val: %s\n", env_var->key, env_var->value);
 // }

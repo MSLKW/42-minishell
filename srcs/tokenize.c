@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/14 21:00:51 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/14 21:19:46 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ t_env_var	*split_setvalue(char *content)
 	char	**str_arr;
 
 	str_arr = ft_split(content, '=');
-	if (str_arr == NULL)
+	if (str_arr == NULL || str_arr[0] == NULL || str_arr[1] == NULL)
 		return (NULL);
 	return (init_env_variable(str_arr[0], str_arr[1]));
 }

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:47:35 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/14 20:57:17 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/16 23:58:55 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,8 @@ t_env_var	*init_env_variable(char *key, char *value)
 	t_env_var	*env_var;
 
 	env_var = ft_calloc(1, sizeof(t_env_var));
-	if (env_var == NULL)
+	if (env_var == NULL || key == NULL || value == NULL)
 		return (NULL);
-	// validate key and value
 	if (ft_strlen(key) > 0 && ft_isalpha(key[0]) == TRUE && ft_isalnum_str(key) == TRUE)
 	{
 		env_var->key = ft_strdup(key);

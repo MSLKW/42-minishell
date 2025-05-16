@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/14 20:59:28 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/16 20:20:37 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,9 @@ t_env_var	*get_env_variable(char *key, t_lst *env_var_lst);
 int			unset_env_variable(char *key, t_lst **env_var_lst);
 void		free_env_var(void *content);
 void		display_env_var(t_data *data);
+
+// variable_expansion.c
+char	*variable_expansion(const char *arg, t_data *data);
 
 // execute.c
 char	*find_cmd_path(char *cmd, char *envp[]);
