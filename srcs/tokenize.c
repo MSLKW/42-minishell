@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/07 22:43:38 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/18 16:23:43 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,8 @@ t_bool	is_token_builtin(char *content)
 		ft_strncmp(content, "export", ft_strlen(content)) == 0 ||
 		ft_strncmp(content, "unset", ft_strlen(content)) == 0 ||
 		ft_strncmp(content, "env", ft_strlen(content)) == 0 ||
-		ft_strncmp(content, "exit", ft_strlen(content)) == 0
+		ft_strncmp(content, "exit", ft_strlen(content)) == 0 ||
+		ft_strncmp(content, "history", ft_strlen(content)) == 0
 	)
 		return (TRUE);
 	else
@@ -182,11 +183,11 @@ enum primary_token_type	get_primary_token_type(char *content)
 /*
 	Modifies the **token_list's token types to more suitable token types like COMMAND, OPTION and ARGUMENT
 */
-t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data)
+t_lst    *assign_cmd_opt_arg_type(t_lst    **token_list, t_data *data)
 {
-	int	cmd_line_flag;
-	t_lst	*head;
-	t_token	*token;
+	int    cmd_line_flag;
+	t_lst    *head;
+	t_token    *token;
 
 	cmd_line_flag = 0;
 	head = *token_list;
@@ -195,18 +196,22 @@ t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data)
 		token = head->content;
 		if (token->primary_type != WHITESPACE)
 		{
-			if (token->primary_type == ALPHANUMERIC && cmd_line_flag == 0)
+			if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII ) && cmd_line_flag == 0)
 			{
-				if (is_token_cmd(token->content, data->envp) == TRUE || is_token_builtin(token->content) == TRUE)
+				if (is_token_cmd(token->content, data->envp) == TRUE || is_token_builtin(token->content) == TRUE || is_token_executable(token->content) == TRUE)
 				{
 					token->secondary_type = COMMAND;
 					cmd_line_flag = 1;
 				}
 			}
+			// else if (token->primary_type == ASCII && cmd_line_flag == 0 && )
+			// {
+
+			// }
 			// else if (token->primary_type == ASCII && cmd_line_flag == 1)
 			// {
-			// 	if (is_token_option(token->content) == TRUE)
-			// 		token->secondary_type = ARGUMENT; // SUPPOSED TO BE OPTION BUT TURNED ARGUMENT
+			//     if (is_token_option(token->content) == TRUE)
+			//         token->secondary_type = ARGUMENT; // SUPPOSED TO BE OPTION BUT TURNED ARGUMENT
 			// }
 			else if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII || token->primary_type == SET_VALUE) 
 				&& cmd_line_flag == 1)
@@ -246,4 +251,11 @@ t_lst	**assign_redirection_type(t_lst	**token_list)
 		head = head->next;
 	}
 	return (token_list);
+}
+
+t_bool    is_token_executable(char *content)
+{
+	if (ft_strlen(content) >= 2 && content[0] == '.' && content[1] == '/')
+		return (TRUE);
+	return (FALSE);
 }
