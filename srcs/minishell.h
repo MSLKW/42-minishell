@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/16 20:20:37 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/18 16:23:01 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ enum 	primary_token_type {
 	SET_VALUE,
 	PIPE,
 	REDIRECTION,
-	VARIABLE,
+	VARIABLE, // NOT USED
 };
 
 enum	secondary_token_type {
@@ -111,13 +111,12 @@ t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index);
 
 // tokenize.c
 t_lst	*tokenize_line(char *line, t_data *data);
-t_token	*handle_dquote(char *line, int *index);
+t_token	*handle_dquote(char *line, int *index, t_data *data);
 t_token	*handle_squote(char *line, int *index);
-t_token	*handle_none(char *line, int *index);
+t_token	*handle_none(char *line, int *index, t_data *data);
 t_bool	is_token_cmd(char *content, char *envp[]);
 t_bool	is_token_builtin(char *content);
 t_bool	is_token_executable(char *content);
-t_env_var	*split_setvalue(char *content);
 t_bool	is_token_setvalue(char *content);
 enum primary_token_type	get_primary_token_type(char *content);
 t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data);
@@ -132,6 +131,7 @@ t_ast	*init_input_redirection(t_lst **token_list, t_lst *redirection_token);
 t_ast	*init_output_redirection(t_lst **token_list, t_lst *redirection_token);
 t_ast	*init_command(t_lst	*command_token);
 t_ast	*init_argument(t_lst *argument_token);
+t_ast	*init_setvalue(t_lst *setvalue_token);
 
 // ast_search.c
 t_lst	*find_primary_token_right(t_lst *current_token_lst, enum primary_token_type token_type, int	size);
@@ -141,6 +141,7 @@ t_lst	*find_secondary_token_left(t_lst	**token_list, t_lst *current_token_lst, e
 
 // variable.c
 t_env_var	*init_env_variable(char *key, char *value);
+t_env_var	*split_setvalue(char *content);
 void		set_env_variable(t_lst *env_var_lst, t_env_var *env_var);
 t_env_var	*get_env_variable(char *key, t_lst *env_var_lst);
 int			unset_env_variable(char *key, t_lst **env_var_lst);
@@ -149,6 +150,7 @@ void		display_env_var(t_data *data);
 
 // variable_expansion.c
 char	*variable_expansion(const char *arg, t_data *data);
+t_lst	*tokens_variable_expansion(t_lst *tokens_lst, t_data *data);
 
 // execute.c
 char	*find_cmd_path(char *cmd, char *envp[]);
@@ -160,6 +162,7 @@ char	**get_args_from_ast(t_lst *node_list);
 int		execute_ast(t_ast *ast, t_data *data);
 char	**build_cmd_args(t_ast *node);
 int		execute_command(t_ast *node, t_data *data);
+int		execute_setvalue(t_ast *node, t_data *data);
 
 // interactive_mode.c
 void	ctrlc_handler(int sig);

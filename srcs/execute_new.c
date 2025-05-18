@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/14 21:08:59 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/18 16:23:40 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ int	execute_ast(t_ast *ast, t_data *data)
 {
 	if (!ast)
 		return (1);
+	if (ast->token->primary_type == SET_VALUE)
+		return (execute_setvalue(ast, data));
 	return (execute_command(ast, data));
 }
 
@@ -134,4 +136,13 @@ int	execute_command(t_ast *node, t_data *data)
 	else
 		waitpid(pid, &status, 0);
 	return (WEXITSTATUS(status));
+}
+
+int	execute_setvalue(t_ast *node, t_data *data)
+{
+	t_env_var *env_var = split_setvalue(node->token->content);
+	if (env_var == NULL)
+		return (1);
+	set_env_variable(data->env_var_lst, env_var);
+	return (0);
 }

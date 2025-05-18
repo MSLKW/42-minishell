@@ -6,14 +6,13 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:30 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/17 00:07:23 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/18 15:41:44 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // handle setting var through var_name=value with execution
-// handle variable expansion
 // handle unsetting env and var_name
 
 // if variable is in env, env variable gets changed.
@@ -23,7 +22,7 @@
 
 // export will take from variable.c and set if there is any to be set, but will display any variable with value from variable.c
 
-t_lst	*split_variable_list(const char *arg)
+static t_lst	*split_variable_list(const char *arg)
 {
 	t_lst	*arg_list;
 	int		start_index;
@@ -67,7 +66,7 @@ t_lst	*split_variable_list(const char *arg)
 /*
 	Iterates the list and expands any variable inside
 */
-void	domain_variable_expansion(t_lst	*split_arg_list, t_data *data)
+static void	domain_variable_expansion(t_lst	*split_arg_list, t_data *data)
 {
 	t_lst	*head;
 	char	*arg;
@@ -81,15 +80,15 @@ void	domain_variable_expansion(t_lst	*split_arg_list, t_data *data)
 			t_env_var	*var = get_env_variable(arg + 1, data->env_var_lst);
 			free(arg);
 			if (var == NULL || var->value == NULL)
-				arg = ft_strdup("");
+				head->content = ft_strdup("");
 			else
-				arg = ft_strdup(var->value);
+				head->content = ft_strdup(var->value);
 		}
 		head = head->next;
 	}
 }
 
-char	*rejoining_strs(t_lst *split_arg)
+static char	*rejoining_strs(t_lst *split_arg)
 {
 	t_lst	*head;
 	char	*base_str;

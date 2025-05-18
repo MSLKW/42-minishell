@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast_init.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:57:03 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/07 12:45:01 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/18 16:12:32 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,14 @@ t_ast	*init_ast(t_lst	**token_list)
 	if (token_lst != NULL)
 	{
 		node = init_command(token_lst);
+		if (node == NULL)
+			return (NULL);
+		return (node);
+	}
+	token_lst = find_primary_token_right(head, SET_VALUE, ft_lstsize(*token_list));
+	if (token_lst != NULL)
+	{
+		node = init_setvalue(token_lst);
 		if (node == NULL)
 			return (NULL);
 		return (node);
@@ -199,10 +207,24 @@ t_ast	*init_command(t_lst	*command_token)
 
 t_ast	*init_argument(t_lst *argument_token)
 {
-	t_ast *result;
+	t_ast	*result;
 
 	result = ft_calloc(1, sizeof(t_ast));
+	if (result == NULL)
+		return (NULL);
 	result->token = argument_token->content;
+	result->node_list = NULL;
+	return (result);
+}
+
+t_ast	*init_setvalue(t_lst *setvalue_token)
+{
+	t_ast	*result;
+
+	result = ft_calloc(1, sizeof(t_ast));
+	if (result == NULL)
+		return (NULL);
+	result->token = setvalue_token->content;
 	result->node_list = NULL;
 	return (result);
 }

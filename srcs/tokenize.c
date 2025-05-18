@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/14 21:19:46 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/18 16:21:30 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,18 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	while (line[index] != '\0')
 	{
 		if (line[index] == '\"')
-			ft_lstadd_back(&token_list, ft_lstnew(handle_dquote(line, &index)));
+			ft_lstadd_back(&token_list, ft_lstnew(handle_dquote(line, &index, data)));
 		else if (line[index] == '\'')
 			ft_lstadd_back(&token_list, ft_lstnew(handle_squote(line, &index)));
 		else
-			ft_lstadd_back(&token_list, ft_lstnew(handle_none(line, &index)));
+			ft_lstadd_back(&token_list, ft_lstnew(handle_none(line, &index, data)));
 	}
 	assign_cmd_opt_arg_type(&token_list, data);
 	assign_redirection_type(&token_list);
 	return (token_list);
 }
 
-t_token	*handle_dquote(char *line, int *index)
+t_token	*handle_dquote(char *line, int *index, t_data *data)
 {
 	int	size;
 	t_token	*token;
@@ -49,9 +49,9 @@ t_token	*handle_dquote(char *line, int *index)
 	content = ft_substr(line, *index, size);
 	if (content == NULL || ft_strlen(content) == 0)
 		return (NULL);
-	token->content = content;
+	token->content = variable_expansion(content, data);
 	token->handler = DQUOTE;
-	token->primary_type = get_primary_token_type(content);
+	token->primary_type = get_primary_token_type(token->content);
 	token->secondary_type = NOTHING;
 	(*index) += size + 1;
 	return (token);
@@ -81,7 +81,7 @@ t_token	*handle_squote(char *line, int *index)
 	return (token);
 }
 
-t_token	*handle_none(char *line, int *index)
+t_token	*handle_none(char *line, int *index, t_data *data)
 {
 	int	size;
 	t_token	*token;
@@ -104,9 +104,9 @@ t_token	*handle_none(char *line, int *index)
 	content = ft_substr(line, *index, size);
 	if (content == NULL || ft_strlen(content) == 0)
 		return (NULL);
-	token->content = content;
+	token->content = variable_expansion(content, data);
 	token->handler = NONE;
-	token->primary_type = get_primary_token_type(content);
+	token->primary_type = get_primary_token_type(token->content);
 	token->secondary_type = NOTHING;
 	(*index) += size;
 	return (token);
@@ -160,15 +160,6 @@ t_bool	is_token_option(char *content)
 		// }
 	return (FALSE);
 }
-t_env_var	*split_setvalue(char *content)
-{
-	char	**str_arr;
-
-	str_arr = ft_split(content, '=');
-	if (str_arr == NULL || str_arr[0] == NULL || str_arr[1] == NULL)
-		return (NULL);
-	return (init_env_variable(str_arr[0], str_arr[1]));
-}
 
 t_bool	is_token_setvalue(char *content)
 {
@@ -205,8 +196,8 @@ enum primary_token_type	get_primary_token_type(char *content)
 		return (REDIRECTION);
 	else if ((ft_strnstr(content, ">>", size) || ft_strnstr(content, "<<", size)) && size == 2)
 		return (REDIRECTION);
-	else if (size >= 2 && content[0] == '$' && ft_isalpha_str(content + 1) == TRUE)
-		return (VARIABLE);
+	// else if (size >= 2 && content[0] == '$' && ft_isalpha_str(content + 1) == TRUE)
+	// 	return (VARIABLE);
 	else if (ft_isalnum_str(content) == TRUE)
 		return (ALPHANUMERIC);
 	return (ASCII);

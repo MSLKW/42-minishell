@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/17 00:08:06 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/18 15:38:56 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	main(int argc, char *argv[], char *envp[])
 // 	if (data == NULL)
 // 		return (1);
 // 	data->env_var_lst = ft_lstnew(NULL);
-// 	set_env_variable(data->env_var_lst, init_env_variable("var", "123"));
+// 	set_env_variable(data->env_var_lst, init_env_variable("abc", "123"));
 // 	set_env_variable(data->env_var_lst, init_env_variable("sigh", "fight"));
 // 	set_env_variable(data->env_var_lst, init_env_variable("tight", "bye"));
 // 	set_env_variable(data->env_var_lst, init_env_variable("a5", ""));

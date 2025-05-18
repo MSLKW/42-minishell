@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:47:35 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/16 23:58:55 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/18 16:21:27 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,16 @@ t_env_var	*init_env_variable(char *key, char *value)
 		return (env_var);
 	}
 	return (NULL);
+}
+
+t_env_var	*split_setvalue(char *content)
+{
+	char	**str_arr;
+
+	str_arr = ft_split(content, '=');
+	if (str_arr == NULL || str_arr[0] == NULL || str_arr[1] == NULL)
+		return (NULL);
+	return (init_env_variable(str_arr[0], str_arr[1]));
 }
 
 void	set_env_variable(t_lst *env_var_lst, t_env_var *env_var)
