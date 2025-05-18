@@ -1,41 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper.c                                           :+:      :+:    :+:   */
+/*   ft_lstremove.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 15:32:10 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/14 20:57:03 by maxliew          ###   ########.fr       */
+/*   Created: 2024/07/18 10:13:42 by maxliew           #+#    #+#             */
+/*   Updated: 2024/07/18 10:23:46 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-t_bool	ft_isalpha_str(char *str)
+t_lst	*ft_lstremove(t_lst *lst_del, t_lst *prev_lst, void (*del)(void *))
 {
-	int	index;
+	t_lst	*lst_del_next;
 
-	index = 0;
-	while (str[index] != '\0')
+	if (lst_del == NULL)
+		return (NULL);
+	lst_del_next = lst_del->next;
+	ft_lstdelone(lst_del, del);
+	if (prev_lst != NULL)
 	{
-		if (ft_isalpha(str[index]) == FALSE)
-			return (FALSE);
-		index++;
+		prev_lst->next = lst_del_next;
+		return (prev_lst);
 	}
-	return (TRUE);
-}
-
-t_bool	ft_isalnum_str(char *str)
-{
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (ft_isalnum(str[index]) == FALSE)
-			return (FALSE);
-		index++;
-	}
-	return (TRUE);
+	return (lst_del_next);
 }

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 10:54:28 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/14 21:46:59 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/13 22:24:08 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,5 +98,6 @@ int		fspec_x(va_list ap, const char format);
 int		ft_lstgetindex(t_lst **lst, t_lst *lst_to_find);
 t_lst	*ft_lstgetprevious(t_lst **lst, t_lst *current_lst);
 t_lst	*ft_lstindex(t_lst **lst, int to_index);
+t_lst	*ft_lstremove(t_lst *lst_del, t_lst *prev_lst, void (*del)(void *));
 
 #endif

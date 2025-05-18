@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/18 16:20:38 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/18 16:25:54 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ int	execute_ast(t_ast *ast, t_data *data)
 {
 	if (!ast)
 		return (1);
+	if (ast->token->primary_type == SET_VALUE)
+		return (execute_setvalue(ast, data));
 	return (execute_command(ast, data));
 }
 
@@ -138,4 +140,15 @@ int	execute_command(t_ast *node, t_data *data)
 	else
 		waitpid(pid, &status, 0);
 	return (WEXITSTATUS(status));
+}
+
+int	execute_setvalue(t_ast *node, t_data *data)
+{
+	t_env_var *env_var;
+	
+	env_var = split_setvalue(node->token->content);
+	if (env_var == NULL || env_var->key == NULL || env_var->value == NULL)
+		return (1);
+	set_env_variable(data->env_var_lst, env_var);
+	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 16:09:09 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/06 16:13:50 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/16 19:11:09 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 int	env_key_match(const char *env_entry, const char *key)
 {
-	size_t key_len = strlen(key);
+	size_t key_len;
+	
+	key_len = strlen(key);
 	return (strncmp(env_entry, key, key_len) == 0 && env_entry[key_len] == '=');
 }
 

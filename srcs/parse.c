@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:16:06 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/07 15:29:42 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/13 21:32:44 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ char	*ft_get_prompt_cwd(void)
 		start_i = ft_strlen(home_cwd);
 		dir_minus_home = ft_substr(cwd, start_i, ft_strlen(cwd) - start_i);
 		free(cwd);
-		cwd = ft_strjoin("\033[36m~", dir_minus_home);
+		cwd = ft_strjoin("~", dir_minus_home);
 	}
 	return (cwd);
 }
@@ -147,9 +147,7 @@ char	*ft_get_prompt_environment(void)
 	char	*part0 = ft_strjoin("\033[32m", logname_env);
 	part1 = ft_strjoin(part0, "@");
 	part2 = ft_strjoin(part1, name_env);
-	part3 = ft_strjoin(part2, "\033[0m:");
-	// free(name_env);
-	// free(logname_env);
+	part3 = ft_strjoin(part2, "\033[0m:\033[36m");
 	free(part0);
 	free(part1);
 	free(part2);

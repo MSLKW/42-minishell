@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/18 16:18:03 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/18 16:23:01 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ enum 	primary_token_type {
 	SET_VALUE,
 	PIPE,
 	REDIRECTION,
-	VARIABLE,
+	VARIABLE, // NOT USED
 };
 
 enum	secondary_token_type {
@@ -88,7 +88,7 @@ typedef struct s_ast {
 }	t_ast;
 
 typedef struct s_env_var {
-	char	*identifier;
+	char	*key;
 	char	*value;
 }	t_env_var;
 
@@ -97,7 +97,7 @@ typedef struct	s_data {
 	char	**argv;
 	char	**envp;
 	int		last_exit_code;
-	t_lst	*env_var;
+	t_lst	*env_var_lst;
 }	t_data;
 
 // ===== Minishell Functions =====
@@ -111,11 +111,13 @@ t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index);
 
 // tokenize.c
 t_lst	*tokenize_line(char *line, t_data *data);
-t_token	*handle_dquote(char *line, int *index);
+t_token	*handle_dquote(char *line, int *index, t_data *data);
 t_token	*handle_squote(char *line, int *index);
-t_token	*handle_none(char *line, int *index);
+t_token	*handle_none(char *line, int *index, t_data *data);
 t_bool	is_token_cmd(char *content, char *envp[]);
 t_bool	is_token_builtin(char *content);
+t_bool	is_token_executable(char *content);
+t_bool	is_token_setvalue(char *content);
 enum primary_token_type	get_primary_token_type(char *content);
 t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data);
 t_lst	**assign_redirection_type(t_lst	**token_list);
@@ -149,6 +151,7 @@ t_ast	*init_input_redirection(t_lst **token_list, t_lst *redirection_token);
 t_ast	*init_output_redirection(t_lst **token_list, t_lst *redirection_token);
 t_ast	*init_command(t_lst	*command_token);
 t_ast	*init_argument(t_lst *argument_token);
+t_ast	*init_setvalue(t_lst *setvalue_token);
 
 // ast_search.c
 t_lst	*find_primary_token_right(t_lst *current_token_lst, enum primary_token_type token_type, int	size);
@@ -156,12 +159,45 @@ t_lst	*find_primary_token_left(t_lst	**token_list, t_lst *current_token_lst, enu
 t_lst	*find_secondary_token_right(t_lst *current_token_lst, enum secondary_token_type token_type, int size);
 t_lst	*find_secondary_token_left(t_lst	**token_list, t_lst *current_token_lst, enum secondary_token_type token_type, int size);
 
+// variable.c
+t_env_var	*init_env_variable(char *key, char *value);
+t_env_var	*split_setvalue(char *content);
+void		set_env_variable(t_lst *env_var_lst, t_env_var *env_var);
+t_env_var	*get_env_variable(char *key, t_lst *env_var_lst);
+int			unset_env_variable(char *key, t_lst **env_var_lst);
+void		free_env_var(void *content);
+void		display_env_var(t_data *data);
+
+// variable_expansion.c
+char	*variable_expansion(const char *arg, t_data *data);
+t_lst	*tokens_variable_expansion(t_lst *tokens_lst, t_data *data);
+
+// execute.c
+char	*find_cmd_path(char *cmd, char *envp[]);
+void	execute_cmd(t_ast *cmd_ast, t_data *data);
+void	execute_builtin(char *cmd_name, char **args, t_data *data);
+char	**get_args_from_ast(t_lst *node_list);
+
+// execute_new.c
+int		execute_ast(t_ast *ast, t_data *data);
+char	**build_cmd_args(t_ast *node);
+int		execute_command(t_ast *node, t_data *data);
+int		execute_setvalue(t_ast *node, t_data *data);
+
 // interactive_mode.c
 void	ctrlc_handler(int sig);
 void	ctrld_handler(void);
 
+// history.c
+void	ft_show_history(void);
+void	ft_clear_history(void);
+
+// helper.c
+t_bool	ft_isalpha_str(char *str);
+t_bool	ft_isalnum_str(char *str);
+
 // debug.c
-void	ft_display(t_lst *list);
+void	ft_lststrdisplay(t_lst *list);
 void	debug_token_list(t_lst *token_list);
 void	display_token(t_token *token);
 void	display_token_handler(enum token_handler handler);
