@@ -121,6 +121,26 @@ t_bool	is_token_setvalue(char *content);
 enum primary_token_type	get_primary_token_type(char *content);
 t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data);
 t_lst	**assign_redirection_type(t_lst	**token_list);
+t_bool	is_token_executable(char *content);
+
+// history.c
+// void	ft_show_history(void);
+// void	ft_clear_history(void);
+
+// execute.c
+char	*find_cmd_path(char *cmd, char *envp[]);
+void	execute_cmd(t_ast *cmd_ast, t_data *data);
+void	execute_builtin(char *cmd_name, char **args, t_data *data);
+char	**get_args_from_ast(t_lst *node_list);
+
+// execute_new.c
+int		execute_ast(t_ast *ast, t_data *data);
+char	**build_cmd_args(t_ast *node);
+int		execute_command(t_ast *node, t_data *data);
+
+// helper.c
+int	ft_isalpha_str(char *str);
+int	ft_isalnum_str(char *str);
 
 // ast_init.c
 t_ast	*find_pipes(t_lst	*token_list);
@@ -192,7 +212,9 @@ int		builtin_cd(char **cmd);
 int		builtin_env(char **envp);
 int		builtin_exit(char** args);
 int		builtin_unset_env(char *key, char ***envp_copy);
-int 	builtin_export(char *arg, char ***envp);
+int		builtin_export(char *arg, char ***envp);
+int		handle_export(char **args, char ***envp);
+int		builtin_history(void);
 
 //dollar_sign_expansions.c
 char	*expand_dollar_question(char *arg, int last_exit_code);

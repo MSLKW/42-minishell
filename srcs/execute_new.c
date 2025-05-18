@@ -112,6 +112,10 @@ int	execute_command(t_ast *node, t_data *data)
 		return (builtin_exit(args));
 	if (ft_strncmp(args[0], "unset", 6) == 0)
 		return (builtin_unset_env(args[1], &data->envp));
+	if (ft_strncmp(args[0], "export", 7) == 0)
+		return (handle_export(args, &data->envp));
+	if (ft_strncmp(args[0], "history", 8) == 0)
+		return (builtin_history());
 	printf("Last exit code: %d", data->last_exit_code);
 	pid = fork();
 	if (pid == 0)
