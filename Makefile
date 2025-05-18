@@ -23,6 +23,8 @@ SRCS_FILES :=	minishell.c \
 				export.c \
 				pwd.c \
 				unset.c \
+				variable.c \
+				variable_expansion.c
 
 DEPS_FILES :=	minishell.h
 

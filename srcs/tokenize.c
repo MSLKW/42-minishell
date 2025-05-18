@@ -22,18 +22,18 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	while (line[index] != '\0')
 	{
 		if (line[index] == '\"')
-			ft_lstadd_back(&token_list, ft_lstnew(handle_dquote(line, &index)));
+			ft_lstadd_back(&token_list, ft_lstnew(handle_dquote(line, &index, data)));
 		else if (line[index] == '\'')
 			ft_lstadd_back(&token_list, ft_lstnew(handle_squote(line, &index)));
 		else
-			ft_lstadd_back(&token_list, ft_lstnew(handle_none(line, &index)));
+			ft_lstadd_back(&token_list, ft_lstnew(handle_none(line, &index, data)));
 	}
 	assign_cmd_opt_arg_type(&token_list, data);
 	assign_redirection_type(&token_list);
 	return (token_list);
 }
 
-t_token	*handle_dquote(char *line, int *index)
+t_token	*handle_dquote(char *line, int *index, t_data *data)
 {
 	int	size;
 	t_token	*token;
@@ -49,9 +49,9 @@ t_token	*handle_dquote(char *line, int *index)
 	content = ft_substr(line, *index, size);
 	if (content == NULL || ft_strlen(content) == 0)
 		return (NULL);
-	token->content = content;
+	token->content = variable_expansion(content, data);
 	token->handler = DQUOTE;
-	token->primary_type = get_primary_token_type(content);
+	token->primary_type = get_primary_token_type(token->content);
 	token->secondary_type = NOTHING;
 	(*index) += size + 1;
 	return (token);
@@ -81,7 +81,7 @@ t_token	*handle_squote(char *line, int *index)
 	return (token);
 }
 
-t_token	*handle_none(char *line, int *index)
+t_token	*handle_none(char *line, int *index, t_data *data)
 {
 	int	size;
 	t_token	*token;
@@ -104,9 +104,9 @@ t_token	*handle_none(char *line, int *index)
 	content = ft_substr(line, *index, size);
 	if (content == NULL || ft_strlen(content) == 0)
 		return (NULL);
-	token->content = content;
+	token->content = variable_expansion(content, data);
 	token->handler = NONE;
-	token->primary_type = get_primary_token_type(content);
+	token->primary_type = get_primary_token_type(token->content);
 	token->secondary_type = NOTHING;
 	(*index) += size;
 	return (token);
@@ -138,6 +138,13 @@ t_bool	is_token_builtin(char *content)
 		return (FALSE);
 }
 
+t_bool	is_token_executable(char *content)
+{
+	if (ft_strlen(content) >= 2 && content[0] == '.' && content[1] == '/')
+		return (TRUE);
+	return (FALSE);
+}
+
 t_bool	is_token_option(char *content)
 {
 	if (content == NULL)
@@ -155,6 +162,22 @@ t_bool	is_token_option(char *content)
 	return (FALSE);
 }
 
+t_bool	is_token_setvalue(char *content)
+{
+	t_env_var	*env_var;
+
+	if (ft_strchr(content, '=') != NULL)
+	{
+		env_var = split_setvalue(content);
+		if (env_var != NULL)
+		{
+			free(env_var);
+			return (TRUE);
+		}
+	}
+	return (FALSE);
+}
+
 enum primary_token_type	get_primary_token_type(char *content)
 {
 	int	size;
@@ -166,16 +189,16 @@ enum primary_token_type	get_primary_token_type(char *content)
 		return (ERROR);
 	if (content[index] == ' ')
 		return (WHITESPACE);
-	else if (ft_strchr(content, '=') != NULL && ft_isalpha(content[0]) == TRUE)
-		return (SET_VALUE); // variable first letter needs to be alpha, value can be ASCII
+	else if (is_token_setvalue(content) == TRUE)
+		return (SET_VALUE); // variable first letter needs to be alpha, then variable itself needs to be alphanum, value can be ASCII
 	else if (ft_strchr(content, '|') && size == 1)
 		return (PIPE);
 	else if ((ft_strchr(content, '<') || ft_strchr(content, '>')) && size == 1)
 		return (REDIRECTION);
 	else if ((ft_strnstr(content, ">>", size) || ft_strnstr(content, "<<", size)) && size == 2)
 		return (REDIRECTION);
-	else if (size >= 2 && content[0] == '$' && ft_isalpha_str(content + 1) == TRUE)
-		return (VARIABLE);
+	// else if (size >= 2 && content[0] == '$' && ft_isalpha_str(content + 1) == TRUE)
+	// 	return (VARIABLE);
 	else if (ft_isalnum_str(content) == TRUE)
 		return (ALPHANUMERIC);
 	return (ASCII);

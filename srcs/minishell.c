@@ -25,7 +25,7 @@ int	main(int argc, char *argv[], char *envp[])
 	data->argc = argc;
 	data->argv = argv;
 	data->envp = envp;
-	// data->env_var = NULL;
+	data->env_var_lst = ft_lstnew(NULL);
 	while(1)
 	{
 		line = ft_get_line();
@@ -34,10 +34,10 @@ int	main(int argc, char *argv[], char *envp[])
 		t_lst *tokens = tokenize_line(line, data);
 		debug_token_list(tokens);
 		t_ast *ast_node = init_ast(&tokens);
-		execute_ast(ast_node, data);
 		ft_printf("----- AST TREE -----\n");
 		display_ast_tree(ast_node);
 		free(line);
-	} 
+		execute_ast(ast_node, data);
+	}
 	rl_clear_history();
 }
