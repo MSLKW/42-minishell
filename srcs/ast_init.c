@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:57:03 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/18 16:12:32 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/20 16:33:42 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,14 @@ t_ast	*init_ast(t_lst	**token_list)
 	if (token_list == NULL || *token_list == NULL)
 		return (NULL);
 	head = *token_list;
+	token_lst = find_primary_token_right(head, SET_VALUE, ft_lstsize(*token_list));
+	if (token_lst != NULL)
+	{
+		node = init_setvalue(token_lst);
+		if (node == NULL)
+			return (NULL);
+		return (node);
+	}
 	token_lst = find_primary_token_right(head, PIPE, ft_lstsize(*token_list));
 	if (token_lst != NULL)
 	{
@@ -48,14 +56,6 @@ t_ast	*init_ast(t_lst	**token_list)
 	if (token_lst != NULL)
 	{
 		node = init_command(token_lst);
-		if (node == NULL)
-			return (NULL);
-		return (node);
-	}
-	token_lst = find_primary_token_right(head, SET_VALUE, ft_lstsize(*token_list));
-	if (token_lst != NULL)
-	{
-		node = init_setvalue(token_lst);
 		if (node == NULL)
 			return (NULL);
 		return (node);
@@ -220,11 +220,20 @@ t_ast	*init_argument(t_lst *argument_token)
 t_ast	*init_setvalue(t_lst *setvalue_token)
 {
 	t_ast	*result;
+	t_lst	*token_lst;
 
 	result = ft_calloc(1, sizeof(t_ast));
 	if (result == NULL)
 		return (NULL);
 	result->token = setvalue_token->content;
 	result->node_list = NULL;
+	if (result->token->right_white_space == FALSE)
+	{
+		token_lst = find_primary_token_right(setvalue_token, ASCII, 2);
+		if (token_lst == NULL)
+			token_lst = find_primary_token_right(setvalue_token, ALPHANUMERIC, 2);
+		if (token_lst != NULL)
+			ft_lstadd_back(&result->node_list, ft_lstnew(init_argument(token_lst)));
+	}
 	return (result);
 }

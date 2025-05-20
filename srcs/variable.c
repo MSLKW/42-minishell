@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:47:35 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/18 16:21:27 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/20 16:09:43 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,15 @@ t_env_var	*init_env_variable(char *key, char *value)
 	t_env_var	*env_var;
 
 	env_var = ft_calloc(1, sizeof(t_env_var));
-	if (env_var == NULL || key == NULL || value == NULL)
+	if (env_var == NULL || key == NULL)
 		return (NULL);
 	if (ft_strlen(key) > 0 && ft_isalpha(key[0]) == TRUE && ft_isalnum_str(key) == TRUE)
 	{
 		env_var->key = ft_strdup(key);
-		env_var->value = ft_strdup(value);
+		if (value != NULL)
+			env_var->value = ft_strdup(value);
+		else if (value == NULL)
+			env_var->value = ft_strdup("");
 		return (env_var);
 	}
 	return (NULL);
@@ -33,7 +36,7 @@ t_env_var	*split_setvalue(char *content)
 	char	**str_arr;
 
 	str_arr = ft_split(content, '=');
-	if (str_arr == NULL || str_arr[0] == NULL || str_arr[1] == NULL)
+	if (str_arr == NULL || str_arr[0] == NULL)
 		return (NULL);
 	return (init_env_variable(str_arr[0], str_arr[1]));
 }
@@ -45,19 +48,20 @@ void	set_env_variable(t_lst *env_var_lst, t_env_var *env_var)
 
 	if (env_var == NULL)
 		return ;
-	if (env_var_lst->content == NULL)
-		env_var_lst = ft_lstremove(env_var_lst, NULL, free);
 	head = env_var_lst;
 	while (head != NULL)
 	{
-		list_env_var = env_var_lst->content;
-		if (ft_strncmp(env_var->key, list_env_var->key, ft_strlen(list_env_var->key) + 1) == 0)
+		list_env_var = head->content;
+		if (list_env_var != NULL)
 		{
-			free(list_env_var->value);
-			list_env_var->value = ft_strdup(env_var->value);
-			free_env_var(env_var);
-			free(env_var);
-			return ;
+			if (ft_strncmp(env_var->key, list_env_var->key, ft_strlen(list_env_var->key) + 1) == 0)
+			{
+				free(list_env_var->value);
+				list_env_var->value = ft_strdup(env_var->value);
+				free_env_var(env_var);
+				free(env_var);
+				return ;
+			}
 		}
 		head = head->next;
 	}
@@ -73,8 +77,9 @@ t_env_var	*get_env_variable(char *key, t_lst *env_var_lst)
 	while (head != NULL)
 	{
 		env_var = head->content;
-		if (ft_strncmp(env_var->key, key, ft_strlen(env_var->key) + 1) == 0)
-			return (env_var);
+		if (env_var != NULL)
+			if (ft_strncmp(env_var->key, key, ft_strlen(env_var->key) + 1) == 0)
+				return (env_var);
 		head = head->next;
 	}
 	return (NULL);
@@ -90,14 +95,17 @@ int	unset_env_variable(char *key, t_lst **env_var_lst)
 	while (head != NULL)
 	{
 		env_var = head->content;
-		if (ft_strncmp(env_var->key, key, ft_strlen(env_var->key) + 1) == 0)
+		if (env_var != NULL)
 		{
-			prev_lst = ft_lstgetprevious(env_var_lst, head);
-			if (prev_lst != NULL)
-				ft_lstremove(head, prev_lst, free_env_var);
-			else if (prev_lst == NULL)
-				*env_var_lst = ft_lstremove(head, prev_lst, free_env_var);
-			return (0);
+			if (ft_strncmp(env_var->key, key, ft_strlen(env_var->key) + 1) == 0)
+			{
+				prev_lst = ft_lstgetprevious(env_var_lst, head);
+				if (prev_lst != NULL)
+					ft_lstremove(head, prev_lst, free_env_var);
+				else if (prev_lst == NULL)
+					*env_var_lst = ft_lstremove(head, prev_lst, free_env_var);
+				return (0);
+			}
 		}
 		head = head->next;
 	}
@@ -109,8 +117,11 @@ void	free_env_var(void *content)
 	t_env_var	*env_var;
 
 	env_var = (t_env_var *)content;
-	free(env_var->key);
-	free(env_var->value);
+	if (env_var != NULL)
+	{
+		free(env_var->key);
+		free(env_var->value);
+	}
 }
 
 // debug
@@ -120,17 +131,20 @@ void	display_env_var(t_data *data)
 	t_lst		*head;
 	t_env_var	*env_var;
 	
+	printf("---env_var---\n");
 	head = data->env_var_lst;
 	while (head != NULL)
 	{
-		if (head->content == NULL)
-		{
-			head = head->next;
-			printf("null content, go next\n");
-			continue;
-		}
 		env_var = head->content;
-		printf("display | env_var key: %s | value: %s\n", env_var->key, env_var->value);
+		if (env_var != NULL)
+		{
+			printf("display | env_var: %p | env_var key: %s | value: %s\n", env_var, env_var->key, env_var->value);
+		}
+		else
+		{
+			printf("env_var is null\n");
+		}
 		head = head->next;
 	}
+	printf("-------------\n");
 }

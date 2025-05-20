@@ -80,6 +80,8 @@ typedef struct s_token {
 	enum	token_handler	handler;
 	enum	primary_token_type	primary_type;
 	enum	secondary_token_type secondary_type;
+	t_bool	right_white_space;
+	t_bool	left_white_space;
 }	t_token;
 
 typedef struct s_ast {
@@ -123,7 +125,7 @@ t_bool	is_token_setvalue(char *content);
 enum primary_token_type	get_primary_token_type(char *content);
 t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data);
 t_lst	**assign_redirection_type(t_lst	**token_list);
-t_bool	is_token_executable(char *content);
+void	assign_adjacent_whitespace(t_lst **token_list);
 
 // history.c
 // void	ft_show_history(void);
@@ -141,8 +143,8 @@ char	**build_cmd_args(t_ast *node);
 int		execute_command(t_ast *node, t_data *data);
 
 // helper.c
-int	ft_isalpha_str(char *str);
-int	ft_isalnum_str(char *str);
+int		ft_isalpha_str(char *str);
+int		ft_isalnum_str(char *str);
 
 // ast_init.c
 t_ast	*find_pipes(t_lst	*token_list);
