@@ -8,6 +8,7 @@ SRCS_DIR := ./srcs/
 SRCS_FILES :=	minishell.c \
 				parse.c \
 				history.c \
+				history_old.c \
 				tokenize.c \
 				execute.c \
 				helper.c \

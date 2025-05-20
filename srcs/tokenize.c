@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/18 16:23:43 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/18 17:07:56 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,11 +274,4 @@ t_lst	**assign_redirection_type(t_lst	**token_list)
 		head = head->next;
 	}
 	return (token_list);
-}
-
-t_bool    is_token_executable(char *content)
-{
-	if (ft_strlen(content) >= 2 && content[0] == '.' && content[1] == '/')
-		return (TRUE);
-	return (FALSE);
 }

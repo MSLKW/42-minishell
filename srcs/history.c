@@ -5,28 +5,39 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/17 18:39:34 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/18 16:17:42 by zernest          ###   ########.fr       */
+/*   Created: 2025/05/19 16:07:10 by zernest           #+#    #+#             */
+/*   Updated: 2025/05/20 16:25:10 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	builtin_history(void)
+int	builtin_history(t_data *data)
 {
-	HIST_ENTRY **entries = history_list();
-	int i;
+	int	i;
 
-	i = 0;
-	if (!entries)
-		return (1);
-
-	while (entries[i])
-	{
-		printf("%d: %s\n", i + 1, entries[i]->line);
-		i++;
-	}
+	i = -1;
+	while (++i < data->history_size)
+		printf("%d: %s\n", i + 1, data->history[i]);
 	return (0);
+}
+
+void	store_history(t_data *data, const char *line)
+{
+	char	**new_history;
+	int		i;
+
+	i = -1;
+	new_history = malloc(sizeof(char *) * (data->history_size + 2));
+	if (!new_history)
+		return ;
+	while (++i < data->history_size)
+		new_history[i] = data->history[i];
+	new_history[i] = ft_strdup(line);
+	new_history[i + 1] = NULL;
+	free(data->history);
+	data->history = new_history;
+	data->history_size++;
 }
 
 /*

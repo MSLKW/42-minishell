@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/18 16:20:22 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/20 16:19:14 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,10 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		line = ft_get_line();
 		if (line && *line)
+		{
 			add_history(line);
+			store_history(data, line);
+		}
 		t_lst *tokens = tokenize_line(line, data);
 		debug_token_list(tokens);
 		t_ast *ast_node = init_ast(&tokens);
