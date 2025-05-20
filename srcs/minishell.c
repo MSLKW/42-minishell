@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/20 16:19:14 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/20 16:43:22 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	main(int argc, char *argv[], char *envp[])
 
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, ctrlc_handler);
-	data = ft_calloc(1, sizeof(data));
+	data = ft_calloc(1, sizeof(t_data));
 	if (data == NULL)
 		return (1);
 	data->argc = argc;
