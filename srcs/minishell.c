@@ -30,7 +30,10 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		line = ft_get_line();
 		if (line && *line)
+		{
 			add_history(line);
+			store_history(data, line);
+		}
 		t_lst *tokens = tokenize_line(line, data);
 		debug_token_list(tokens);
 		t_ast *ast_node = init_ast(&tokens);
