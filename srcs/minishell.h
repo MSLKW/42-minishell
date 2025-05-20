@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/18 16:23:01 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/20 16:15:21 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,8 @@ typedef struct	s_data {
 	char	**envp;
 	int		last_exit_code;
 	t_lst	*env_var_lst;
+	char	**history;
+	int		history_size;
 }	t_data;
 
 // ===== Minishell Functions =====
@@ -214,7 +216,9 @@ int		builtin_exit(char** args);
 int		builtin_unset_env(char *key, char ***envp_copy);
 int		builtin_export(char *arg, char ***envp);
 int		handle_export(char **args, char ***envp);
-int		builtin_history(void);
+int		builtin_history(t_data *data);
+int		builtin_temphistory(void);
+void	store_history(t_data *data, const char *line);
 
 //dollar_sign_expansions.c
 char	*expand_dollar_question(char *arg, int last_exit_code);

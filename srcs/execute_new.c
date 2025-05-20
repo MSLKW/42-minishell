@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/18 16:25:54 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/20 16:22:13 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ int	execute_command(t_ast *node, t_data *data)
 	if (ft_strncmp(args[0], "export", 7) == 0)
 		return (handle_export(args, &data->envp));
 	if (ft_strncmp(args[0], "history", 8) == 0)
-		return (builtin_history());
+		return (builtin_history(data));
 	printf("Last exit code: %d", data->last_exit_code);
 	pid = fork();
 	if (pid == 0)
