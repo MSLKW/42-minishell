@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/18 16:23:43 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/20 16:19:20 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	}
 	assign_cmd_opt_arg_type(&token_list, data);
 	assign_redirection_type(&token_list);
+	assign_adjacent_whitespace(&token_list);
 	return (token_list);
 }
 
@@ -206,7 +207,7 @@ enum primary_token_type	get_primary_token_type(char *content)
 /*
 	Modifies the **token_list's token types to more suitable token types like COMMAND, OPTION and ARGUMENT
 */
-t_lst    *assign_cmd_opt_arg_type(t_lst    **token_list, t_data *data)
+t_lst    *assign_cmd_opt_arg_type(t_lst **token_list, t_data *data)
 {
 	int    cmd_line_flag;
 	t_lst    *head;
@@ -276,9 +277,33 @@ t_lst	**assign_redirection_type(t_lst	**token_list)
 	return (token_list);
 }
 
-t_bool    is_token_executable(char *content)
+void	assign_adjacent_whitespace(t_lst **token_list)
 {
-	if (ft_strlen(content) >= 2 && content[0] == '.' && content[1] == '/')
-		return (TRUE);
-	return (FALSE);
+	t_lst	*head;
+	t_token	*token;
+	t_token	*adj_token;
+
+	head = *token_list;
+	while (head != NULL)
+	{
+		token = head->content;
+		if (token != NULL)
+		{
+			token->right_white_space = FALSE;
+			token->left_white_space = FALSE;
+			if (head->next != NULL)
+			{
+				adj_token = head->next->content;
+				if (adj_token != NULL && adj_token->primary_type == WHITESPACE)
+					token->right_white_space = TRUE;
+			}
+			if (ft_lstgetprevious(token_list, head) != NULL)
+			{
+				adj_token = ft_lstgetprevious(token_list, head)->content;
+				if (adj_token != NULL && adj_token->primary_type == WHITESPACE)
+					token->left_white_space = TRUE;
+			}
+		}
+		head = head->next;
+	}
 }

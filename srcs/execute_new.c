@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/18 16:25:54 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/20 16:40:30 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,10 +145,20 @@ int	execute_command(t_ast *node, t_data *data)
 int	execute_setvalue(t_ast *node, t_data *data)
 {
 	t_env_var *env_var;
+	t_ast		*arg_node;
 	
 	env_var = split_setvalue(node->token->content);
-	if (env_var == NULL || env_var->key == NULL || env_var->value == NULL)
+	if (env_var == NULL || env_var->key == NULL)
 		return (1);
+	else if (env_var->value == NULL || ft_strlen(env_var->value) == 0)
+	{
+		if (node->node_list != NULL && node->node_list->content != NULL)
+		{
+			arg_node = node->node_list->content;
+			free(env_var->value);
+			env_var->value = ft_strdup(arg_node->token->content);
+		}
+	}
 	set_env_variable(data->env_var_lst, env_var);
 	return (0);
 }
