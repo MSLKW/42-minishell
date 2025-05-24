@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:47:35 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/24 20:24:09 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/24 22:37:44 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,29 +54,22 @@ t_env_var	*split_setvalue(char *content)
 /*
 	Frees env_var after use if used to set
 */
-t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var)
+t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, char **envp)
 {
-	t_lst	*head;
 	t_env_var	*list_env_var;
 
 	if (env_var == NULL)
 		return (NULL);
-	head = env_var_lst;
-	while (head != NULL)
+	list_env_var = get_env_variable(env_var->key, env_var_lst);
+	if (list_env_var != NULL)
 	{
-		list_env_var = head->content;
-		if (list_env_var != NULL)
-		{
-			if (ft_strncmp(env_var->key, list_env_var->key, ft_strlen(list_env_var->key) + 1) == 0)
-			{
-				free(list_env_var->value);
-				list_env_var->value = ft_strdup(env_var->value);
-				free_env_var(env_var);
-				free(env_var);
-				return (list_env_var);
-			}
-		}
-		head = head->next;
+		free(list_env_var->value);
+		list_env_var->value = ft_strdup(env_var->value);
+		list_env_var->is_export = env_var->is_export;
+		free_env_var(env_var);
+		free(env_var);
+		ft_exportcheck(list_env_var, envp);
+		return (list_env_var);
 	}
 	ft_lstadd_back(&env_var_lst, ft_lstnew(env_var));
 	return (env_var);

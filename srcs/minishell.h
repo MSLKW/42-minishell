@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/24 20:38:23 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/24 22:12:15 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ t_lst	*find_secondary_token_left(t_lst	**token_list, t_lst *current_token_lst, e
 // variable.c
 t_env_var	*init_env_variable(char *key, char *value);
 t_env_var	*split_setvalue(char *content);
-t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var);
+t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, char **envp);
 t_env_var	*get_env_variable(char *key, t_lst *env_var_lst);
 int			unset_env_variable(char *key, t_lst **env_var_lst);
 void		free_env_var(void *content);
@@ -231,6 +231,8 @@ char	*expand_dollar_question(char *arg, int last_exit_code);
 
 // export.c
 int	ft_addenv(char *arg, char **envp);
+int	ft_setenv(char *key, char *value, char **envp);
+int	ft_exportcheck(t_env_var *var, char **envp);
 int	process_args(char **args, char ***envp, t_lst *env_var_lst);
 
 #endif

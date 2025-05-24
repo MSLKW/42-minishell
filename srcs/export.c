@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:45:01 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/24 20:43:49 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/24 22:38:20 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,6 +191,18 @@ int	ft_setenv(char *key, char *value, char **envp)
 	return (0);
 }
 
+int	ft_exportcheck(t_env_var *var, char **envp)
+{
+	if (var == NULL)
+		return (1);
+	if (var->value != NULL && var->is_export == TRUE)
+	{
+		ft_setenv(var->key, var->value, envp);
+		return (0);
+	}
+	return (1);
+}
+
 int	process_args(char **args, char ***envp, t_lst *env_var_lst)
 {
 	int			i;
@@ -199,18 +211,36 @@ int	process_args(char **args, char ***envp, t_lst *env_var_lst)
 	i = 1;
 	while (args[i] != NULL)
 	{
+		// "export var=value"
 		var = split_setvalue(args[i]);
 		if (var != NULL)
 		{
 			var->is_export = TRUE;
-			var = set_env_variable(env_var_lst, var);
-			if (var->value != NULL)
+			var = set_env_variable(env_var_lst, var, *envp);
+			ft_exportcheck(var, *envp);
+		}
+		else
+		{
+			// "var=5, export var"
+			var = get_env_variable(args[i], env_var_lst);
+			if (var != NULL)
 			{
-				ft_setenv(var->key, var->value, *envp);
+				var->is_export = TRUE;
+				ft_exportcheck(var, *envp);
+			}
+			else if (var == NULL)
+			{
+				// "export var, var=5"
+				var = init_env_variable(args[i], NULL);
+				if (var == NULL)
+				{
+					printf("\'%s\' is not a valid identifier\n", args[i]);
+					break ;
+				}
+				var = set_env_variable(env_var_lst, var, *envp);
+				var->is_export = TRUE;
 			}
 		}
-		else if (var == NULL)
-			printf("\'%s\' is not a valid identifier\n", args[i]);
 		i++;
 	}
 	return (0);

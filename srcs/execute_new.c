@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/22 15:46:01 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/24 22:03:26 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,6 @@ int	execute_setvalue(t_ast *node, t_data *data)
 			env_var->value = ft_strdup(arg_node->token->content);
 		}
 	}
-	set_env_variable(data->env_var_lst, env_var);
+	set_env_variable(data->env_var_lst, env_var, data->envp);
 	return (0);
 }
