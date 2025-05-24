@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:57:03 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/20 16:33:42 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/24 19:01:34 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,6 @@ t_ast	*init_ast(t_lst	**token_list)
 	if (token_list == NULL || *token_list == NULL)
 		return (NULL);
 	head = *token_list;
-	token_lst = find_primary_token_right(head, SET_VALUE, ft_lstsize(*token_list));
-	if (token_lst != NULL)
-	{
-		node = init_setvalue(token_lst);
-		if (node == NULL)
-			return (NULL);
-		return (node);
-	}
 	token_lst = find_primary_token_right(head, PIPE, ft_lstsize(*token_list));
 	if (token_lst != NULL)
 	{
@@ -56,6 +48,14 @@ t_ast	*init_ast(t_lst	**token_list)
 	if (token_lst != NULL)
 	{
 		node = init_command(token_lst);
+		if (node == NULL)
+			return (NULL);
+		return (node);
+	}
+	token_lst = find_primary_token_right(head, SET_VALUE, ft_lstsize(*token_list));
+	if (token_lst != NULL)
+	{
+		node = init_setvalue(token_lst);
 		if (node == NULL)
 			return (NULL);
 		return (node);

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/20 16:43:22 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/24 20:40:00 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	main(int argc, char *argv[], char *envp[])
 		return (1);
 	data->argc = argc;
 	data->argv = argv;
-	data->envp = envp;
+	data->envp = get_envp_copy(envp);
 	data->env_var_lst = ft_lstnew(NULL);
 	while(1)
 	{
@@ -43,4 +43,25 @@ int	main(int argc, char *argv[], char *envp[])
 		execute_ast(ast_node, data);
 	}
 	rl_clear_history();
+}
+
+char	**get_envp_copy(char **envp)
+{
+	char **envp_copy;
+	int i;
+
+	i = 0;
+	while (envp[i] != NULL)
+		i++;
+	envp_copy = malloc(sizeof(char *) * (i + 1));
+	if (envp_copy == NULL)
+		return (NULL);
+	i = 0;
+	while (envp[i] != NULL)
+	{
+		envp_copy[i] = ft_strdup(envp[i]);
+		i++;
+	}
+	envp_copy[i] = NULL;
+	return (envp_copy);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/20 16:15:21 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/24 20:38:23 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ typedef struct s_ast {
 typedef struct s_env_var {
 	char	*key;
 	char	*value;
+	t_bool	is_export;
 }	t_env_var;
 
 typedef struct	s_data {
@@ -105,6 +106,9 @@ typedef struct	s_data {
 }	t_data;
 
 // ===== Minishell Functions =====
+
+// main.c
+char	**get_envp_copy(char **envp);
 
 // parse.c
 char	*ft_get_line(void);
@@ -166,7 +170,7 @@ t_lst	*find_secondary_token_left(t_lst	**token_list, t_lst *current_token_lst, e
 // variable.c
 t_env_var	*init_env_variable(char *key, char *value);
 t_env_var	*split_setvalue(char *content);
-void		set_env_variable(t_lst *env_var_lst, t_env_var *env_var);
+t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var);
 t_env_var	*get_env_variable(char *key, t_lst *env_var_lst);
 int			unset_env_variable(char *key, t_lst **env_var_lst);
 void		free_env_var(void *content);
@@ -214,15 +218,19 @@ int		builtin_echo(char **args);
 int		builtin_pwd(void);
 int		builtin_cd(char **cmd);
 int		builtin_env(char **envp);
-int		builtin_exit(char** args);
+int		builtin_exit(char **args);
 int		builtin_unset_env(char *key, char ***envp_copy);
-int		builtin_export(char *arg, char ***envp);
-int		handle_export(char **args, char ***envp);
+int		builtin_export(char **arg, char ***envp, t_data *data);
+// int		handle_export(char **args, char ***envp);
 int		builtin_history(t_data *data);
 int		builtin_temphistory(void);
 void	store_history(t_data *data, const char *line);
 
 //dollar_sign_expansions.c
 char	*expand_dollar_question(char *arg, int last_exit_code);
+
+// export.c
+int	ft_addenv(char *arg, char **envp);
+int	process_args(char **args, char ***envp, t_lst *env_var_lst);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:30 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/18 15:41:44 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/20 17:00:58 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,9 +121,9 @@ char	*variable_expansion(const char *arg, t_data *data)
 	char	*result;
 
 	split_arg = split_variable_list(arg);
-	ft_lststrdisplay(split_arg);
+	// ft_lststrdisplay(split_arg);
 	domain_variable_expansion(split_arg, data);
-	ft_lststrdisplay(split_arg);
+	// ft_lststrdisplay(split_arg);
 	result = rejoining_strs(split_arg);
 	ft_lstclear(&split_arg, free);
 	return (result);

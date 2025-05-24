@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 14:58:24 by zernest           #+#    #+#             */
-/*   Updated: 2025/04/28 14:59:13 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/22 15:29:06 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 int	builtin_env(char **envp)
 {
-	int i = 0;
+	int i;
 
+	i = 0;
 	while (envp[i])
 	{
 		printf("%s\n", envp[i]);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/20 16:40:30 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/22 15:46:01 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ int	execute_command(t_ast *node, t_data *data)
 	if (ft_strncmp(args[0], "unset", 6) == 0)
 		return (builtin_unset_env(args[1], &data->envp));
 	if (ft_strncmp(args[0], "export", 7) == 0)
-		return (handle_export(args, &data->envp));
+		return (builtin_export(args, &data->envp, data));
 	if (ft_strncmp(args[0], "history", 8) == 0)
 		return (builtin_history(data));
 	printf("Last exit code: %d", data->last_exit_code);

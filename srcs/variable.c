@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:47:35 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/20 16:09:43 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/24 20:24:09 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ t_env_var	*init_env_variable(char *key, char *value)
 			env_var->value = ft_strdup(value);
 		else if (value == NULL)
 			env_var->value = ft_strdup("");
+		env_var->is_export = FALSE;
 		return (env_var);
 	}
 	return (NULL);
@@ -33,21 +34,33 @@ t_env_var	*init_env_variable(char *key, char *value)
 
 t_env_var	*split_setvalue(char *content)
 {
-	char	**str_arr;
+	char	*key;
+	char	*value;
+	int		i;
 
-	str_arr = ft_split(content, '=');
-	if (str_arr == NULL || str_arr[0] == NULL)
+	if (ft_strchr(content, '=') == NULL)
 		return (NULL);
-	return (init_env_variable(str_arr[0], str_arr[1]));
+	i = 0;
+	while (content[i] != '\0' && content[i] != '=')
+		i++;
+	key = ft_substr(content, 0, i);
+	value = ft_substr(content, i + 1, ft_strlen(content));
+	if (key == NULL)
+		return (NULL);
+	return (init_env_variable(key, value));
 }
 
-void	set_env_variable(t_lst *env_var_lst, t_env_var *env_var)
+
+/*
+	Frees env_var after use if used to set
+*/
+t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var)
 {
 	t_lst	*head;
 	t_env_var	*list_env_var;
 
 	if (env_var == NULL)
-		return ;
+		return (NULL);
 	head = env_var_lst;
 	while (head != NULL)
 	{
@@ -60,12 +73,13 @@ void	set_env_variable(t_lst *env_var_lst, t_env_var *env_var)
 				list_env_var->value = ft_strdup(env_var->value);
 				free_env_var(env_var);
 				free(env_var);
-				return ;
+				return (list_env_var);
 			}
 		}
 		head = head->next;
 	}
 	ft_lstadd_back(&env_var_lst, ft_lstnew(env_var));
+	return (env_var);
 }
 
 t_env_var	*get_env_variable(char *key, t_lst *env_var_lst)
