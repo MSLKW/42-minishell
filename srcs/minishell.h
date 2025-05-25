@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/24 22:12:15 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/25 15:35:48 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,7 @@ int		builtin_pwd(void);
 int		builtin_cd(char **cmd);
 int		builtin_env(char **envp);
 int		builtin_exit(char **args);
-int		builtin_unset_env(char *key, char ***envp_copy);
+int		builtin_unset_env(char *key, char ***envp_copy, t_lst **env_var_lst);
 int		builtin_export(char **arg, char ***envp, t_data *data);
 // int		handle_export(char **args, char ***envp);
 int		builtin_history(t_data *data);

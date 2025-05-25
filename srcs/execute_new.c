@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/24 22:03:26 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/25 15:51:40 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,12 +111,12 @@ int	execute_command(t_ast *node, t_data *data)
 	if (ft_strncmp(args[0], "exit", 5) == 0)
 		return (builtin_exit(args));
 	if (ft_strncmp(args[0], "unset", 6) == 0)
-		return (builtin_unset_env(args[1], &data->envp));
+		return (builtin_unset_env(args[1], &data->envp, &data->env_var_lst));
 	if (ft_strncmp(args[0], "export", 7) == 0)
 		return (builtin_export(args, &data->envp, data));
 	if (ft_strncmp(args[0], "history", 8) == 0)
 		return (builtin_history(data));
-	printf("Last exit code: %d", data->last_exit_code);
+	printf("Last exit code: %d\n", data->last_exit_code);
 	pid = fork();
 	if (pid == 0)
 	{

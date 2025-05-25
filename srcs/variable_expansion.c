@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:30 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/20 17:00:58 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/25 15:21:20 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static t_lst	*split_variable_list(const char *arg)
 			end_index = 1;
 			if (ft_isalpha(arg[start_index + end_index]) == TRUE)
 			{
-				while (arg[start_index + end_index] != '\0' && ft_isalnum(arg[start_index + end_index]) == TRUE)
+				while (arg[start_index + end_index] != '\0' && (ft_isalnum(arg[start_index + end_index]) == TRUE || arg[start_index + end_index] == '_'))
 				{
 					end_index++;
 				}
@@ -78,11 +78,21 @@ static void	domain_variable_expansion(t_lst	*split_arg_list, t_data *data)
 		if (ft_strlen(arg) >= 2 && arg[0] == '$')
 		{
 			t_env_var	*var = get_env_variable(arg + 1, data->env_var_lst);
+			if (var == NULL)
+			{
+				char *env_arg = getenv(arg + 1);
+				if (env_arg == NULL)
+					head->content = ft_strdup("");
+				else
+				{
+					head->content = ft_strdup(env_arg);
+				}
+			}
 			free(arg);
-			if (var == NULL || var->value == NULL)
-				head->content = ft_strdup("");
-			else
+			if (var != NULL && var->value != NULL)
 				head->content = ft_strdup(var->value);
+			else if (var != NULL && var->value == NULL)
+				head->content = ft_strdup("");
 		}
 		head = head->next;
 	}
