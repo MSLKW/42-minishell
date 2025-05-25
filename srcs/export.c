@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:45:01 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/25 22:24:48 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/25 22:37:06 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,6 +191,20 @@ int	ft_setenv(char *key, char *value, char **envp)
 	free(envp[env_index]);
 	envp[env_index] = join_export_identifer(key, value);
 	return (0);
+}
+
+char	*ft_getenv(char *key, char **envp)
+{
+	int 		env_index;
+	t_env_var	*env_var;
+	
+	env_index = find_env_index(envp, key);
+	if (env_index == -1)
+		return (NULL);
+	env_var = split_setvalue(envp[env_index]);
+	if (env_var == NULL)
+		return (NULL);
+	return (env_var->value);
 }
 
 int	ft_exportcheck(t_env_var *var, char **envp)

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/25 22:25:37 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/25 22:37:44 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	shell_routine(t_data *data)
 	t_lst	*tokens;
 	t_ast	*ast_node;
 
-	line = ft_get_line();
+	line = ft_get_line(data);
 	if (line && *line)
 	{
 		add_history(line);

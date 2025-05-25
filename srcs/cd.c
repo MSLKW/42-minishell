@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:01:48 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/25 21:50:35 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/25 23:02:05 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,16 +43,16 @@ static void	set_env_pwds(char *oldpwd, char *newpwd, t_data *data)
 	}
 }
 
-static char	*get_change_cwd(char **args)
+static char	*get_change_cwd(char **args, t_data *data)
 {
-	char	*change_cwd;
+	char		*change_cwd;
 
 	if (!args || !args[0])
 	{
-		change_cwd = getenv("HOME");
+		change_cwd = get_env_var_value("HOME", data->env_var_lst);
 		if (change_cwd == NULL)
 		{
-			perror("cd: HOME not set");
+			printf("cd: HOME not set\n");
 			return (NULL);
 		}
 	}
@@ -71,7 +71,7 @@ int builtin_cd(char **args, t_data *data)
 	char	*change_cwd;
 	char	*err_msg;
 
-	change_cwd = get_change_cwd(args);
+	change_cwd = get_change_cwd(args, data);
 	if (change_cwd == NULL)
 		return (1);
 	if (count_null_terminated_arr(args) > 1)

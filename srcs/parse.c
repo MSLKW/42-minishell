@@ -6,13 +6,13 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:16:06 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/25 16:09:42 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/25 23:02:46 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_get_line(void)
+char	*ft_get_line(t_data *data)
 {
 	char	*concat_line;
 	char	*line_read;
@@ -20,7 +20,7 @@ char	*ft_get_line(void)
 	char	*temp;
 	char	*prompt;
 
-	prompt = ft_get_prompt();
+	prompt = ft_get_prompt(data);
 
 	rl_on_new_line();
 	concat_line = readline(prompt);
@@ -50,7 +50,7 @@ char	*ft_get_line(void)
 	return (concat_line);
 }
 
-char	*ft_get_prompt(void)
+char	*ft_get_prompt(t_data *data)
 {
 	char	*cwd;
 	char	*dir;
@@ -60,7 +60,7 @@ char	*ft_get_prompt(void)
 	prompt_env = ft_get_prompt_environment();
 	if (prompt_env == NULL)
 		return (NULL);
-	cwd = ft_get_prompt_cwd();
+	cwd = ft_get_prompt_cwd(data);
 	if (cwd == NULL)
 	{
 		free(prompt_env);
@@ -74,18 +74,20 @@ char	*ft_get_prompt(void)
 	return (prompt);
 }
 
-char	*ft_get_prompt_cwd(void)
+char	*ft_get_prompt_cwd(t_data *data)
 {
 	char	*cwd;
 	char	*home_cwd;
 	int		start_i;
 	char	*dir_minus_home;
 
-	home_cwd = getenv("HOME");
+	home_cwd = get_env_var_value("HOME", data->env_var_lst);
 	cwd = getcwd(NULL, 0);
-	if (home_cwd == NULL || cwd == NULL)
+	if (cwd == NULL)
 		return (NULL);
-	if (ft_strnstr(cwd, home_cwd, ft_strlen(cwd)) != NULL)
+	if (home_cwd == NULL)
+		return (cwd);
+	if (ft_strlen(home_cwd) > 0 && ft_strnstr(cwd, home_cwd, ft_strlen(cwd)) != NULL)
 	{
 		start_i = ft_strlen(home_cwd);
 		dir_minus_home = ft_substr(cwd, start_i, ft_strlen(cwd) - start_i);
