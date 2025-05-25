@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:45:01 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/25 21:40:03 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/25 22:24:48 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@
 
 int	find_env_index(char **envp, const char *key)
 {
-	int			i = 0;
+	int			i;
 	t_env_var	*env_var;
 	
 	if (key == NULL || envp == NULL)
@@ -84,7 +84,8 @@ int	find_env_index(char **envp, const char *key)
 		env_var = split_setvalue(envp[i]);
 		if (env_var != NULL)
 		{
-			if (ft_strncmp(env_var->key, key, ft_strlen(env_var->key)) == 0)
+			if (ft_strncmp(env_var->key, key, \
+				ft_strlen(env_var->key) + 1) == 0)
 				return (i);
 		}
 		i++;
@@ -159,7 +160,8 @@ char	*join_export_identifer(char *key, char *value)
 }
 
 /*
-	It kind of overwrites something? idk what tho. feels unsafe asf
+	It kind of overwrites something? idk what tho. 
+	feels unsafe asf but it works
 */
 int	ft_addenv(char *arg, char **envp)
 {
