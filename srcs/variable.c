@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:47:35 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/25 15:50:12 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/25 21:39:12 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ t_env_var	*split_setvalue(char *content)
 
 
 /*
-	Frees env_var after use if used to set
+	Frees env_var after use if used to set, returns pointer to env_var in env_var_lst
 */
 t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, char **envp)
 {
@@ -93,6 +93,7 @@ t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, char **envp)
 		return (list_env_var);
 	}
 	ft_lstadd_back(&env_var_lst, ft_lstnew(env_var));
+	ft_exportcheck(env_var, envp);
 	return (env_var);
 }
 

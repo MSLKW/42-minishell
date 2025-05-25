@@ -24,7 +24,8 @@ SRCS_FILES :=	minishell.c \
 				pwd.c \
 				unset.c \
 				variable.c \
-				variable_expansion.c
+				variable_expansion.c \
+				dollar_sign_expansions.c
 
 DEPS_FILES :=	minishell.h
 

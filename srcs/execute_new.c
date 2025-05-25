@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/25 15:51:40 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/25 21:05:05 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int	execute_command(t_ast *node, t_data *data)
 	if (ft_strncmp(args[0], "echo", 5) == 0)
 		return (builtin_echo(args));
 	if (ft_strncmp(args[0], "cd", 3) == 0)
-		return (builtin_cd(args + 1));
+		return (builtin_cd(args + 1, data));
 	if (ft_strncmp(args[0], "env", 4) == 0)
 		return (builtin_env(data->envp));
 	if (ft_strncmp(args[0], "exit", 5) == 0)
@@ -121,21 +121,13 @@ int	execute_command(t_ast *node, t_data *data)
 	if (pid == 0)
 	{
 		if (is_token_executable(args[0]) == TRUE)
-		{
 			cmd_path = args[0];
-		}
 		else
-		{
 			cmd_path = find_cmd_path(args[0], data->envp);
-			if (!cmd_path)
-			{
-				ft_printf("command not found: %s\n", args[0]);
-				exit (127);
-			}
-		}
 		execve(cmd_path, args, data->envp);
-		perror("execve");
-		exit(1);
+		// perror("execve");
+		ft_printf("%s: command not found\n", args[0]);
+		exit(127);
 	}
 	else
 		waitpid(pid, &status, 0);

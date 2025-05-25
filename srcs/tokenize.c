@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/18 17:07:56 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/25 18:45:38 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ t_lst	*tokenize_line(char *line, t_data *data)
 		else
 			ft_lstadd_back(&token_list, ft_lstnew(handle_none(line, &index, data)));
 	}
+	if (token_list == NULL)
+		return (NULL);
 	assign_cmd_opt_arg_type(&token_list, data);
 	assign_redirection_type(&token_list);
 	assign_adjacent_whitespace(&token_list);
@@ -48,7 +50,7 @@ t_token	*handle_dquote(char *line, int *index, t_data *data)
 	while (line[*index + size] != '\"')
 		size++;
 	content = ft_substr(line, *index, size);
-	if (content == NULL || ft_strlen(content) == 0)
+	if (content == NULL)
 		return (NULL);
 	token->content = variable_expansion(content, data);
 	token->handler = DQUOTE;
@@ -72,7 +74,7 @@ t_token	*handle_squote(char *line, int *index)
 	while (line[*index + size] != '\'')
 		size++;
 	content = ft_substr(line, *index, size);
-	if (content == NULL || ft_strlen(content) == 0)
+	if (content == NULL)
 		return (NULL);
 	token->content = content;
 	token->handler = SQUOTE;
@@ -103,7 +105,7 @@ t_token	*handle_none(char *line, int *index, t_data *data)
 			size++;
 	}
 	content = ft_substr(line, *index, size);
-	if (content == NULL || ft_strlen(content) == 0)
+	if (content == NULL)
 		return (NULL);
 	token->content = variable_expansion(content, data);
 	token->handler = NONE;
@@ -139,10 +141,19 @@ t_bool	is_token_builtin(char *content)
 		return (FALSE);
 }
 
-t_bool	is_token_executable(char *content)
+t_bool	is_token_executable(char *path)
 {
-	if (ft_strlen(content) >= 2 && content[0] == '.' && content[1] == '/')
+	int success;
+	struct stat	file_stat;
+	
+	success = access(path, X_OK);
+	if (success == 0)
+	{
+		stat(path, &file_stat);
+		if (S_ISDIR(file_stat.st_mode))
+			return (FALSE);
 		return (TRUE);
+	}
 	return (FALSE);
 }
 
@@ -187,7 +198,7 @@ enum primary_token_type	get_primary_token_type(char *content)
 	size = ft_strlen(content);
 	index = 0;
 	if (size == 0)
-		return (ERROR);
+		return (ASCII);
 	if (content[index] == ' ')
 		return (WHITESPACE);
 	else if (is_token_setvalue(content) == TRUE)
@@ -222,11 +233,13 @@ t_lst    *assign_cmd_opt_arg_type(t_lst **token_list, t_data *data)
 		{
 			if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII ) && cmd_line_flag == 0)
 			{
-				if (is_token_cmd(token->content, data->envp) == TRUE || is_token_builtin(token->content) == TRUE || is_token_executable(token->content) == TRUE)
-				{
+				// if statement to tokenize according to specifications
+				(void)data;
+				// if (is_token_cmd(token->content, data->envp) == TRUE || is_token_builtin(token->content) == TRUE || is_token_executable(token->content) == TRUE)
+				// {
 					token->secondary_type = COMMAND;
 					cmd_line_flag = 1;
-				}
+				// }
 			}
 			// else if (token->primary_type == ASCII && cmd_line_flag == 0 && )
 			// {

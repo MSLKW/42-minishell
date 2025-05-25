@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/25 15:35:48 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/25 21:15:03 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,11 @@ typedef struct	s_data {
 
 // ===== Minishell Functions =====
 
-// main.c
+// minishell.c
+void	shell_routine(t_data *data);
+t_data	*init_data(int argc, char **argv, char **envp);
 char	**get_envp_copy(char **envp);
+t_lst	*init_exported_env_var_lst(char **envp);
 
 // parse.c
 char	*ft_get_line(void);
@@ -149,6 +152,7 @@ int		execute_command(t_ast *node, t_data *data);
 // helper.c
 int		ft_isalpha_str(char *str);
 int		ft_isalnum_str(char *str);
+int		count_null_terminated_arr(char **str_arr);
 
 // ast_init.c
 t_ast	*find_pipes(t_lst	*token_list);
@@ -216,7 +220,7 @@ void	display_ast_tree(t_ast *ast_node);
 // BUILTINS --
 int		builtin_echo(char **args);
 int		builtin_pwd(void);
-int		builtin_cd(char **cmd);
+int		builtin_cd(char **cmd, t_data *data);
 int		builtin_env(char **envp);
 int		builtin_exit(char **args);
 int		builtin_unset_env(char *key, char ***envp_copy, t_lst **env_var_lst);
@@ -227,7 +231,7 @@ int		builtin_temphistory(void);
 void	store_history(t_data *data, const char *line);
 
 //dollar_sign_expansions.c
-char	*expand_dollar_question(char *arg, int last_exit_code);
+char	*expand_dollar_question(const char *arg, int last_exit_code);
 
 // export.c
 int	ft_addenv(char *arg, char **envp);

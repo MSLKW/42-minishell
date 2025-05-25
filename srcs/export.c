@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:45:01 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/25 15:50:47 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/25 21:40:03 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,7 +217,6 @@ int	process_args(char **args, char ***envp, t_lst *env_var_lst)
 		{
 			var->is_export = TRUE;
 			var = set_env_variable(env_var_lst, var, *envp);
-			ft_exportcheck(var, *envp);
 		}
 		else
 		{
