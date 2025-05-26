@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/26 17:36:51 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 18:31:29 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,11 +131,16 @@ int	execute_command(t_ast *node, t_data *data)
 		if (is_token_executable(args[0]) == TRUE)
 			cmd_path = args[0];
 		else
-			cmd_path = find_cmd_path(args[0], data->envp);
+			cmd_path = find_cmd_path(args[0], data->env_var_lst);
 		if (cmd_path != NULL)
+		{
 			execve(cmd_path, args, data->envp);
+		}
+		if (get_env_var_value("PATH", data->env_var_lst) == NULL)
+			printf("%s: No such file or directory\n", args[0]);
+		else
+			ft_printf("%s: command not found\n", args[0]);
 		// perror("execve");
-		ft_printf("%s: command not found\n", args[0]);
 		free_str_arr(args);
 		free_exit(127, data);
 	}

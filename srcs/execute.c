@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 20:42:19 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/13 16:44:52 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/26 18:14:53 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,18 @@
 /*
 	Find where the command path is in the many bins dictated by PATH in envp
 */
-char	*find_cmd_path(char *cmd, char *envp[])
+char	*find_cmd_path(char *cmd, t_lst *env_var_lst)
 {
 	int		index;
+	char	*uncut_path;
 	char	**envp_paths;
 	char	*dir_path;
 	char	*full_path;
 
-	index = 0;
-	while (ft_strnstr(envp[index], "PATH", 4) == NULL)
-		index++;
-	envp_paths = ft_split(envp[index] + 5, ':');
+	uncut_path = get_env_var_value("PATH", env_var_lst);
+	if (uncut_path == NULL)
+		return (NULL);
+	envp_paths = ft_split(uncut_path + 5, ':');
 	index = 0;
 	while (envp_paths[index] != NULL)
 	{

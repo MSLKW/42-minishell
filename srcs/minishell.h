@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/26 17:46:10 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 18:16:41 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ void	assign_adjacent_whitespace(t_lst **token_list);
 // void	ft_clear_history(void);
 
 // execute.c
-char	*find_cmd_path(char *cmd, char *envp[]);
+char	*find_cmd_path(char *cmd, t_lst *env_var_lst);
 void	execute_cmd(t_ast *cmd_ast, t_data *data);
 void	execute_builtin(char *cmd_name, char **args, t_data *data);
 char	**get_args_from_ast(t_lst *node_list);
@@ -186,12 +186,6 @@ void		display_env_var(t_data *data);
 // variable_expansion.c
 char	*variable_expansion(const char *arg, t_data *data);
 t_lst	*tokens_variable_expansion(t_lst *tokens_lst, t_data *data);
-
-// execute.c
-char	*find_cmd_path(char *cmd, char *envp[]);
-void	execute_cmd(t_ast *cmd_ast, t_data *data);
-void	execute_builtin(char *cmd_name, char **args, t_data *data);
-char	**get_args_from_ast(t_lst *node_list);
 
 // execute_new.c
 int		execute_ast(t_ast *ast, t_data *data);
