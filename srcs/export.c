@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:45:01 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/25 22:37:06 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 17:55:52 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,11 @@ int	find_env_index(char **envp, const char *key)
 		{
 			if (ft_strncmp(env_var->key, key, \
 				ft_strlen(env_var->key) + 1) == 0)
+			{
+				free_env_var(env_var);
 				return (i);
+			}
+			free_env_var(env_var);
 		}
 		i++;
 	}
@@ -159,37 +163,40 @@ char	*join_export_identifer(char *key, char *value)
 	return (part2);
 }
 
-/*
-	It kind of overwrites something? idk what tho. 
-	feels unsafe asf but it works
-*/
-int	ft_addenv(char *arg, char **envp)
+int	ft_addenv(char *arg, char ***envp)
 {
-	int i;
+	char	**envp_copy;
+	int 	i;
 
+	if (envp == NULL || *envp == NULL)
+		return (1);
+	envp_copy = get_envp_copy(*envp, 1);
+	if (envp_copy == NULL)
+		return (1);
 	i = 0;
-	while (envp[i] != NULL)
+	while (envp_copy[i] != NULL)
 	{
 		i++;
 	}
-	envp[i] = arg;
-	i++;
-	envp[i] = NULL;
+	envp_copy[i] = arg;
+	// envp_copy[i + 1] = NULL;
+	free_envp(*envp);
+	*envp = envp_copy;
 	return (0);
 }
 
-int	ft_setenv(char *key, char *value, char **envp)
+int	ft_setenv(char *key, char *value, char ***envp)
 {
 	int env_index;
 	
-	env_index = find_env_index(envp, key);
+	env_index = find_env_index(*envp, key);
 	if (env_index == -1)
 	{
 		ft_addenv(join_export_identifer(key, value), envp);
 		return (0);
 	}
-	free(envp[env_index]);
-	envp[env_index] = join_export_identifer(key, value);
+	free((*envp)[env_index]);
+	(*envp)[env_index] = join_export_identifer(key, value);
 	return (0);
 }
 
@@ -207,7 +214,7 @@ char	*ft_getenv(char *key, char **envp)
 	return (env_var->value);
 }
 
-int	ft_exportcheck(t_env_var *var, char **envp)
+int	ft_exportcheck(t_env_var *var, char ***envp)
 {
 	if (var == NULL)
 		return (1);
@@ -232,7 +239,7 @@ int	process_args(char **args, char ***envp, t_lst *env_var_lst)
 		if (var != NULL)
 		{
 			var->is_export = TRUE;
-			var = set_env_variable(env_var_lst, var, *envp);
+			var = set_env_variable(env_var_lst, var, envp);
 		}
 		else
 		{
@@ -241,7 +248,7 @@ int	process_args(char **args, char ***envp, t_lst *env_var_lst)
 			if (var != NULL)
 			{
 				var->is_export = TRUE;
-				ft_exportcheck(var, *envp);
+				ft_exportcheck(var, envp);
 			}
 			else if (var == NULL)
 			{
@@ -252,7 +259,7 @@ int	process_args(char **args, char ***envp, t_lst *env_var_lst)
 					printf("\'%s\' is not a valid identifier\n", args[i]);
 					break ;
 				}
-				var = set_env_variable(env_var_lst, var, *envp);
+				var = set_env_variable(env_var_lst, var, envp);
 				var->is_export = TRUE;
 			}
 		}

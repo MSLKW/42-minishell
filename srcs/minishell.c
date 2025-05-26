@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/25 22:37:44 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 17:44:48 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,16 @@ void	shell_routine(t_data *data)
 		store_history(data, line);
 	}
 	tokens = tokenize_line(line, data);
+	data->free_ptr_tokens = tokens;
 	debug_token_list(tokens);
 	ast_node = init_ast(&tokens);
+	data->free_ptr_ast = ast_node;
 	ft_printf("----- AST TREE -----\n");
 	display_ast_tree(ast_node);
 	free(line);
 	data->last_exit_code = execute_ast(ast_node, data);
+	// free_tokens(&data->free_ptr_tokens);
+	// free_ast(&data->free_ptr_ast);
 }
 
 t_data	*init_data(int argc, char **argv, char **envp)
@@ -58,24 +62,26 @@ t_data	*init_data(int argc, char **argv, char **envp)
 		return (NULL);
 	data->argc = argc;
 	data->argv = argv;
-	data->envp = get_envp_copy(envp);
-	data->env_var_lst = init_exported_env_var_lst(data->envp);
+	data->envp = get_envp_copy(envp, 0);
+	data->env_var_lst = init_exported_env_var_lst(&data->envp);
+	data->free_ptr_ast = NULL;
+	data->free_ptr_tokens = NULL;
 	return (data);
 }
 
-t_lst	*init_exported_env_var_lst(char **envp)
+t_lst	*init_exported_env_var_lst(char ***envp)
 {
 	t_lst	*result;
 	t_env_var	*env_var;
 	int		i;
 
-	if (envp == NULL || envp[0] == NULL)
+	if (envp == NULL || *envp == NULL || (*envp)[0] == NULL)
 		return (ft_lstnew(NULL));
 	i = 0;
 	result = ft_lstnew(NULL);
-	while (envp[i] != NULL)
+	while ((*envp)[i] != NULL)
 	{
-		env_var = split_setvalue(envp[i]);
+		env_var = split_setvalue((*envp)[i]);
 		if (env_var != NULL)
 		{
 			env_var = set_env_variable(result, env_var, envp);
@@ -86,15 +92,17 @@ t_lst	*init_exported_env_var_lst(char **envp)
 	return (result);
 }
 
-char	**get_envp_copy(char **envp)
+char	**get_envp_copy(char **envp, int extra)
 {
 	char	**envp_copy;
 	int		i;
 
+	if (envp == NULL)
+		return (NULL);
 	i = 0;
 	while (envp[i] != NULL)
 		i++;
-	envp_copy = malloc(sizeof(char *) * (i + 1));
+	envp_copy = ft_calloc(i + extra + 1, sizeof(char *));
 	if (envp_copy == NULL)
 		return (NULL);
 	i = 0;
@@ -103,6 +111,6 @@ char	**get_envp_copy(char **envp)
 		envp_copy[i] = ft_strdup(envp[i]);
 		i++;
 	}
-	envp_copy[i] = NULL;
+	envp_copy[i + extra] = NULL;
 	return (envp_copy);
 }

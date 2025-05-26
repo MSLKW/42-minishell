@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/25 21:05:05 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 17:36:51 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,24 +98,32 @@ int	execute_command(t_ast *node, t_data *data)
 	for (int i = 0; args && args[i]; i++)
 		printf("arg[%d] = \"%s\"\n", i, args[i]);
 	printf("Executing command: %s\n", args[0]);
+	status = -1;
 	if (!args || !args[0])
 		return (1);
 	if (ft_strncmp(args[0], "pwd", 4) == 0)
-		return (builtin_pwd());
+		status = builtin_pwd();
 	if (ft_strncmp(args[0], "echo", 5) == 0)
-		return (builtin_echo(args));
+		status = builtin_echo(args);
 	if (ft_strncmp(args[0], "cd", 3) == 0)
-		return (builtin_cd(args + 1, data));
+		status = builtin_cd(args + 1, data);
 	if (ft_strncmp(args[0], "env", 4) == 0)
-		return (builtin_env(data->envp));
+		status = builtin_env(data->envp);
 	if (ft_strncmp(args[0], "exit", 5) == 0)
-		return (builtin_exit(args));
+		status = builtin_exit(args, data);
 	if (ft_strncmp(args[0], "unset", 6) == 0)
-		return (builtin_unset_env(args[1], &data->envp, &data->env_var_lst));
+		status = builtin_unset_env(args[1], &data->envp, &data->env_var_lst);
 	if (ft_strncmp(args[0], "export", 7) == 0)
-		return (builtin_export(args, &data->envp, data));
+		status = builtin_export(args, &data->envp, data);
 	if (ft_strncmp(args[0], "history", 8) == 0)
-		return (builtin_history(data));
+		status = builtin_history(data);
+	if (status != -1)
+	{
+		free_str_arr(args);
+		free_tokens(&data->free_ptr_tokens);
+		free_ast(&data->free_ptr_ast);
+		return (status);
+	}
 	printf("Last exit code: %d\n", data->last_exit_code);
 	pid = fork();
 	if (pid == 0)
@@ -124,13 +132,18 @@ int	execute_command(t_ast *node, t_data *data)
 			cmd_path = args[0];
 		else
 			cmd_path = find_cmd_path(args[0], data->envp);
-		execve(cmd_path, args, data->envp);
+		if (cmd_path != NULL)
+			execve(cmd_path, args, data->envp);
 		// perror("execve");
 		ft_printf("%s: command not found\n", args[0]);
-		exit(127);
+		free_str_arr(args);
+		free_exit(127, data);
 	}
 	else
 		waitpid(pid, &status, 0);
+	free_tokens(&data->free_ptr_tokens);
+	free_ast(&data->free_ptr_ast);
+	free_str_arr(args);
 	return (WEXITSTATUS(status));
 }
 
@@ -151,6 +164,8 @@ int	execute_setvalue(t_ast *node, t_data *data)
 			env_var->value = ft_strdup(arg_node->token->content);
 		}
 	}
-	set_env_variable(data->env_var_lst, env_var, data->envp);
+	set_env_variable(data->env_var_lst, env_var, &data->envp);
+	free_tokens(&data->free_ptr_tokens);
+	free_ast(&data->free_ptr_ast);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:47:35 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/25 23:00:20 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 17:12:32 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,16 @@ t_env_var	*init_env_variable(char *key, char *value)
 		env_var->is_export = FALSE;
 		return (env_var);
 	}
+	free(env_var);
 	return (NULL);
 }
 
 t_env_var	*split_setvalue(char *content)
 {
-	char	*key;
-	char	*value;
-	int		i;
+	char		*key;
+	char		*value;
+	int			i;
+	t_env_var	*result;
 
 	if (ft_strchr(content, '=') == NULL)
 		return (NULL);
@@ -67,14 +69,17 @@ t_env_var	*split_setvalue(char *content)
 	value = ft_substr(content, i + 1, ft_strlen(content));
 	if (key == NULL)
 		return (NULL);
-	return (init_env_variable(key, value));
+	result = init_env_variable(key, value);
+	free(key);
+	free(value);
+	return (result);
 }
 
 
 /*
 	Frees env_var after use if used to set, returns pointer to env_var in env_var_lst
 */
-t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, char **envp)
+t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, char ***envp)
 {
 	t_env_var	*list_env_var;
 
@@ -88,7 +93,6 @@ t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, char **envp)
 		if (list_env_var->is_export == FALSE)
 			list_env_var->is_export = env_var->is_export;
 		free_env_var(env_var);
-		free(env_var);
 		ft_exportcheck(list_env_var, envp);
 		return (list_env_var);
 	}
@@ -160,6 +164,7 @@ void	free_env_var(void *content)
 	{
 		free(env_var->key);
 		free(env_var->value);
+		free(env_var);
 	}
 }
 

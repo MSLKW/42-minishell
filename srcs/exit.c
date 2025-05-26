@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:20:26 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/25 17:27:15 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 15:42:25 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,18 @@ static int	ft_isdigit_str(char *str)
 	return (1);
 }
 
-int	builtin_exit(char** args)
+void	free_exit(int exit_status, t_data *data)
+{
+	free_data(data);
+	exit(exit_status);
+}
+
+int	builtin_exit(char** args, t_data *data)
 {
 	int exit_status;
 
 	exit_status = 0;
 	printf("exit\n");
-
 	if (args[1])
 	{
 		if (ft_isdigit_str(args[1]) == TRUE)
@@ -48,5 +53,7 @@ int	builtin_exit(char** args)
 			exit_status = 2;
 		}
 	}
-	exit(exit_status);
+	free_str_arr(args);
+	free_exit(exit_status, data);
+	return (exit_status);
 }

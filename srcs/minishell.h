@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/25 23:00:39 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 17:46:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ typedef struct	s_data {
 	t_lst	*env_var_lst;
 	char	**history;
 	int		history_size;
+	t_lst	*free_ptr_tokens;
+	t_ast	*free_ptr_ast;
 }	t_data;
 
 // ===== Minishell Functions =====
@@ -110,8 +112,8 @@ typedef struct	s_data {
 // minishell.c
 void	shell_routine(t_data *data);
 t_data	*init_data(int argc, char **argv, char **envp);
-char	**get_envp_copy(char **envp);
-t_lst	*init_exported_env_var_lst(char **envp);
+char	**get_envp_copy(char **envp, int extra);
+t_lst	*init_exported_env_var_lst(char ***envp);
 
 // parse.c
 char	*ft_get_line(t_data *data);
@@ -174,7 +176,7 @@ t_lst	*find_secondary_token_left(t_lst	**token_list, t_lst *current_token_lst, e
 // variable.c
 t_env_var	*init_env_variable(char *key, char *value);
 t_env_var	*split_setvalue(char *content);
-t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, char **envp);
+t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, char ***envp);
 t_env_var	*get_env_variable(char *key, t_lst *env_var_lst);
 char		*get_env_var_value(char *key, t_lst *env_var_lst);
 int			unset_env_variable(char *key, t_lst **env_var_lst);
@@ -199,7 +201,7 @@ int		execute_setvalue(t_ast *node, t_data *data);
 
 // interactive_mode.c
 void	ctrlc_handler(int sig);
-void	ctrld_handler(void);
+void	ctrld_handler(t_data *data);
 
 // history.c
 void	ft_show_history(void);
@@ -223,7 +225,7 @@ int		builtin_echo(char **args);
 int		builtin_pwd(void);
 int		builtin_cd(char **cmd, t_data *data);
 int		builtin_env(char **envp);
-int		builtin_exit(char **args);
+int		builtin_exit(char **args, t_data *data);
 int		builtin_unset_env(char *key, char ***envp_copy, t_lst **env_var_lst);
 int		builtin_export(char **arg, char ***envp, t_data *data);
 // int		handle_export(char **args, char ***envp);
@@ -235,10 +237,22 @@ void	store_history(t_data *data, const char *line);
 char	*expand_dollar_question(const char *arg, int last_exit_code);
 
 // export.c
-int	ft_addenv(char *arg, char **envp);
-int	ft_setenv(char *key, char *value, char **envp);
+int	ft_addenv(char *arg, char ***envp);
+int	ft_setenv(char *key, char *value, char ***envp);
 char	*ft_getenv(char *key, char **envp);
-int	ft_exportcheck(t_env_var *var, char **envp);
+int	ft_exportcheck(t_env_var *var, char ***envp);
 int	process_args(char **args, char ***envp, t_lst *env_var_lst);
+
+// free.c
+void	free_envp(char **envp);
+void	free_data(t_data *data);
+void	free_str_arr(char **str_arr);
+void	free_tokens(t_lst **tokens_lst);
+void	free_token(void *content);
+void	free_ast(t_ast **ast);
+void	free_ast_node(void *content);
+
+// exit.c
+void	free_exit(int exit_status, t_data *data);
 
 #endif

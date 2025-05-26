@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/25 18:45:38 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 17:35:35 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ t_token	*handle_dquote(char *line, int *index, t_data *data)
 	if (content == NULL)
 		return (NULL);
 	token->content = variable_expansion(content, data);
+	free(content);
 	token->handler = DQUOTE;
 	token->primary_type = get_primary_token_type(token->content);
 	token->secondary_type = NOTHING;
@@ -78,7 +79,7 @@ t_token	*handle_squote(char *line, int *index)
 		return (NULL);
 	token->content = content;
 	token->handler = SQUOTE;
-	token->primary_type = get_primary_token_type(content);
+	token->primary_type = get_primary_token_type(token->content);
 	token->secondary_type = NOTHING;
 	(*index) += size + 1;
 	return (token);
@@ -108,6 +109,7 @@ t_token	*handle_none(char *line, int *index, t_data *data)
 	if (content == NULL)
 		return (NULL);
 	token->content = variable_expansion(content, data);
+	free(content);
 	token->handler = NONE;
 	token->primary_type = get_primary_token_type(token->content);
 	token->secondary_type = NOTHING;
@@ -183,7 +185,7 @@ t_bool	is_token_setvalue(char *content)
 		env_var = split_setvalue(content);
 		if (env_var != NULL)
 		{
-			free(env_var);
+			free_env_var(env_var);
 			return (TRUE);
 		}
 	}

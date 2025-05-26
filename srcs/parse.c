@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:16:06 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/25 23:02:46 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 15:42:07 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	*ft_get_line(t_data *data)
 	free(prompt);
 
 	if (!concat_line) // Ctrl+D
-		ctrld_handler();
+		ctrld_handler(data);
 
 	int index = 0;
 	while (is_line_quote_ended(concat_line, FALSE, &index) == FALSE)
@@ -37,7 +37,7 @@ char	*ft_get_line(t_data *data)
 		if (!line_read)
 		{
 			free(concat_line);
-			ctrld_handler();
+			ctrld_handler(data);
 		}
 		new_line_read = ft_strjoin("\n", line_read);
 		temp = ft_strjoin(concat_line, new_line_read);
@@ -93,6 +93,7 @@ char	*ft_get_prompt_cwd(t_data *data)
 		dir_minus_home = ft_substr(cwd, start_i, ft_strlen(cwd) - start_i);
 		free(cwd);
 		cwd = ft_strjoin("~", dir_minus_home);
+		free(dir_minus_home);
 	}
 	return (cwd);
 }

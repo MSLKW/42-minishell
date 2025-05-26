@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interactive_mode.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 12:58:47 by maxliew           #+#    #+#             */
-/*   Updated: 2025/04/09 23:09:56 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/26 15:41:43 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ void	ctrlc_handler(int sig)
 	rl_redisplay();
 }
 
-void	ctrld_handler(void)
+void	ctrld_handler(t_data *data)
 {
 	write(1, "exit\n", 5);
-	exit(0);
+	free_exit(0, data);
 }
