@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/26 22:34:30 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/27 12:14:22 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,6 +193,8 @@ int		execute_ast(t_ast *ast, t_data *data);
 char	**build_cmd_args(t_ast *node);
 int		execute_command(t_ast *node, t_data *data);
 int		execute_setvalue(t_ast *node, t_data *data);
+int		prepare_args_and_redirect(t_ast *ast, char **args);
+int		execute_pipeline(t_ast *pipe_node, t_data *data);
 
 // interactive_mode.c
 void	ctrlc_handler(int sig);
