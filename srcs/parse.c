@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:16:06 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/26 15:42:07 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/27 19:26:14 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,18 +57,15 @@ char	*ft_get_prompt(t_data *data)
 	char	*prompt;
 	char	*prompt_env;
 	
-	prompt_env = ft_get_prompt_environment();
-	if (prompt_env == NULL)
-		return (NULL);
 	cwd = ft_get_prompt_cwd(data);
 	if (cwd == NULL)
-	{
-		free(prompt_env);
 		return (NULL);
-	}
+	prompt_env = ft_get_prompt_environment();
 	dir = ft_strjoin(cwd, "\033[0m$ ");
-	prompt = ft_strjoin(prompt_env, dir);
 	free(cwd);
+	if (prompt_env == NULL)
+		return (dir);
+	prompt = ft_strjoin(prompt_env, dir);
 	free(dir);
 	free(prompt_env);
 	return (prompt);
@@ -83,9 +80,7 @@ char	*ft_get_prompt_cwd(t_data *data)
 
 	home_cwd = get_env_var_value("HOME", data->env_var_lst);
 	cwd = getcwd(NULL, 0);
-	if (cwd == NULL)
-		return (NULL);
-	if (home_cwd == NULL)
+	if (home_cwd == NULL || cwd == NULL)
 		return (cwd);
 	if (ft_strlen(home_cwd) > 0 && ft_strnstr(cwd, home_cwd, ft_strlen(cwd)) != NULL)
 	{

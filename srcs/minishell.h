@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/26 18:16:41 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 22:34:30 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,7 @@ t_lst	*tokenize_line(char *line, t_data *data);
 t_token	*handle_dquote(char *line, int *index, t_data *data);
 t_token	*handle_squote(char *line, int *index);
 t_token	*handle_none(char *line, int *index, t_data *data);
+t_lst	*join_token_list(t_lst **token_list);
 t_bool	is_token_cmd(char *content, char *envp[]);
 t_bool	is_token_builtin(char *content);
 t_bool	is_token_executable(char *content);

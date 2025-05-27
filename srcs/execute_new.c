@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/26 18:31:29 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 18:55:39 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ int	execute_command(t_ast *node, t_data *data)
 			cmd_path = args[0];
 		else
 			cmd_path = find_cmd_path(args[0], data->env_var_lst);
+		printf("cmd_path: %s\n", cmd_path);
 		if (cmd_path != NULL)
 		{
 			execve(cmd_path, args, data->envp);

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 20:42:19 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/26 18:14:53 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 19:19:36 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,16 @@ char	*find_cmd_path(char *cmd, t_lst *env_var_lst)
 	char	*full_path;
 
 	uncut_path = get_env_var_value("PATH", env_var_lst);
+	// printf("uncut_path: %s\n", uncut_path);
 	if (uncut_path == NULL)
 		return (NULL);
-	envp_paths = ft_split(uncut_path + 5, ':');
+	envp_paths = ft_split(uncut_path, ':');
+	index = 0;
+	while (envp_paths[index] != NULL)
+	{
+		// printf("envp_paths[%i]: %s\n", index, envp_paths[index]);
+		index++;
+	}
 	index = 0;
 	while (envp_paths[index] != NULL)
 	{

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:57:03 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/25 14:51:04 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 22:35:17 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,27 +213,44 @@ t_ast	*init_argument(t_lst *argument_token)
 	result->node_list = NULL;
 	return (result);
 }
+// static t_lst	*get_setvalue_arg(t_lst	*setvalue_token)
+// {
+// 	t_lst	*token_lst;
+
+// 	token_lst = NULL;
+// 	token_lst = find_primary_token_right(setvalue_token, ASCII, 2);
+// 	if (token_lst == NULL)
+// 		token_lst = find_primary_token_right(setvalue_token, ALPHANUMERIC, 2);
+// 	setvalue_token = setvalue_token->next;
+// 	if (token_lst == NULL)
+// 		token_lst = find_primary_token_right(setvalue_token, SET_VALUE, 2);
+// 	return (token_lst);
+// }
 
 t_ast	*init_setvalue(t_lst *setvalue_token)
 {
 	t_ast	*result;
-	t_lst	*token_lst;
+	// t_lst	*token_lst;
+	// t_token	*token;
 
 	result = ft_calloc(1, sizeof(t_ast));
 	if (result == NULL)
 		return (NULL);
 	result->token = setvalue_token->content;
 	result->node_list = NULL;
-	if (result->token->right_white_space == FALSE)
-	{
-		token_lst = find_primary_token_right(setvalue_token, ASCII, 2);
-		if (token_lst == NULL)
-			token_lst = find_primary_token_right(setvalue_token, ALPHANUMERIC, 2);
-		setvalue_token = setvalue_token->next;
-		if (token_lst == NULL)
-			token_lst = find_primary_token_right(setvalue_token, SET_VALUE, 2);
-		if (token_lst != NULL)
-			ft_lstadd_back(&result->node_list, ft_lstnew(init_argument(token_lst)));
-	}
+	// token_lst = setvalue_token->next;
+	// if (token_lst == NULL)
+	// 	return (result);
+	// token = token_lst->next->content;
+	// while (token->right_white_space == FALSE && )
+	// if (result->token->right_white_space == FALSE)
+	// {
+	// 	token_lst = get_setvalue_arg(setvalue_token);
+	// 	while (token_lst != NULL)
+	// 	{
+	// 		ft_lstadd_back(&result->node_list, ft_lstnew(init_argument(token_lst)));
+	// 		token_lst = get_setvalue_arg(token_lst);
+	// 	}
+	// }
 	return (result);
 }
