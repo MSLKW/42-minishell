@@ -6,50 +6,13 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:16:06 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/13 21:32:44 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/27 19:26:14 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// can't get new lines when finishing quote
-// char	*ft_get_line_old(void)
-// {
-// 	char	*concat_line;
-// 	char	*line_read;
-// 	char	*new_line_read;
-// 	char	*temp;
-// 	char	*cwd;
-
-// 	cwd = getcwd(NULL, 0);
-// 	rl_on_new_line();
-// 	concat_line = readline(ft_strjoin(cwd, "$ "));
-// 	if (!concat_line)
-// 	{
-// 		free(cwd);
-// 		ctrld_handler();
-// 	}
-// 	if (concat_line[0] != '\0')
-// 		add_history(concat_line);
-// 	int index = 0;
-// 	while (is_line_quote_ended(concat_line, FALSE, &index) == FALSE)
-// 	{
-// 		rl_on_new_line();
-// 		line_read = readline(">");
-// 		new_line_read = ft_strjoin("\n", line_read);
-// 		temp = ft_strjoin(concat_line, new_line_read);
-// 		free(concat_line);
-// 		free(new_line_read);
-// 		free(line_read);
-// 		concat_line = temp;
-// 		ft_printf("line: \"%s\"\n", concat_line);
-// 		index = 0;
-// 	}
-// 	add_history(concat_line);
-// 	return (concat_line);
-// }
-
-char	*ft_get_line(void)
+char	*ft_get_line(t_data *data)
 {
 	char	*concat_line;
 	char	*line_read;
@@ -57,14 +20,14 @@ char	*ft_get_line(void)
 	char	*temp;
 	char	*prompt;
 
-	prompt = ft_get_prompt();
+	prompt = ft_get_prompt(data);
 
 	rl_on_new_line();
 	concat_line = readline(prompt);
 	free(prompt);
 
 	if (!concat_line) // Ctrl+D
-		ctrld_handler();
+		ctrld_handler(data);
 
 	int index = 0;
 	while (is_line_quote_ended(concat_line, FALSE, &index) == FALSE)
@@ -74,7 +37,7 @@ char	*ft_get_line(void)
 		if (!line_read)
 		{
 			free(concat_line);
-			ctrld_handler();
+			ctrld_handler(data);
 		}
 		new_line_read = ft_strjoin("\n", line_read);
 		temp = ft_strjoin(concat_line, new_line_read);
@@ -87,47 +50,45 @@ char	*ft_get_line(void)
 	return (concat_line);
 }
 
-char	*ft_get_prompt(void)
+char	*ft_get_prompt(t_data *data)
 {
 	char	*cwd;
 	char	*dir;
 	char	*prompt;
 	char	*prompt_env;
 	
-	prompt_env = ft_get_prompt_environment();
-	if (prompt_env == NULL)
-		return (NULL);
-	cwd = ft_get_prompt_cwd();
+	cwd = ft_get_prompt_cwd(data);
 	if (cwd == NULL)
-	{
-		free(prompt_env);
 		return (NULL);
-	}
+	prompt_env = ft_get_prompt_environment();
 	dir = ft_strjoin(cwd, "\033[0m$ ");
-	prompt = ft_strjoin(prompt_env, dir);
 	free(cwd);
+	if (prompt_env == NULL)
+		return (dir);
+	prompt = ft_strjoin(prompt_env, dir);
 	free(dir);
 	free(prompt_env);
 	return (prompt);
 }
 
-char	*ft_get_prompt_cwd(void)
+char	*ft_get_prompt_cwd(t_data *data)
 {
 	char	*cwd;
 	char	*home_cwd;
 	int		start_i;
 	char	*dir_minus_home;
 
-	home_cwd = getenv("HOME");
+	home_cwd = get_env_var_value("HOME", data->env_var_lst);
 	cwd = getcwd(NULL, 0);
 	if (home_cwd == NULL || cwd == NULL)
-		return (NULL);
-	if (ft_strnstr(cwd, home_cwd, ft_strlen(cwd)) != NULL)
+		return (cwd);
+	if (ft_strlen(home_cwd) > 0 && ft_strnstr(cwd, home_cwd, ft_strlen(cwd)) != NULL)
 	{
 		start_i = ft_strlen(home_cwd);
 		dir_minus_home = ft_substr(cwd, start_i, ft_strlen(cwd) - start_i);
 		free(cwd);
 		cwd = ft_strjoin("~", dir_minus_home);
+		free(dir_minus_home);
 	}
 	return (cwd);
 }

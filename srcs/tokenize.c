@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/18 17:07:56 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/27 18:51:04 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,17 @@ t_lst	*tokenize_line(char *line, t_data *data)
 		else
 			ft_lstadd_back(&token_list, ft_lstnew(handle_none(line, &index, data)));
 	}
+	if (token_list == NULL)
+		return (NULL);
+	// memleak
+	// t_lst *new_token_list = join_token_list(&token_list);
+	// printf("---joint token list---\n");
+	// debug_token_list(new_token_list);
+	// printf("---join token list---\n");
+	// figure this shit out
+	assign_adjacent_whitespace(&token_list);
 	assign_cmd_opt_arg_type(&token_list, data);
 	assign_redirection_type(&token_list);
-	assign_adjacent_whitespace(&token_list);
 	return (token_list);
 }
 
@@ -48,9 +56,10 @@ t_token	*handle_dquote(char *line, int *index, t_data *data)
 	while (line[*index + size] != '\"')
 		size++;
 	content = ft_substr(line, *index, size);
-	if (content == NULL || ft_strlen(content) == 0)
+	if (content == NULL)
 		return (NULL);
 	token->content = variable_expansion(content, data);
+	free(content);
 	token->handler = DQUOTE;
 	token->primary_type = get_primary_token_type(token->content);
 	token->secondary_type = NOTHING;
@@ -72,11 +81,11 @@ t_token	*handle_squote(char *line, int *index)
 	while (line[*index + size] != '\'')
 		size++;
 	content = ft_substr(line, *index, size);
-	if (content == NULL || ft_strlen(content) == 0)
+	if (content == NULL)
 		return (NULL);
 	token->content = content;
 	token->handler = SQUOTE;
-	token->primary_type = get_primary_token_type(content);
+	token->primary_type = get_primary_token_type(token->content);
 	token->secondary_type = NOTHING;
 	(*index) += size + 1;
 	return (token);
@@ -103,9 +112,10 @@ t_token	*handle_none(char *line, int *index, t_data *data)
 			size++;
 	}
 	content = ft_substr(line, *index, size);
-	if (content == NULL || ft_strlen(content) == 0)
+	if (content == NULL)
 		return (NULL);
 	token->content = variable_expansion(content, data);
+	free(content);
 	token->handler = NONE;
 	token->primary_type = get_primary_token_type(token->content);
 	token->secondary_type = NOTHING;
@@ -113,15 +123,105 @@ t_token	*handle_none(char *line, int *index, t_data *data)
 	return (token);
 }
 
-t_bool	is_token_cmd(char *content, char *envp[])
-{
-	char	*cmd_path;
+// t_lst	*join_token_list(t_lst **token_list)
+// {
+// 	t_lst	*head;
+// 	t_lst	*next_head;
+// 	t_lst	*new_token_list;
+// 	t_token	*current_token;
+// 	t_token	*next_token;
 
-	cmd_path = find_cmd_path(content, envp);
-	if (cmd_path == NULL)
-		return (FALSE);
-	return (TRUE);
+// 	if (token_list == NULL || *token_list == NULL)
+// 		return (NULL);
+// 	new_token_list = NULL;
+// 	head = *token_list;
+// 	while (head != NULL)
+// 	{
+// 		current_token = head->content;
+// 		next_head = head->next;
+// 		while (next_head != NULL && next_token->primary_type != WHITESPACE)
+// 		{
+// 			next_token = next_head->content;
+// 			// making new token
+// 			t_token *new_token = malloc(sizeof(t_token));
+// 			char *joint_content = ft_strjoin(current_token->content, next_token->content);
+// 			new_token->content = joint_content;
+// 			new_token->primary_type = ERROR;
+// 			new_token->secondary_type = NOTHING;
+// 			//ading token
+// 			ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
+// 			// iterating list
+// 			current_token = next_token;
+// 			next_head = next_head->next;
+// 		}
+// 		head = head->next;
+// 		// what do i do with my handle_type and primary secondary types?
+// 	}
+// }
+
+t_lst	*join_token_list(t_lst **token_list)
+{
+	t_lst	*head;
+	t_lst	*new_token_list;
+	t_token	*token;
+	t_token	*new_token;
+	char	*joint_content;
+	char	*temp;
+
+	new_token_list = NULL;
+	head = *token_list;
+	joint_content = NULL;
+	while (head != NULL)
+	{
+		token = head->content;
+		if (token->primary_type != WHITESPACE)
+		{
+			if (joint_content == NULL)
+				joint_content = ft_strdup(token->content);
+			else
+			{
+				temp = joint_content;
+				joint_content = ft_strjoin(joint_content, token->content);
+				free(temp);
+			}
+		}
+		else if (token->primary_type == WHITESPACE)
+		{
+			new_token = malloc(sizeof(t_token));
+			if (new_token == NULL)
+				return (NULL);
+			new_token->content = ft_strdup(joint_content);
+			free(joint_content);
+			joint_content = NULL;
+			new_token->handler = NONE;
+			new_token->primary_type = ERROR;
+			new_token->secondary_type = NOTHING;
+			ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
+		}
+		head = head->next;
+	}
+	new_token = malloc(sizeof(t_token));
+	if (new_token == NULL)
+		return (NULL);
+	new_token->content = ft_strdup(joint_content);
+	free(joint_content);
+	joint_content = NULL;
+	new_token->handler = NONE;
+	new_token->primary_type = ERROR;
+	new_token->secondary_type = NOTHING;
+	ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
+	return (new_token_list);
 }
+
+// t_bool	is_token_cmd(char *content, char *envp[])
+// {
+// 	char	*cmd_path;
+
+// 	cmd_path = find_cmd_path(content, envp);
+// 	if (cmd_path == NULL)
+// 		return (FALSE);
+// 	return (TRUE);
+// }
 
 t_bool	is_token_builtin(char *content)
 {
@@ -139,10 +239,19 @@ t_bool	is_token_builtin(char *content)
 		return (FALSE);
 }
 
-t_bool	is_token_executable(char *content)
+t_bool	is_token_executable(char *path)
 {
-	if (ft_strlen(content) >= 2 && content[0] == '.' && content[1] == '/')
+	int success;
+	struct stat	file_stat;
+	
+	success = access(path, X_OK);
+	if (success == 0)
+	{
+		stat(path, &file_stat);
+		if (S_ISDIR(file_stat.st_mode))
+			return (FALSE);
 		return (TRUE);
+	}
 	return (FALSE);
 }
 
@@ -172,7 +281,7 @@ t_bool	is_token_setvalue(char *content)
 		env_var = split_setvalue(content);
 		if (env_var != NULL)
 		{
-			free(env_var);
+			free_env_var(env_var);
 			return (TRUE);
 		}
 	}
@@ -187,7 +296,7 @@ enum primary_token_type	get_primary_token_type(char *content)
 	size = ft_strlen(content);
 	index = 0;
 	if (size == 0)
-		return (ERROR);
+		return (ASCII);
 	if (content[index] == ' ')
 		return (WHITESPACE);
 	else if (is_token_setvalue(content) == TRUE)
@@ -213,6 +322,7 @@ t_lst    *assign_cmd_opt_arg_type(t_lst **token_list, t_data *data)
 	t_lst    *head;
 	t_token    *token;
 
+	(void)data;
 	cmd_line_flag = 0;
 	head = *token_list;
 	while (head != NULL)
@@ -220,23 +330,15 @@ t_lst    *assign_cmd_opt_arg_type(t_lst **token_list, t_data *data)
 		token = head->content;
 		if (token->primary_type != WHITESPACE)
 		{
-			if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII ) && cmd_line_flag == 0)
+			if (token->primary_type == SET_VALUE && cmd_line_flag == 0)
 			{
-				if (is_token_cmd(token->content, data->envp) == TRUE || is_token_builtin(token->content) == TRUE || is_token_executable(token->content) == TRUE)
-				{
-					token->secondary_type = COMMAND;
-					cmd_line_flag = 1;
-				}
+				cmd_line_flag = 1;
 			}
-			// else if (token->primary_type == ASCII && cmd_line_flag == 0 && )
-			// {
-
-			// }
-			// else if (token->primary_type == ASCII && cmd_line_flag == 1)
-			// {
-			//     if (is_token_option(token->content) == TRUE)
-			//         token->secondary_type = ARGUMENT; // SUPPOSED TO BE OPTION BUT TURNED ARGUMENT
-			// }
+			else if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII ) && cmd_line_flag == 0)
+			{
+				token->secondary_type = COMMAND;
+				cmd_line_flag = 1;
+			}
 			else if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII || token->primary_type == SET_VALUE) 
 				&& cmd_line_flag == 1)
 				token->secondary_type = ARGUMENT;

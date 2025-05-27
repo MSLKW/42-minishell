@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:30 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/20 17:01:39 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/25 18:02:23 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ static t_lst	*split_variable_list(const char *arg)
 			ft_lstadd_back(&arg_list, ft_lstnew(ft_substr(arg, start_index, end_index)));
 			start_index += end_index;
 			end_index = 1;
-			if (ft_isalpha(arg[start_index + end_index]) == TRUE)
+			if (ft_isalpha(arg[start_index + end_index]) == TRUE || arg[start_index + end_index] == '?')
 			{
-				while (arg[start_index + end_index] != '\0' && ft_isalnum(arg[start_index + end_index]) == TRUE)
+				while (arg[start_index + end_index] != '\0' && (ft_isalnum(arg[start_index + end_index]) == TRUE || arg[start_index + end_index] == '_' || arg[start_index + end_index] == '?'))
 				{
 					end_index++;
 				}
@@ -63,6 +63,19 @@ static t_lst	*split_variable_list(const char *arg)
 	ft_lstadd_back(&arg_list, ft_lstnew(ft_substr(arg, start_index, end_index)));
 	return (arg_list);
 }
+
+// static char	*clear_new_lines(const char *str)
+// {
+// 	int		i;
+// 	char	*
+
+// 	i = 0;
+// 	while (str[i] != '\0')
+// 	{
+// 		if (str[i] != '\n')
+// 			i++;
+// 	}
+// }
 /*
 	Iterates the list and expands any variable inside
 */
@@ -77,12 +90,25 @@ static void	domain_variable_expansion(t_lst	*split_arg_list, t_data *data)
 		arg = head->content;
 		if (ft_strlen(arg) >= 2 && arg[0] == '$')
 		{
-			t_env_var	*var = get_env_variable(arg + 1, data->env_var_lst);
-			free(arg);
-			if (var == NULL || var->value == NULL)
-				head->content = ft_strdup("");
+			if (arg[1] == '?')
+				head->content = ft_itoa(data->last_exit_code);
 			else
-				head->content = ft_strdup(var->value);
+			{
+				t_env_var	*var = get_env_variable(arg + 1, data->env_var_lst);
+				if (var == NULL)
+				{
+					char *env_arg = getenv(arg + 1);
+					if (env_arg == NULL)
+						head->content = ft_strdup("");
+					else
+						head->content = ft_strdup(env_arg);
+				}
+				free(arg);
+				if (var != NULL && var->value != NULL)
+					head->content = ft_strdup(var->value);
+				else if (var != NULL && var->value == NULL)
+					head->content = ft_strdup("");
+			}
 		}
 		head = head->next;
 	}

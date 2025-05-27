@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:57:03 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/20 16:33:42 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 22:35:17 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,6 @@ t_ast	*init_ast(t_lst	**token_list)
 	if (token_list == NULL || *token_list == NULL)
 		return (NULL);
 	head = *token_list;
-	token_lst = find_primary_token_right(head, SET_VALUE, ft_lstsize(*token_list));
-	if (token_lst != NULL)
-	{
-		node = init_setvalue(token_lst);
-		if (node == NULL)
-			return (NULL);
-		return (node);
-	}
 	token_lst = find_primary_token_right(head, PIPE, ft_lstsize(*token_list));
 	if (token_lst != NULL)
 	{
@@ -56,6 +48,14 @@ t_ast	*init_ast(t_lst	**token_list)
 	if (token_lst != NULL)
 	{
 		node = init_command(token_lst);
+		if (node == NULL)
+			return (NULL);
+		return (node);
+	}
+	token_lst = find_primary_token_right(head, SET_VALUE, ft_lstsize(*token_list));
+	if (token_lst != NULL)
+	{
+		node = init_setvalue(token_lst);
 		if (node == NULL)
 			return (NULL);
 		return (node);
@@ -160,24 +160,21 @@ t_ast	*init_output_redirection(t_lst **token_list, t_lst *redirection_token)
 {
 	t_ast	*result;
 	t_lst	*cmd_lst;
+	t_lst	*pipe_lst;
+	t_lst	*output_arg;
 
 	result = ft_calloc(1, sizeof(t_ast));
 	if (result == NULL)
 		return (NULL);
 	result->token = redirection_token->content;
-	t_lst	*pipe_lst = find_primary_token_left(token_list, redirection_token, PIPE, ft_lstsize(*token_list));
-	// can't pass pipes
+	pipe_lst = find_primary_token_left(token_list, redirection_token, PIPE, ft_lstsize(*token_list));
 	if (pipe_lst != NULL)
-	{
 		cmd_lst = find_secondary_token_right(pipe_lst, COMMAND, 3);
-	}
 	else if (pipe_lst == NULL)
-	{
 		cmd_lst = find_secondary_token_left(token_list, redirection_token, COMMAND, ft_lstsize(*token_list));
-	}
 	if (cmd_lst == NULL)
 		return (NULL);
-	t_lst	*output_arg = find_primary_token_right(redirection_token, ASCII, 3);
+	output_arg = find_primary_token_right(redirection_token, ASCII, 3);
 	if (output_arg == NULL)
 		output_arg = find_primary_token_right(redirection_token, ALPHANUMERIC, 3);
 	if (output_arg == NULL)
@@ -216,24 +213,44 @@ t_ast	*init_argument(t_lst *argument_token)
 	result->node_list = NULL;
 	return (result);
 }
+// static t_lst	*get_setvalue_arg(t_lst	*setvalue_token)
+// {
+// 	t_lst	*token_lst;
+
+// 	token_lst = NULL;
+// 	token_lst = find_primary_token_right(setvalue_token, ASCII, 2);
+// 	if (token_lst == NULL)
+// 		token_lst = find_primary_token_right(setvalue_token, ALPHANUMERIC, 2);
+// 	setvalue_token = setvalue_token->next;
+// 	if (token_lst == NULL)
+// 		token_lst = find_primary_token_right(setvalue_token, SET_VALUE, 2);
+// 	return (token_lst);
+// }
 
 t_ast	*init_setvalue(t_lst *setvalue_token)
 {
 	t_ast	*result;
-	t_lst	*token_lst;
+	// t_lst	*token_lst;
+	// t_token	*token;
 
 	result = ft_calloc(1, sizeof(t_ast));
 	if (result == NULL)
 		return (NULL);
 	result->token = setvalue_token->content;
 	result->node_list = NULL;
-	if (result->token->right_white_space == FALSE)
-	{
-		token_lst = find_primary_token_right(setvalue_token, ASCII, 2);
-		if (token_lst == NULL)
-			token_lst = find_primary_token_right(setvalue_token, ALPHANUMERIC, 2);
-		if (token_lst != NULL)
-			ft_lstadd_back(&result->node_list, ft_lstnew(init_argument(token_lst)));
-	}
+	// token_lst = setvalue_token->next;
+	// if (token_lst == NULL)
+	// 	return (result);
+	// token = token_lst->next->content;
+	// while (token->right_white_space == FALSE && )
+	// if (result->token->right_white_space == FALSE)
+	// {
+	// 	token_lst = get_setvalue_arg(setvalue_token);
+	// 	while (token_lst != NULL)
+	// 	{
+	// 		ft_lstadd_back(&result->node_list, ft_lstnew(init_argument(token_lst)));
+	// 		token_lst = get_setvalue_arg(token_lst);
+	// 	}
+	// }
 	return (result);
 }

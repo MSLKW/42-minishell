@@ -6,11 +6,31 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:47:35 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/20 16:09:43 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/26 17:12:32 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+t_bool	is_str_valid_key(char *key)
+{
+	int i;
+
+	if (key == NULL)
+		return (FALSE);
+	if (ft_strlen(key) > 0 && ft_isalpha(key[0]) == TRUE)
+	{
+		i = 0;
+		while (key[i] != '\0')
+		{
+			if (ft_isalnum(key[i]) == FALSE && key[i] != '_')
+				return (FALSE);
+			i++;
+		}
+		return (TRUE);
+	}
+	return (FALSE);
+}
 
 t_env_var	*init_env_variable(char *key, char *value)
 {
@@ -19,53 +39,76 @@ t_env_var	*init_env_variable(char *key, char *value)
 	env_var = ft_calloc(1, sizeof(t_env_var));
 	if (env_var == NULL || key == NULL)
 		return (NULL);
-	if (ft_strlen(key) > 0 && ft_isalpha(key[0]) == TRUE && ft_isalnum_str(key) == TRUE)
+	if (is_str_valid_key(key) == TRUE)
 	{
 		env_var->key = ft_strdup(key);
 		if (value != NULL)
 			env_var->value = ft_strdup(value);
 		else if (value == NULL)
 			env_var->value = ft_strdup("");
+		env_var->is_export = FALSE;
 		return (env_var);
 	}
+	free(env_var);
 	return (NULL);
 }
 
 t_env_var	*split_setvalue(char *content)
 {
-	char	**str_arr;
+	char		*key;
+	char		*value;
+	int			i;
+	t_env_var	*result;
 
-	str_arr = ft_split(content, '=');
-	if (str_arr == NULL || str_arr[0] == NULL)
+	if (ft_strchr(content, '=') == NULL)
 		return (NULL);
-	return (init_env_variable(str_arr[0], str_arr[1]));
+	i = 0;
+	while (content[i] != '\0' && content[i] != '=')
+		i++;
+	key = ft_substr(content, 0, i);
+	value = ft_substr(content, i + 1, ft_strlen(content));
+	if (key == NULL)
+		return (NULL);
+	result = init_env_variable(key, value);
+	free(key);
+	free(value);
+	return (result);
 }
 
-void	set_env_variable(t_lst *env_var_lst, t_env_var *env_var)
+
+/*
+	Frees env_var after use if used to set, returns pointer to env_var in env_var_lst
+*/
+t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, char ***envp)
 {
-	t_lst	*head;
 	t_env_var	*list_env_var;
 
 	if (env_var == NULL)
-		return ;
-	head = env_var_lst;
-	while (head != NULL)
+		return (NULL);
+	list_env_var = get_env_variable(env_var->key, env_var_lst);
+	if (list_env_var != NULL)
 	{
-		list_env_var = head->content;
-		if (list_env_var != NULL)
-		{
-			if (ft_strncmp(env_var->key, list_env_var->key, ft_strlen(list_env_var->key) + 1) == 0)
-			{
-				free(list_env_var->value);
-				list_env_var->value = ft_strdup(env_var->value);
-				free_env_var(env_var);
-				free(env_var);
-				return ;
-			}
-		}
-		head = head->next;
+		free(list_env_var->value);
+		list_env_var->value = ft_strdup(env_var->value);
+		if (list_env_var->is_export == FALSE)
+			list_env_var->is_export = env_var->is_export;
+		free_env_var(env_var);
+		ft_exportcheck(list_env_var, envp);
+		return (list_env_var);
 	}
 	ft_lstadd_back(&env_var_lst, ft_lstnew(env_var));
+	ft_exportcheck(env_var, envp);
+	return (env_var);
+}
+
+char	*get_env_var_value(char *key, t_lst *env_var_lst)
+{
+	t_env_var	*env_var;
+
+	env_var = get_env_variable(key, env_var_lst);
+	if (env_var == NULL)
+		return (NULL);
+	return (env_var->value);
 }
 
 t_env_var	*get_env_variable(char *key, t_lst *env_var_lst)
@@ -87,9 +130,9 @@ t_env_var	*get_env_variable(char *key, t_lst *env_var_lst)
 
 int	unset_env_variable(char *key, t_lst **env_var_lst)
 {
-	t_lst	*head;
+	t_lst		*head;
 	t_env_var	*env_var;
-	t_lst	*prev_lst;
+	t_lst		*prev_lst;
 
 	head = *env_var_lst;
 	while (head != NULL)
@@ -121,6 +164,7 @@ void	free_env_var(void *content)
 	{
 		free(env_var->key);
 		free(env_var->value);
+		free(env_var);
 	}
 }
 

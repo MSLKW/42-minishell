@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 15:32:10 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/14 20:57:03 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/25 19:20:02 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,14 @@ t_bool	ft_isalnum_str(char *str)
 		index++;
 	}
 	return (TRUE);
+}
+
+int	count_null_terminated_arr(char **str_arr)
+{
+	int	count;
+
+	count = 0;
+	while (str_arr[count] != NULL)
+		count++;
+	return (count);
 }
