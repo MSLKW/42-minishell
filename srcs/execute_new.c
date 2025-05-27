@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/27 15:14:11 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/27 19:23:45 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ int	execute_setvalue(t_ast *node, t_data *data)
 	return (0);
 }
 
-// int	prepare_args_and_redirect(t_ast *ast, char **args) DOESNT WORK
+// int	prepare_args_and_redirect(t_ast *ast, char **args)
 // {
 // 	t_lst	*node;
 // 	int		fd;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast_init.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:57:03 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/20 16:33:42 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/27 19:13:38 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,7 @@ t_ast	*init_output_redirection(t_lst **token_list, t_lst *redirection_token)
 	result->token = redirection_token->content;
 	t_lst	*pipe_lst = find_primary_token_left(token_list, redirection_token, PIPE, ft_lstsize(*token_list));
 	// can't pass pipes
+	cmd_lst = NULL;
 	if (pipe_lst != NULL)
 	{
 		cmd_lst = find_secondary_token_right(pipe_lst, COMMAND, 3);
