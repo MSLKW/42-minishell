@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/26 17:44:48 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/30 12:24:51 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,17 @@ int	main(int argc, char *argv[], char *envp[])
 	signal(SIGINT, ctrlc_handler);
 	data = init_data(argc, argv, envp);
 	if (data == NULL)
+	{
+		printf("Argument Error\n");
 		return (1);
+	}
+	set_shlvl(data->env_var_lst, &data->envp);
 	while (1)
 	{
 		shell_routine(data);
 	}
 	rl_clear_history();
+	return (0);
 }
 
 void	shell_routine(t_data *data)
@@ -58,7 +63,7 @@ t_data	*init_data(int argc, char **argv, char **envp)
 	t_data	*data;
 
 	data = ft_calloc(1, sizeof(t_data));
-	if (data == NULL)
+	if (data == NULL || argc != 1)
 		return (NULL);
 	data->argc = argc;
 	data->argv = argv;

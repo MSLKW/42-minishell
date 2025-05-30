@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:30 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/25 18:02:23 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/30 12:12:52 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,13 +96,7 @@ static void	domain_variable_expansion(t_lst	*split_arg_list, t_data *data)
 			{
 				t_env_var	*var = get_env_variable(arg + 1, data->env_var_lst);
 				if (var == NULL)
-				{
-					char *env_arg = getenv(arg + 1);
-					if (env_arg == NULL)
-						head->content = ft_strdup("");
-					else
-						head->content = ft_strdup(env_arg);
-				}
+					head->content = ft_strdup("");
 				free(arg);
 				if (var != NULL && var->value != NULL)
 					head->content = ft_strdup(var->value);
