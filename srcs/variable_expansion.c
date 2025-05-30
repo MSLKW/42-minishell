@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   variable_expansion.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:30 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/25 18:02:23 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/30 23:30:34 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,9 @@ static t_lst	*split_variable_list(const char *arg)
 */
 static void	domain_variable_expansion(t_lst	*split_arg_list, t_data *data)
 {
-	t_lst	*head;
-	char	*arg;
+	t_lst		*head;
+	char		*arg;
+	t_env_var	*var;
 
 	head = split_arg_list;
 	while (head != NULL)
@@ -94,15 +95,9 @@ static void	domain_variable_expansion(t_lst	*split_arg_list, t_data *data)
 				head->content = ft_itoa(data->last_exit_code);
 			else
 			{
-				t_env_var	*var = get_env_variable(arg + 1, data->env_var_lst);
+				var = get_env_variable(arg + 1, data->env_var_lst);
 				if (var == NULL)
-				{
-					char *env_arg = getenv(arg + 1);
-					if (env_arg == NULL)
-						head->content = ft_strdup("");
-					else
-						head->content = ft_strdup(env_arg);
-				}
+					head->content = ft_strdup("");
 				free(arg);
 				if (var != NULL && var->value != NULL)
 					head->content = ft_strdup(var->value);
