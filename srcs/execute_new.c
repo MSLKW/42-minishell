@@ -6,19 +6,40 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/27 19:45:48 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/30 12:41:19 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+// int	execute_ast(t_ast *ast, t_data *data)
+// {
+// 	if (!ast)
+// 		return (1);
+// 	if (ast->token->primary_type == SET_VALUE)
+// 		return (execute_setvalue(ast, data));
+// 	return (execute_command(ast, data));
+// }
+
 int	execute_ast(t_ast *ast, t_data *data)
 {
-	if (!ast)
+	t_token *token;
+
+	if (!ast || !ast->token)
 		return (1);
-	if (ast->token->primary_type == SET_VALUE)
-		return (execute_setvalue(ast, data));
-	return (execute_command(ast, data));
+
+	token = (t_token *)ast->token;
+
+	if (token->primary_type == PIPE)
+		return (execute_pipeline(ast, data));
+	// else if (token->primary_type == REDIRECTION)
+	// 	return (execute_redirection(ast)); // later
+	else if (token->secondary_type == COMMAND)
+		return (execute_command(ast, data));
+	else if (token->primary_type == SET_VALUE)
+		return (execute_setvalue(ast, data)); // like export/assign
+	else
+		return (1);
 }
 
 // char	**build_cmd_args(t_ast *node)
@@ -140,7 +161,7 @@ int	execute_command(t_ast *node, t_data *data)
 		if (get_env_var_value("PATH", data->env_var_lst) == NULL)
 			printf("%s: No such file or directory\n", args[0]);
 		else
-			ft_printf("%s: command not found\n", args[0]);
+			printf("%s: command not found\n", args[0]);
 		// perror("execve");
 		free_str_arr(args);
 		free_exit(127, data);
@@ -173,5 +194,76 @@ int	execute_setvalue(t_ast *node, t_data *data)
 	set_env_variable(data->env_var_lst, env_var, &data->envp);
 	free_tokens(&data->free_ptr_tokens);
 	free_ast(&data->free_ptr_ast);
+	return (0);
+}
+
+// int	prepare_args_and_redirect(t_ast *ast, char **args) DOESNT WORK
+// {
+// 	t_lst	*node;
+// 	int		fd;
+// 	int		i = 0;
+
+// 	node = ast->node_list;
+// 	while (node)
+// 	{
+// 		t_token *tok = (t_token *)node->content;
+// 		if (tok->primary_type == REDIRECTION)
+// 		{
+// 			node = node->next;
+// 			if (!node)
+// 				return (ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n", 2), -1);
+// 			t_token *file_tok = (t_token *)node->content;
+// 			fd = open(file_tok->content, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+// 			if (fd < 0)
+// 				return (perror("open"), -1);
+// 			dup2(fd, STDOUT_FILENO);
+// 			close(fd);
+// 			node = node->next;
+// 			continue;
+// 		}
+// 		args[i++] = tok->content;
+// 		node = node->next;
+// 	}
+// 	args[i] = NULL;
+// 	return (0);
+// }
+
+int execute_pipeline(t_ast *pipe_node, t_data *data)
+{
+	int pipe_fd[2];
+	pid_t pid1, pid2;
+
+	if (!pipe_node || ft_lstsize(pipe_node->node_list) != 2)
+		return (1);
+	t_ast *left = (t_ast *)pipe_node->node_list->content;
+	t_ast *right = (t_ast *)pipe_node->node_list->next->content;
+	if (pipe(pipe_fd) < 0)
+	{
+		perror("pipe");
+		return (1);
+	}
+	pid1 = fork();
+	// left side
+	if (pid1 == 0)
+	{
+		close(pipe_fd[0]);
+		dup2(pipe_fd[1], STDOUT_FILENO);
+		close(pipe_fd[1]);
+		exit(execute_ast(left, data));
+	}
+	// right side
+	pid2 = fork();
+	if (pid2 == 0)
+	{
+		close(pipe_fd[1]);
+		dup2(pipe_fd[0], STDIN_FILENO);
+		close(pipe_fd[0]);
+		exit(execute_ast(right, data));
+	}
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+	waitpid(pid1, NULL, 0);
+	waitpid(pid2, NULL, 0);
+
 	return (0);
 }
