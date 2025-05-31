@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/27 18:51:04 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/31 14:58:41 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,31 @@
 
 t_lst	*tokenize_line(char *line, t_data *data)
 {
-	int	index;
+	t_lst	*token_list;
+	t_lst	*new_token_list;
+
+	token_list = split_line(line, data);
+	if (token_list == NULL)
+		return (NULL);
+	// memleak
+	new_token_list = split_token_none(&token_list, data);
+	printf("---split_token_none---\n");
+	debug_token_list(new_token_list);
+	printf("---split_token_none---\n");
+	new_token_list = join_token_list(&new_token_list);
+	printf("---joint token list---\n");
+	debug_token_list(new_token_list);
+	printf("---join token list---\n");
+	// figure this shit out
+	// assign types properly (refactor types?)
+	assign_cmd_opt_arg_type(&token_list, data);
+	assign_redirection_type(&token_list);
+	return (token_list);
+}
+
+t_lst	*split_line(char *line, t_data *data)
+{
+	int		index;
 	t_lst	*token_list;
 
 	index = 0;
@@ -28,17 +52,6 @@ t_lst	*tokenize_line(char *line, t_data *data)
 		else
 			ft_lstadd_back(&token_list, ft_lstnew(handle_none(line, &index, data)));
 	}
-	if (token_list == NULL)
-		return (NULL);
-	// memleak
-	// t_lst *new_token_list = join_token_list(&token_list);
-	// printf("---joint token list---\n");
-	// debug_token_list(new_token_list);
-	// printf("---join token list---\n");
-	// figure this shit out
-	assign_adjacent_whitespace(&token_list);
-	assign_cmd_opt_arg_type(&token_list, data);
-	assign_redirection_type(&token_list);
 	return (token_list);
 }
 
@@ -123,42 +136,6 @@ t_token	*handle_none(char *line, int *index, t_data *data)
 	return (token);
 }
 
-// t_lst	*join_token_list(t_lst **token_list)
-// {
-// 	t_lst	*head;
-// 	t_lst	*next_head;
-// 	t_lst	*new_token_list;
-// 	t_token	*current_token;
-// 	t_token	*next_token;
-
-// 	if (token_list == NULL || *token_list == NULL)
-// 		return (NULL);
-// 	new_token_list = NULL;
-// 	head = *token_list;
-// 	while (head != NULL)
-// 	{
-// 		current_token = head->content;
-// 		next_head = head->next;
-// 		while (next_head != NULL && next_token->primary_type != WHITESPACE)
-// 		{
-// 			next_token = next_head->content;
-// 			// making new token
-// 			t_token *new_token = malloc(sizeof(t_token));
-// 			char *joint_content = ft_strjoin(current_token->content, next_token->content);
-// 			new_token->content = joint_content;
-// 			new_token->primary_type = ERROR;
-// 			new_token->secondary_type = NOTHING;
-// 			//ading token
-// 			ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
-// 			// iterating list
-// 			current_token = next_token;
-// 			next_head = next_head->next;
-// 		}
-// 		head = head->next;
-// 		// what do i do with my handle_type and primary secondary types?
-// 	}
-// }
-
 t_lst	*join_token_list(t_lst **token_list)
 {
 	t_lst	*head;
@@ -168,6 +145,8 @@ t_lst	*join_token_list(t_lst **token_list)
 	char	*joint_content;
 	char	*temp;
 
+	if (token_list == NULL || *token_list == NULL)
+		return (NULL);
 	new_token_list = NULL;
 	head = *token_list;
 	joint_content = NULL;
@@ -210,6 +189,31 @@ t_lst	*join_token_list(t_lst **token_list)
 	new_token->primary_type = ERROR;
 	new_token->secondary_type = NOTHING;
 	ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
+	return (new_token_list);
+}
+
+t_lst	*split_token_none(t_lst **token_list, t_data *data)
+{
+	t_lst	*new_token_list;
+	t_lst	*head;
+
+	if (token_list == NULL || *token_list == NULL)
+		return (NULL);
+	new_token_list = NULL;
+	head = *token_list;
+	while (head != NULL)
+	{
+		t_token *token = head->content;
+		if (token->handler == NONE)
+		{
+			ft_lstadd_back(&new_token_list, split_line(token->content, data));
+		}
+		else
+		{
+			ft_lstadd_back(&new_token_list, ft_lstnew(token)); // there's very finnicky memory problems here if trying to free
+		}
+		head = head->next;
+	}
 	return (new_token_list);
 }
 
@@ -377,35 +381,4 @@ t_lst	**assign_redirection_type(t_lst	**token_list)
 		head = head->next;
 	}
 	return (token_list);
-}
-
-void	assign_adjacent_whitespace(t_lst **token_list)
-{
-	t_lst	*head;
-	t_token	*token;
-	t_token	*adj_token;
-
-	head = *token_list;
-	while (head != NULL)
-	{
-		token = head->content;
-		if (token != NULL)
-		{
-			token->right_white_space = FALSE;
-			token->left_white_space = FALSE;
-			if (head->next != NULL)
-			{
-				adj_token = head->next->content;
-				if (adj_token != NULL && adj_token->primary_type == WHITESPACE)
-					token->right_white_space = TRUE;
-			}
-			if (ft_lstgetprevious(token_list, head) != NULL)
-			{
-				adj_token = ft_lstgetprevious(token_list, head)->content;
-				if (adj_token != NULL && adj_token->primary_type == WHITESPACE)
-					token->left_white_space = TRUE;
-			}
-		}
-		head = head->next;
-	}
 }

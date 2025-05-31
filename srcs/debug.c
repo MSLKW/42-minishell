@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:48:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/20 15:09:50 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/31 00:43:29 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void	display_token(t_token *token)
 		display_primary_token_type(token->primary_type);
 		printf(" | secondary_type -> ");
 		display_secondary_token_type(token->secondary_type);
-		printf(" | left_white_space -> %i | right_white_space -> %i", token->left_white_space, token->right_white_space);
 		printf("\n");
 	}
 }

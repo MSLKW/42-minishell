@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/30 23:31:05 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/31 00:53:08 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,6 @@ typedef struct s_token {
 	enum	token_handler	handler;
 	enum	primary_token_type	primary_type;
 	enum	secondary_token_type secondary_type;
-	t_bool	right_white_space;
-	t_bool	left_white_space;
 }	t_token;
 
 typedef struct s_ast {
@@ -125,9 +123,11 @@ t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index);
 
 // tokenize.c
 t_lst	*tokenize_line(char *line, t_data *data);
+t_lst	*split_line(char *line, t_data *data);
 t_token	*handle_dquote(char *line, int *index, t_data *data);
 t_token	*handle_squote(char *line, int *index);
 t_token	*handle_none(char *line, int *index, t_data *data);
+t_lst	*split_token_none(t_lst **token_list, t_data *data);
 t_lst	*join_token_list(t_lst **token_list);
 t_bool	is_token_cmd(char *content, char *envp[]);
 t_bool	is_token_builtin(char *content);
@@ -136,7 +136,6 @@ t_bool	is_token_setvalue(char *content);
 enum primary_token_type	get_primary_token_type(char *content);
 t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data);
 t_lst	**assign_redirection_type(t_lst	**token_list);
-void	assign_adjacent_whitespace(t_lst **token_list);
 
 // history.c
 // void	ft_show_history(void);
