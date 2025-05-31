@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/31 14:58:41 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/31 23:06:18 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	t_lst	*token_list;
 	t_lst	*new_token_list;
 
-	token_list = split_line(line, data);
+	token_list = tokenize_str(line, data);
 	if (token_list == NULL)
 		return (NULL);
 	// memleak
@@ -32,11 +32,10 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	// figure this shit out
 	// assign types properly (refactor types?)
 	assign_cmd_opt_arg_type(&token_list, data);
-	assign_redirection_type(&token_list);
 	return (token_list);
 }
 
-t_lst	*split_line(char *line, t_data *data)
+t_lst	*tokenize_str(char *line, t_data *data)
 {
 	int		index;
 	t_lst	*token_list;
@@ -74,8 +73,7 @@ t_token	*handle_dquote(char *line, int *index, t_data *data)
 	token->content = variable_expansion(content, data);
 	free(content);
 	token->handler = DQUOTE;
-	token->primary_type = get_primary_token_type(token->content);
-	token->secondary_type = NOTHING;
+	token->flags = init_token_flags(token->content);
 	(*index) += size + 1;
 	return (token);
 }
@@ -98,8 +96,7 @@ t_token	*handle_squote(char *line, int *index)
 		return (NULL);
 	token->content = content;
 	token->handler = SQUOTE;
-	token->primary_type = get_primary_token_type(token->content);
-	token->secondary_type = NOTHING;
+	token->flags = init_token_flags(token->content);
 	(*index) += size + 1;
 	return (token);
 }
@@ -130,8 +127,7 @@ t_token	*handle_none(char *line, int *index, t_data *data)
 	token->content = variable_expansion(content, data);
 	free(content);
 	token->handler = NONE;
-	token->primary_type = get_primary_token_type(token->content);
-	token->secondary_type = NOTHING;
+	token->flags = init_token_flags(token->content);
 	(*index) += size;
 	return (token);
 }
@@ -153,7 +149,7 @@ t_lst	*join_token_list(t_lst **token_list)
 	while (head != NULL)
 	{
 		token = head->content;
-		if (token->primary_type != WHITESPACE)
+		if (has_token_flag(token->flags, WHITESPACE) == FALSE)
 		{
 			if (joint_content == NULL)
 				joint_content = ft_strdup(token->content);
@@ -164,7 +160,7 @@ t_lst	*join_token_list(t_lst **token_list)
 				free(temp);
 			}
 		}
-		else if (token->primary_type == WHITESPACE)
+		else if (has_token_flag(token->flags, WHITESPACE) == TRUE)
 		{
 			new_token = malloc(sizeof(t_token));
 			if (new_token == NULL)
@@ -173,8 +169,7 @@ t_lst	*join_token_list(t_lst **token_list)
 			free(joint_content);
 			joint_content = NULL;
 			new_token->handler = NONE;
-			new_token->primary_type = ERROR;
-			new_token->secondary_type = NOTHING;
+			new_token->flags = init_token_flags(new_token->content);
 			ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
 		}
 		head = head->next;
@@ -186,8 +181,7 @@ t_lst	*join_token_list(t_lst **token_list)
 	free(joint_content);
 	joint_content = NULL;
 	new_token->handler = NONE;
-	new_token->primary_type = ERROR;
-	new_token->secondary_type = NOTHING;
+	new_token->flags = init_token_flags(new_token->content);
 	ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
 	return (new_token_list);
 }
@@ -206,7 +200,7 @@ t_lst	*split_token_none(t_lst **token_list, t_data *data)
 		t_token *token = head->content;
 		if (token->handler == NONE)
 		{
-			ft_lstadd_back(&new_token_list, split_line(token->content, data));
+			ft_lstadd_back(&new_token_list, tokenize_str(token->content, data)); // might need to do only for none.
 		}
 		else
 		{
@@ -276,7 +270,7 @@ t_bool	is_token_option(char *content)
 	return (FALSE);
 }
 
-t_bool	is_token_setvalue(char *content)
+t_bool	is_token_assignment(char *content)
 {
 	t_env_var	*env_var;
 
@@ -292,31 +286,6 @@ t_bool	is_token_setvalue(char *content)
 	return (FALSE);
 }
 
-enum primary_token_type	get_primary_token_type(char *content)
-{
-	int	size;
-	int	index;
-
-	size = ft_strlen(content);
-	index = 0;
-	if (size == 0)
-		return (ASCII);
-	if (content[index] == ' ')
-		return (WHITESPACE);
-	else if (is_token_setvalue(content) == TRUE)
-		return (SET_VALUE); // variable first letter needs to be alpha, then variable itself needs to be alphanum, value can be ASCII
-	else if (ft_strchr(content, '|') && size == 1)
-		return (PIPE);
-	else if ((ft_strchr(content, '<') || ft_strchr(content, '>')) && size == 1)
-		return (REDIRECTION);
-	else if ((ft_strnstr(content, ">>", size) || ft_strnstr(content, "<<", size)) && size == 2)
-		return (REDIRECTION);
-	// else if (size >= 2 && content[0] == '$' && ft_isalpha_str(content + 1) == TRUE)
-	// 	return (VARIABLE);
-	else if (ft_isalnum_str(content) == TRUE)
-		return (ALPHANUMERIC);
-	return (ASCII);
-}
 /*
 	Modifies the **token_list's token types to more suitable token types like COMMAND, OPTION and ARGUMENT
 */
@@ -332,53 +301,23 @@ t_lst    *assign_cmd_opt_arg_type(t_lst **token_list, t_data *data)
 	while (head != NULL)
 	{
 		token = head->content;
-		if (token->primary_type != WHITESPACE)
+		if (has_token_flag(token->flags, WHITESPACE) == FALSE)
 		{
-			if (token->primary_type == SET_VALUE && cmd_line_flag == 0)
+			if (has_token_flag(token->flags, ASSIGNMENT) && cmd_line_flag == 0)
 			{
 				cmd_line_flag = 1;
 			}
-			else if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII ) && cmd_line_flag == 0)
+			else if (has_token_flag(token->flags, WORD) && cmd_line_flag == 0)
 			{
-				token->secondary_type = COMMAND;
+				token_add_flag(token->flags, COMMAND);
 				cmd_line_flag = 1;
 			}
-			else if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII || token->primary_type == SET_VALUE) 
-				&& cmd_line_flag == 1)
-				token->secondary_type = ARGUMENT;
+			else if ((has_token_flag(token->flags, WORD) || has_token_flag(token->flags, ASSIGNMENT)) && cmd_line_flag == 1)
+				token_add_flag(token->flags, ARGUMENT);
 			else
 				cmd_line_flag = 0;
 		}
 		head = head->next;
 	}
 	return (*token_list);
-}
-
-t_lst	**assign_redirection_type(t_lst	**token_list)
-{
-	t_lst	*head;
-	t_token	*token;
-	int		size;
-
-	if (token_list == NULL || *token_list == NULL)
-		return (NULL);
-	head = *token_list;
-	while (head != NULL)
-	{
-		token = head->content;
-		if (token->primary_type == REDIRECTION)
-		{
-			size = ft_strlen(token->content);
-			if (ft_strchr(token->content, '<') && size == 1)
-				token->secondary_type = REDIRECTION_INPUT;
-			else if (ft_strchr(token->content, '>') && size == 1)
-				token->secondary_type = REDIRECTION_OUTPUT;
-			else if (ft_strnstr(token->content, ">>", size) && size == 2)
-				token->secondary_type = REDIRECTION_APPEND;
-			else if (ft_strnstr(token->content, "<<", size) && size == 2)
-				token->secondary_type = REDIRECTION_DELIMITER;
-		}
-		head = head->next;
-	}
-	return (token_list);
 }

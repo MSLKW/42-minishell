@@ -26,6 +26,7 @@ SRCS_FILES :=	minishell.c \
 				variable.c \
 				variable_expansion.c \
 				dollar_sign_expansions.c \
+				token_flags.c \
 				free.c
 
 DEPS_FILES :=	minishell.h

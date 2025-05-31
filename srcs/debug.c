@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:48:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/31 00:43:29 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/31 22:58:17 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,8 @@ void	display_token(t_token *token)
 	{
 		printf("Token | content -> \"%s\" | handler -> ", token->content);
 		display_token_handler(token->handler);
-		printf(" | primary_type -> ");
-		display_primary_token_type(token->primary_type);
-		printf(" | secondary_type -> ");
-		display_secondary_token_type(token->secondary_type);
+		printf(" | flags -> ");
+		display_token_flags(token->flags);
 		printf("\n");
 	}
 }
@@ -68,44 +66,57 @@ void	display_token_handler(enum token_handler handler)
 		printf("SQUOTE");
 }
 
-void	display_primary_token_type(enum primary_token_type type)
+void	display_token_flag(enum token_flag flag)
 {
-	if (type == ERROR)
-		printf("ERROR");
-	else if (type == WHITESPACE)
+	if (flag == DELIMITER)
+		printf("DELIMITER");
+	else if (flag == WHITESPACE)
 		printf("WHITESPACE");
-	else if (type == ALPHANUMERIC)
-		printf("ALPHANUMERIC");
-	else if (type == ASCII)
-		printf("ASCII");
-	else if (type == SET_VALUE)
-		printf("SET_VALUE");
-	else if (type == PIPE)
+	else if (flag == OPERATOR)
+		printf("OPERATOR");
+	else if (flag == PIPE)
 		printf("PIPE");
-	else if (type == REDIRECTION)
+	else if (flag == REDIRECTION)
 		printf("REDIRECTION");
-	else if (type == VARIABLE)
-		printf("VARIABLE");
+	else if (flag == REDIRECTION_INPUT)
+		printf("REDIRECTION_INPUT");
+	else if (flag == REDIRECTION_OUTPUT)
+		printf("REDIRECTION_OUTPUT");
+	else if (flag == REDIRECTION_APPEND)
+		printf("REDIRECTION_APPEND");
+	else if (flag == REDIRECTION_DELIMITER)
+		printf("REDIRECTION_DELIMITER");
+	else if (flag == WORD)
+		printf("WORD");
+	else if (flag == COMMAND)
+		printf("COMMAND");
+	else if (flag == ARGUMENT)
+		printf("ARGUMENT");
+	else if (flag == ASSIGNMENT)
+		printf("ASSIGNMENT");
+	else if (flag == EMPTY)
+		printf("EMPTY");
 }
 
-void	display_secondary_token_type(enum secondary_token_type type)
+void	display_token_flags(enum token_flag *flags)
 {
-	if (type == NOTHING)
-		printf("NOTHING");
-	else if (type == COMMAND)
-		printf("COMMAND");
-	else if (type == OPTION)
-		printf("OPTION");
-	else if (type == ARGUMENT)
-		printf("ARGUMENT");
-	else if (type == REDIRECTION_INPUT)
-		printf("REDIRECTION_INPUT");
-	else if (type == REDIRECTION_OUTPUT)
-		printf("REDIRECTION_OUTPUT");
-	else if (type == REDIRECTION_APPEND)
-		printf("REDIRECTION_APPEND");
-	else if (type == REDIRECTION_DELIMITER)
-		printf("REDIRECTION_DELIMITER");
+	int	i;
+
+	if (flags == NULL)
+	{
+		printf("no_flag");
+		return ;
+	}
+	i = 0;
+	while (i < TOKEN_FLAG_SIZE)
+	{
+		if (flags[i] != NO_FLAG)
+		{
+			display_token_flag(flags[i]);
+			printf(",");
+		}
+		i++;
+	}
 }
 
 void	display_ast_tree(t_ast *ast_node)
@@ -133,7 +144,7 @@ void	display_ast_tree(t_ast *ast_node)
 	while (head != NULL)
 	{
 		t_ast	*ast_list_node_re = head->content;
-		if (ast_list_node_re != NULL && ast_list_node_re->token->secondary_type != ARGUMENT)
+		if (ast_list_node_re != NULL && has_token_flag(ast_list_node_re->token->flags, ARGUMENT) == FALSE)
 			display_ast_tree(ast_list_node_re);
 		head = head->next;
 	}

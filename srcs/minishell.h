@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/31 00:53:08 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/05/31 22:54:14 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@
 
 # define TRUE 1
 # define FALSE 0
+# define TOKEN_FLAG_SIZE 14
 
 // ===== Minishell Types =====
 
@@ -53,33 +54,52 @@ enum	token_handler {
 	SQUOTE
 };
 
-enum 	primary_token_type {
-	ERROR,
+// enum 	primary_token_type {
+// 	ERROR,
+// 	WHITESPACE,
+// 	ALPHANUMERIC,
+// 	ASCII,
+// 	SET_VALUE,
+// 	PIPE,
+// 	REDIRECTION,
+// 	VARIABLE, // NOT USED
+// };
+
+// enum	secondary_token_type {
+// 	NOTHING,
+// 	COMMAND,
+// 	OPTION, // NOT USED
+// 	ARGUMENT,
+// 	REDIRECTION_INPUT,
+// 	REDIRECTION_OUTPUT,
+// 	REDIRECTION_APPEND,
+// 	REDIRECTION_DELIMITER,
+// };
+
+typedef enum token_flag {
+	NO_FLAG,
+	DELIMITER,
 	WHITESPACE,
-	ALPHANUMERIC,
-	ASCII,
-	SET_VALUE,
+	OPERATOR,
 	PIPE,
 	REDIRECTION,
-	VARIABLE, // NOT USED
-};
-
-enum	secondary_token_type {
-	NOTHING,
-	COMMAND,
-	OPTION, // NOT USED
-	ARGUMENT,
 	REDIRECTION_INPUT,
 	REDIRECTION_OUTPUT,
 	REDIRECTION_APPEND,
 	REDIRECTION_DELIMITER,
-};
+	WORD,
+	COMMAND,
+	ARGUMENT,
+	ASSIGNMENT,
+	EMPTY
+} t_flag;
 
 typedef struct s_token {
 	char			*content;
 	enum	token_handler	handler;
-	enum	primary_token_type	primary_type;
-	enum	secondary_token_type secondary_type;
+	// enum	primary_token_type	primary_type;
+	// enum	secondary_token_type	secondary_type;
+	t_flag				*flags;
 }	t_token;
 
 typedef struct s_ast {
@@ -123,7 +143,7 @@ t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index);
 
 // tokenize.c
 t_lst	*tokenize_line(char *line, t_data *data);
-t_lst	*split_line(char *line, t_data *data);
+t_lst	*tokenize_str(char *line, t_data *data);
 t_token	*handle_dquote(char *line, int *index, t_data *data);
 t_token	*handle_squote(char *line, int *index);
 t_token	*handle_none(char *line, int *index, t_data *data);
@@ -132,10 +152,14 @@ t_lst	*join_token_list(t_lst **token_list);
 t_bool	is_token_cmd(char *content, char *envp[]);
 t_bool	is_token_builtin(char *content);
 t_bool	is_token_executable(char *content);
-t_bool	is_token_setvalue(char *content);
+t_bool	is_token_assignment(char *content);
 enum primary_token_type	get_primary_token_type(char *content);
 t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data);
-t_lst	**assign_redirection_type(t_lst	**token_list);
+
+// token_flags.c
+t_bool	has_token_flag(t_flag *flags, t_flag flag);
+t_flag	*init_token_flags(char *content);
+int		token_add_flag(t_flag *flag_arr, t_flag flag);
 
 // history.c
 // void	ft_show_history(void);
@@ -169,10 +193,8 @@ t_ast	*init_argument(t_lst *argument_token);
 t_ast	*init_setvalue(t_lst *setvalue_token);
 
 // ast_search.c
-t_lst	*find_primary_token_right(t_lst *current_token_lst, enum primary_token_type token_type, int	size);
-t_lst	*find_primary_token_left(t_lst	**token_list, t_lst *current_token_lst, enum primary_token_type token_type, int size);
-t_lst	*find_secondary_token_right(t_lst *current_token_lst, enum secondary_token_type token_type, int size);
-t_lst	*find_secondary_token_left(t_lst	**token_list, t_lst *current_token_lst, enum secondary_token_type token_type, int size);
+t_lst	*find_token_right(t_lst *current_token_lst, t_flag token_flag, int size);
+t_lst	*find_token_left(t_lst	**token_list, t_lst *current_token_lst, t_flag token_flag, int size);
 
 // variable.c
 t_env_var	*init_env_variable(char *key, char *value);
@@ -213,8 +235,8 @@ void	ft_lststrdisplay(t_lst *list);
 void	debug_token_list(t_lst *token_list);
 void	display_token(t_token *token);
 void	display_token_handler(enum token_handler handler);
-void	display_primary_token_type(enum primary_token_type type);
-void	display_secondary_token_type(enum secondary_token_type type);
+void	display_token_flag(enum token_flag flag);
+void	display_token_flags(enum token_flag *flags);
 void	display_ast_tree(t_ast *ast_node);
 
 // BUILTINS --

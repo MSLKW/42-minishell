@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/27 15:14:11 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/31 22:56:22 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ int	execute_ast(t_ast *ast, t_data *data)
 
 	token = (t_token *)ast->token;
 
-	if (token->primary_type == PIPE)
+	if (has_token_flag(token->flags, PIPE))
 		return (execute_pipeline(ast, data));
 	// else if (token->primary_type == REDIRECTION)
 	// 	return (execute_redirection(ast)); // later
-	else if (token->secondary_type == COMMAND)
+	else if (has_token_flag(token->flags, COMMAND))
 		return (execute_command(ast, data));
-	else if (token->primary_type == SET_VALUE)
+	else if (has_token_flag(token->flags, ASSIGNMENT))
 		return (execute_setvalue(ast, data)); // like export/assign
 	else
 		return (1);
