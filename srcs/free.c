@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:26:34 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/26 16:42:28 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/01 13:54:57 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void	free_token(void *content)
 
 	token = (t_token *)content;
 	free(token->content);
+	free(token->flags);
 	free(token);
 }
 void	free_ast(t_ast **ast)

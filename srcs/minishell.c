@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/31 01:07:35 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/01 13:57:05 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ int	set_shlvl(t_lst *env_var_lst, char ***envp)
 	char		*shlvl_val;
 	t_env_var	*new_shlvl;
 	int			shlvl_num;
+	char		*shlvl_num_str;
 
 	if (env_var_lst == NULL || envp == NULL || *envp == NULL || **envp == NULL)
 		return (1);
@@ -135,7 +136,9 @@ int	set_shlvl(t_lst *env_var_lst, char ***envp)
 		shlvl_num = ft_atoi(shlvl_val);
 		shlvl_num++;
 	}
-	new_shlvl = init_env_variable("SHLVL", ft_itoa(shlvl_num));
+	shlvl_num_str = ft_itoa(shlvl_num);
+	new_shlvl = init_env_variable("SHLVL", shlvl_num_str);
+	free(shlvl_num_str);
 	if (new_shlvl == NULL)
 		return (1);
 	new_shlvl->is_export = TRUE;
