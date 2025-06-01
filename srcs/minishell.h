@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/31 22:54:14 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/01 13:49:28 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,6 @@ typedef enum token_flag {
 typedef struct s_token {
 	char			*content;
 	enum	token_handler	handler;
-	// enum	primary_token_type	primary_type;
-	// enum	secondary_token_type	secondary_type;
 	t_flag				*flags;
 }	t_token;
 

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 18:16:06 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/27 19:26:14 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/01 13:18:17 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,11 @@ char	*ft_get_prompt(t_data *data)
 	free(prompt_env);
 	return (prompt);
 }
-
+/*
+	HOME=/home/msl
+	will replace it when it shouldn't 
+	/home/mslkw/directory -> ~kw/directory
+*/
 char	*ft_get_prompt_cwd(t_data *data)
 {
 	char	*cwd;

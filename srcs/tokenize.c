@@ -6,11 +6,28 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/31 23:06:18 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/01 13:43:57 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+t_token	*init_token(char *content, enum token_handler handler, t_flag *flags)
+{
+	t_token	*token;
+
+	token = malloc(sizeof(t_token));
+	if (token == NULL || content == NULL)
+		return (NULL);
+	token->content = ft_strdup(content);
+	token->handler = handler;
+	if (flags == NULL)
+		token->flags = init_token_flags(content);
+	else
+		token->flags = flags;
+	return (token);
+}
+
 
 t_lst	*tokenize_line(char *line, t_data *data)
 {
@@ -22,17 +39,12 @@ t_lst	*tokenize_line(char *line, t_data *data)
 		return (NULL);
 	// memleak
 	new_token_list = split_token_none(&token_list, data);
-	printf("---split_token_none---\n");
-	debug_token_list(new_token_list);
-	printf("---split_token_none---\n");
-	new_token_list = join_token_list(&new_token_list);
-	printf("---joint token list---\n");
-	debug_token_list(new_token_list);
-	printf("---join token list---\n");
-	// figure this shit out
-	// assign types properly (refactor types?)
-	assign_cmd_opt_arg_type(&token_list, data);
-	return (token_list);
+	ft_lstclear(&token_list, free_token);
+	token_list = new_token_list;
+	new_token_list = join_token_list(&token_list);
+	ft_lstclear(&token_list, free_token);
+	assign_cmd_opt_arg_type(&new_token_list, data);
+	return (new_token_list);
 }
 
 t_lst	*tokenize_str(char *line, t_data *data)
@@ -59,21 +71,21 @@ t_token	*handle_dquote(char *line, int *index, t_data *data)
 	int	size;
 	t_token	*token;
 	char	*content;
+	char	*expanded_content;
 
 	size = 0;
 	(*index)++;
-	token = malloc(sizeof(t_token));
-	if (token == NULL)
-		return (NULL);
 	while (line[*index + size] != '\"')
 		size++;
 	content = ft_substr(line, *index, size);
 	if (content == NULL)
 		return (NULL);
-	token->content = variable_expansion(content, data);
+	expanded_content = variable_expansion(content, data);
 	free(content);
-	token->handler = DQUOTE;
-	token->flags = init_token_flags(token->content);
+	token = init_token(expanded_content, DQUOTE, NULL);
+	if (token == NULL)
+		return (NULL);
+	free(expanded_content);
 	(*index) += size + 1;
 	return (token);
 }
@@ -86,17 +98,15 @@ t_token	*handle_squote(char *line, int *index)
 
 	size = 0;
 	(*index)++;
-	token = malloc(sizeof(t_token));
-	if (token == NULL)
-		return (NULL);
 	while (line[*index + size] != '\'')
 		size++;
 	content = ft_substr(line, *index, size);
 	if (content == NULL)
 		return (NULL);
-	token->content = content;
-	token->handler = SQUOTE;
-	token->flags = init_token_flags(token->content);
+	token = init_token(content, SQUOTE, NULL);
+	if (token == NULL)
+		return (NULL);
+	free(content);
 	(*index) += size + 1;
 	return (token);
 }
@@ -106,11 +116,9 @@ t_token	*handle_none(char *line, int *index, t_data *data)
 	int	size;
 	t_token	*token;
 	char	*content;
+	char	*expanded_content;
 
 	size = 0;
-	token = malloc(sizeof(t_token));
-	if (token == NULL)
-		return (NULL);
 	if (line[*index + size] == ' ')
 	{
 		while (line[*index + size] == ' ')
@@ -124,10 +132,12 @@ t_token	*handle_none(char *line, int *index, t_data *data)
 	content = ft_substr(line, *index, size);
 	if (content == NULL)
 		return (NULL);
-	token->content = variable_expansion(content, data);
+	expanded_content = variable_expansion(content, data);
 	free(content);
-	token->handler = NONE;
-	token->flags = init_token_flags(token->content);
+	token = init_token(expanded_content, NONE, NULL);
+	if (token == NULL)
+		return (NULL);
+	free(expanded_content);
 	(*index) += size;
 	return (token);
 }
@@ -162,26 +172,20 @@ t_lst	*join_token_list(t_lst **token_list)
 		}
 		else if (has_token_flag(token->flags, WHITESPACE) == TRUE)
 		{
-			new_token = malloc(sizeof(t_token));
+			new_token = init_token(joint_content, NONE, NULL);
 			if (new_token == NULL)
 				return (NULL);
-			new_token->content = ft_strdup(joint_content);
 			free(joint_content);
 			joint_content = NULL;
-			new_token->handler = NONE;
-			new_token->flags = init_token_flags(new_token->content);
 			ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
 		}
 		head = head->next;
 	}
-	new_token = malloc(sizeof(t_token));
+	new_token = init_token(joint_content, NONE, NULL);
 	if (new_token == NULL)
 		return (NULL);
-	new_token->content = ft_strdup(joint_content);
 	free(joint_content);
 	joint_content = NULL;
-	new_token->handler = NONE;
-	new_token->flags = init_token_flags(new_token->content);
 	ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
 	return (new_token_list);
 }
@@ -190,6 +194,7 @@ t_lst	*split_token_none(t_lst **token_list, t_data *data)
 {
 	t_lst	*new_token_list;
 	t_lst	*head;
+	t_token	*token;
 
 	if (token_list == NULL || *token_list == NULL)
 		return (NULL);
@@ -197,14 +202,14 @@ t_lst	*split_token_none(t_lst **token_list, t_data *data)
 	head = *token_list;
 	while (head != NULL)
 	{
-		t_token *token = head->content;
+		token = head->content;
 		if (token->handler == NONE)
 		{
-			ft_lstadd_back(&new_token_list, tokenize_str(token->content, data)); // might need to do only for none.
+			ft_lstadd_back(&new_token_list, tokenize_str(token->content, data)); // might only need to do for none
 		}
 		else
 		{
-			ft_lstadd_back(&new_token_list, ft_lstnew(token)); // there's very finnicky memory problems here if trying to free
+			ft_lstadd_back(&new_token_list, ft_lstnew(init_token(token->content, token->handler, token->flags)));
 		}
 		head = head->next;
 	}
