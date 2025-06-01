@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/01 13:43:57 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/01 14:45:27 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,9 @@ t_token	*init_token(char *content, enum token_handler handler, t_flag *flags)
 	if (flags == NULL)
 		token->flags = init_token_flags(content);
 	else
-		token->flags = flags;
+	{
+		token->flags = token_dup_flag(flags);
+	}
 	return (token);
 }
 
@@ -37,13 +39,17 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	token_list = tokenize_str(line, data);
 	if (token_list == NULL)
 		return (NULL);
-	// memleak
+	printf("token list\n");
 	new_token_list = split_token_none(&token_list, data);
+	printf("split list\n");
 	ft_lstclear(&token_list, free_token);
 	token_list = new_token_list;
 	new_token_list = join_token_list(&token_list);
+	debug_token_list(new_token_list);
+	printf("join list\n");
 	ft_lstclear(&token_list, free_token);
-	assign_cmd_opt_arg_type(&new_token_list, data);
+	assign_flags_cmd_arg(&new_token_list, data);
+	printf("assign list\n");
 	return (new_token_list);
 }
 
@@ -142,6 +148,27 @@ t_token	*handle_none(char *line, int *index, t_data *data)
 	return (token);
 }
 
+static char	*add_joint_content(char *joint_content, char *content)
+{
+	char	*free_ptr;
+
+	if (joint_content != NULL && content == NULL)
+		return (joint_content);
+	else if (joint_content == NULL && content == NULL)
+		return (NULL);
+	else if (joint_content == NULL && content != NULL)
+	{
+		joint_content = ft_strdup(content);
+	}
+	else if (joint_content != NULL && content != NULL)
+	{
+		free_ptr = joint_content;
+		joint_content = ft_strjoin(joint_content, content);
+		free(free_ptr);
+	}
+	return (joint_content);
+}
+
 t_lst	*join_token_list(t_lst **token_list)
 {
 	t_lst	*head;
@@ -149,7 +176,6 @@ t_lst	*join_token_list(t_lst **token_list)
 	t_token	*token;
 	t_token	*new_token;
 	char	*joint_content;
-	char	*temp;
 
 	if (token_list == NULL || *token_list == NULL)
 		return (NULL);
@@ -159,18 +185,20 @@ t_lst	*join_token_list(t_lst **token_list)
 	while (head != NULL)
 	{
 		token = head->content;
+		if (has_token_flag(token->flags, OPERATOR) == TRUE)
+		{
+			new_token = init_token(joint_content, NONE, NULL);
+			if (new_token == NULL)
+				return (NULL);
+			free(joint_content);
+			joint_content = NULL;
+			ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
+		}
 		if (has_token_flag(token->flags, WHITESPACE) == FALSE)
 		{
-			if (joint_content == NULL)
-				joint_content = ft_strdup(token->content);
-			else
-			{
-				temp = joint_content;
-				joint_content = ft_strjoin(joint_content, token->content);
-				free(temp);
-			}
+			add_joint_content(joint_content, token->content);
 		}
-		else if (has_token_flag(token->flags, WHITESPACE) == TRUE)
+		else if (has_token_flag(token->flags, WHITESPACE) == TRUE || has_token_flag(token->flags, OPERATOR) == TRUE)
 		{
 			new_token = init_token(joint_content, NONE, NULL);
 			if (new_token == NULL)
@@ -181,12 +209,15 @@ t_lst	*join_token_list(t_lst **token_list)
 		}
 		head = head->next;
 	}
-	new_token = init_token(joint_content, NONE, NULL);
-	if (new_token == NULL)
-		return (NULL);
-	free(joint_content);
-	joint_content = NULL;
-	ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
+	if (joint_content != NULL)
+	{
+		new_token = init_token(joint_content, NONE, NULL);
+		if (new_token == NULL)
+			return (NULL);
+		free(joint_content);
+		joint_content = NULL;
+		ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
+	}
 	return (new_token_list);
 }
 
@@ -294,7 +325,7 @@ t_bool	is_token_assignment(char *content)
 /*
 	Modifies the **token_list's token types to more suitable token types like COMMAND, OPTION and ARGUMENT
 */
-t_lst    *assign_cmd_opt_arg_type(t_lst **token_list, t_data *data)
+t_lst    *assign_flags_cmd_arg(t_lst **token_list, t_data *data)
 {
 	int    cmd_line_flag;
 	t_lst    *head;

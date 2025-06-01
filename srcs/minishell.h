@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/01 13:49:28 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/01 14:23:12 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,12 +132,13 @@ t_bool	is_token_cmd(char *content, char *envp[]);
 t_bool	is_token_builtin(char *content);
 t_bool	is_token_executable(char *content);
 t_bool	is_token_assignment(char *content);
-t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data);
+t_lst	*assign_flags_cmd_arg(t_lst	**token_list, t_data *data);
 
 // token_flags.c
 t_bool	has_token_flag(t_flag *flags, t_flag flag);
 t_flag	*init_token_flags(char *content);
 int		token_add_flag(t_flag *flag_arr, t_flag flag);
+t_flag	*token_dup_flag(t_flag *flag_arr);
 
 // history.c
 // void	ft_show_history(void);

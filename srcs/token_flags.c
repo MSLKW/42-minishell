@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 15:08:50 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/31 22:31:53 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/01 14:21:56 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,4 +98,24 @@ int	token_add_flag(t_flag *flag_arr, t_flag flag)
 		i++;
 	}
 	return (2);
+}
+
+t_flag	*token_dup_flag(t_flag *flag_arr)
+{
+	t_flag	*new_flag_arr;
+
+	int	i;
+
+	if (flag_arr == NULL)
+		return (NULL);
+	new_flag_arr = ft_calloc(sizeof(t_flag), TOKEN_FLAG_SIZE);
+	if (new_flag_arr == NULL)
+		return (NULL);
+	i = 0;
+	while (i < TOKEN_FLAG_SIZE)
+	{
+		new_flag_arr[i] = flag_arr[i];
+		i++;
+	}
+	return (new_flag_arr);
 }
