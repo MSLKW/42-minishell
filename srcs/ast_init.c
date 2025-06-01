@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:57:03 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/31 22:43:16 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/01 13:03:59 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,8 @@ t_ast	*init_output_redirection(t_lst **token_list, t_lst *redirection_token)
 	if (result == NULL)
 		return (NULL);
 	result->token = redirection_token->content;
+	pipe_lst = NULL;
+	cmd_lst = NULL;
 	pipe_lst = find_token_left(token_list, redirection_token, PIPE, ft_lstsize(*token_list));
 	if (pipe_lst != NULL)
 		cmd_lst = find_token_right(pipe_lst, COMMAND, 3); // 2
