@@ -20,13 +20,17 @@ int	main(int argc, char *argv[], char *envp[])
 	signal(SIGINT, ctrlc_handler);
 	data = init_data(argc, argv, envp);
 	if (data == NULL)
+	{
+		printf("Argument Error\n");
 		return (1);
+	}
 	set_shlvl(data->env_var_lst, &data->envp);
 	while (1)
 	{
 		shell_routine(data);
 	}
 	rl_clear_history();
+	return (0);
 }
 
 void	shell_routine(t_data *data)
@@ -59,7 +63,7 @@ t_data	*init_data(int argc, char **argv, char **envp)
 	t_data	*data;
 
 	data = ft_calloc(1, sizeof(t_data));
-	if (data == NULL)
+	if (data == NULL || argc != 1)
 		return (NULL);
 	data->argc = argc;
 	data->argv = argv;

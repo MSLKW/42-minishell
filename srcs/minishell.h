@@ -54,28 +54,6 @@ enum	token_handler {
 	SQUOTE
 };
 
-// enum 	primary_token_type {
-// 	ERROR,
-// 	WHITESPACE,
-// 	ALPHANUMERIC,
-// 	ASCII,
-// 	SET_VALUE,
-// 	PIPE,
-// 	REDIRECTION,
-// 	VARIABLE, // NOT USED
-// };
-
-// enum	secondary_token_type {
-// 	NOTHING,
-// 	COMMAND,
-// 	OPTION, // NOT USED
-// 	ARGUMENT,
-// 	REDIRECTION_INPUT,
-// 	REDIRECTION_OUTPUT,
-// 	REDIRECTION_APPEND,
-// 	REDIRECTION_DELIMITER,
-// };
-
 typedef enum token_flag {
 	NO_FLAG,
 	DELIMITER,
@@ -134,6 +112,9 @@ char	**get_envp_copy(char **envp, int extra);
 t_lst	*init_exported_env_var_lst(char ***envp);
 int		set_shlvl(t_lst *env_var_lst, char ***envp);
 
+// shell_env.c
+int		set_shlvl(t_lst *env_var_lst, char ***envp);
+
 // parse.c
 char	*ft_get_line(t_data *data);
 char	*ft_get_prompt(t_data *data);
@@ -153,7 +134,6 @@ t_bool	is_token_cmd(char *content, char *envp[]);
 t_bool	is_token_builtin(char *content);
 t_bool	is_token_executable(char *content);
 t_bool	is_token_assignment(char *content);
-enum primary_token_type	get_primary_token_type(char *content);
 t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data);
 
 // token_flags.c
