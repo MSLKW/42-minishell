@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/01 14:23:12 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/02 11:40:42 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,6 @@ void	shell_routine(t_data *data);
 t_data	*init_data(int argc, char **argv, char **envp);
 char	**get_envp_copy(char **envp, int extra);
 t_lst	*init_exported_env_var_lst(char ***envp);
-int		set_shlvl(t_lst *env_var_lst, char ***envp);
 
 // shell_env.c
 int		set_shlvl(t_lst *env_var_lst, char ***envp);
