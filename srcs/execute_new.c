@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/31 22:56:22 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/02 16:28:43 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@ int	execute_ast(t_ast *ast, t_data *data)
 		return (execute_pipeline(ast, data));
 	// else if (token->primary_type == REDIRECTION)
 	// 	return (execute_redirection(ast)); // later
+	// else if (token->primary_type == REDIRECTION && token->secondary_type == REDIRECTION_OUTPUT)
+	// {
+	//    return execute_redirection_out(node, data);
+	// }
 	else if (has_token_flag(token->flags, COMMAND))
 		return (execute_command(ast, data));
 	else if (has_token_flag(token->flags, ASSIGNMENT))
@@ -41,6 +45,29 @@ int	execute_ast(t_ast *ast, t_data *data)
 	else
 		return (1);
 }
+
+// int execute_redirection_out(t_ast *node, t_data *data)
+// {
+// 	int fd;
+// 	int saved_stdout;
+// 	// t_ast *left = node->left;
+// 	// t_ast *right = node->right;
+
+// 	if (!left || !right)
+// 		return (set_error("Invalid redirection syntax"), 1);
+
+// 	fd = open(right->token->content, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+// 	if (fd == -1)
+// 		return (perror("open"), 1);
+// 	saved_stdout = dup(STDOUT_FILENO);
+// 	dup2(fd, STDOUT_FILENO);
+// 	close(fd);
+// 	int status = execute_ast(left, data);
+// 	dup2(saved_stdout, STDOUT_FILENO);
+// 	close(saved_stdout);
+
+// 	return status;
+// }
 
 // char	**build_cmd_args(t_ast *node)
 // {
@@ -196,37 +223,6 @@ int	execute_setvalue(t_ast *node, t_data *data)
 	free_ast(&data->free_ptr_ast);
 	return (0);
 }
-
-// int	prepare_args_and_redirect(t_ast *ast, char **args) DOESNT WORK
-// {
-// 	t_lst	*node;
-// 	int		fd;
-// 	int		i = 0;
-
-// 	node = ast->node_list;
-// 	while (node)
-// 	{
-// 		t_token *tok = (t_token *)node->content;
-// 		if (tok->primary_type == REDIRECTION)
-// 		{
-// 			node = node->next;
-// 			if (!node)
-// 				return (ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n", 2), -1);
-// 			t_token *file_tok = (t_token *)node->content;
-// 			fd = open(file_tok->content, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-// 			if (fd < 0)
-// 				return (perror("open"), -1);
-// 			dup2(fd, STDOUT_FILENO);
-// 			close(fd);
-// 			node = node->next;
-// 			continue;
-// 		}
-// 		args[i++] = tok->content;
-// 		node = node->next;
-// 	}
-// 	args[i] = NULL;
-// 	return (0);
-// }
 
 int execute_pipeline(t_ast *pipe_node, t_data *data)
 {
