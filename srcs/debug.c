@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:48:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/31 22:58:17 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/02 13:07:02 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ void	display_token_handler(enum token_handler handler)
 		printf("DQUOTE");
 	else if (handler == SQUOTE)
 		printf("SQUOTE");
+	else if (handler == JOINT)
+		printf("JOINT");
 }
 
 void	display_token_flag(enum token_flag flag)

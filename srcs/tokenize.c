@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/02 12:04:40 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/02 13:18:20 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,9 +131,14 @@ t_token	*handle_none(char *line, int *index, t_data *data)
 		while (line[*index + size] == ' ')
 			size++;
 	}
+	else if (line[*index + size] == '|' || line[*index + size] == '<' || line[*index + size] == '>')
+	{
+		while ((line[*index + size] == '|' || line[*index + size] == '<' || line[*index + size] == '>') && line[*index + size] != '\0')
+			size++;
+	}
 	else
 	{
-		while (line[*index + size] != ' ' && line[*index + size] != '\"' && line[*index + size] != '\'' && line[*index + size] != '\0')
+		while (line[*index + size] != ' ' && line[*index + size] != '\"' && line[*index + size] != '\'' && line[*index + size] != '|' && line[*index + size] != '<' && line[*index + size] != '>' && line[*index + size] != '\0')
 			size++;
 	}
 	content = ft_substr(line, *index, size);
@@ -176,7 +181,7 @@ static t_token *capture_new_token(char **joint_content, t_lst **new_token_list)
 
 	if (joint_content == NULL || *joint_content == NULL)
 		return (NULL);
-	new_token = init_token(*joint_content, NONE, NULL);
+	new_token = init_token(*joint_content, JOINT, NULL);
 	if (new_token == NULL)
 		return (NULL);
 	free(*joint_content);
@@ -202,23 +207,20 @@ t_lst	*join_token_list(t_lst **token_list)
 		token = head->content;
 		if (has_token_flag(token->flags, OPERATOR) == TRUE)
 		{
-			if (capture_new_token(&joint_content, &new_token_list) == NULL)
-				return (NULL);
+			capture_new_token(&joint_content, &new_token_list);
 			ft_lstadd_back(&new_token_list, ft_lstnew(init_token(token->content, token->handler, token->flags)));
 		}
 		else if (has_token_flag(token->flags, WHITESPACE) == FALSE)
 			joint_content = add_joint_content(joint_content, token->content);
 		else if (has_token_flag(token->flags, WHITESPACE) == TRUE)
 		{
-			if (capture_new_token(&joint_content, &new_token_list) == NULL)
-				return (NULL);
+			capture_new_token(&joint_content, &new_token_list);
 		}
 		head = head->next;
 	}
 	if (joint_content != NULL)
 	{
-		if (capture_new_token(&joint_content, &new_token_list) == NULL)
-			return (NULL);
+		capture_new_token(&joint_content, &new_token_list);
 	}
 	return (new_token_list);
 }
