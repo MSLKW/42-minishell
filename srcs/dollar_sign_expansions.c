@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   dollar_sign_expansions.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 15:56:47 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/13 16:05:05 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/25 17:43:24 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*expand_dollar_question(char *arg, int last_exit_code)
+char	*expand_dollar_question(const char *arg, int last_exit_code)
 {
 	if (!arg)
 		return (NULL);

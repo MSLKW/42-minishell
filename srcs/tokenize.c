@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/18 17:07:56 by zernest          ###   ########.fr       */
+/*   Updated: 2025/05/31 23:06:18 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,30 @@
 
 t_lst	*tokenize_line(char *line, t_data *data)
 {
-	int	index;
+	t_lst	*token_list;
+	t_lst	*new_token_list;
+
+	token_list = tokenize_str(line, data);
+	if (token_list == NULL)
+		return (NULL);
+	// memleak
+	new_token_list = split_token_none(&token_list, data);
+	printf("---split_token_none---\n");
+	debug_token_list(new_token_list);
+	printf("---split_token_none---\n");
+	new_token_list = join_token_list(&new_token_list);
+	printf("---joint token list---\n");
+	debug_token_list(new_token_list);
+	printf("---join token list---\n");
+	// figure this shit out
+	// assign types properly (refactor types?)
+	assign_cmd_opt_arg_type(&token_list, data);
+	return (token_list);
+}
+
+t_lst	*tokenize_str(char *line, t_data *data)
+{
+	int		index;
 	t_lst	*token_list;
 
 	index = 0;
@@ -28,9 +51,6 @@ t_lst	*tokenize_line(char *line, t_data *data)
 		else
 			ft_lstadd_back(&token_list, ft_lstnew(handle_none(line, &index, data)));
 	}
-	assign_cmd_opt_arg_type(&token_list, data);
-	assign_redirection_type(&token_list);
-	assign_adjacent_whitespace(&token_list);
 	return (token_list);
 }
 
@@ -48,12 +68,12 @@ t_token	*handle_dquote(char *line, int *index, t_data *data)
 	while (line[*index + size] != '\"')
 		size++;
 	content = ft_substr(line, *index, size);
-	if (content == NULL || ft_strlen(content) == 0)
+	if (content == NULL)
 		return (NULL);
 	token->content = variable_expansion(content, data);
+	free(content);
 	token->handler = DQUOTE;
-	token->primary_type = get_primary_token_type(token->content);
-	token->secondary_type = NOTHING;
+	token->flags = init_token_flags(token->content);
 	(*index) += size + 1;
 	return (token);
 }
@@ -72,12 +92,11 @@ t_token	*handle_squote(char *line, int *index)
 	while (line[*index + size] != '\'')
 		size++;
 	content = ft_substr(line, *index, size);
-	if (content == NULL || ft_strlen(content) == 0)
+	if (content == NULL)
 		return (NULL);
 	token->content = content;
 	token->handler = SQUOTE;
-	token->primary_type = get_primary_token_type(content);
-	token->secondary_type = NOTHING;
+	token->flags = init_token_flags(token->content);
 	(*index) += size + 1;
 	return (token);
 }
@@ -103,25 +122,104 @@ t_token	*handle_none(char *line, int *index, t_data *data)
 			size++;
 	}
 	content = ft_substr(line, *index, size);
-	if (content == NULL || ft_strlen(content) == 0)
+	if (content == NULL)
 		return (NULL);
 	token->content = variable_expansion(content, data);
+	free(content);
 	token->handler = NONE;
-	token->primary_type = get_primary_token_type(token->content);
-	token->secondary_type = NOTHING;
+	token->flags = init_token_flags(token->content);
 	(*index) += size;
 	return (token);
 }
 
-t_bool	is_token_cmd(char *content, char *envp[])
+t_lst	*join_token_list(t_lst **token_list)
 {
-	char	*cmd_path;
+	t_lst	*head;
+	t_lst	*new_token_list;
+	t_token	*token;
+	t_token	*new_token;
+	char	*joint_content;
+	char	*temp;
 
-	cmd_path = find_cmd_path(content, envp);
-	if (cmd_path == NULL)
-		return (FALSE);
-	return (TRUE);
+	if (token_list == NULL || *token_list == NULL)
+		return (NULL);
+	new_token_list = NULL;
+	head = *token_list;
+	joint_content = NULL;
+	while (head != NULL)
+	{
+		token = head->content;
+		if (has_token_flag(token->flags, WHITESPACE) == FALSE)
+		{
+			if (joint_content == NULL)
+				joint_content = ft_strdup(token->content);
+			else
+			{
+				temp = joint_content;
+				joint_content = ft_strjoin(joint_content, token->content);
+				free(temp);
+			}
+		}
+		else if (has_token_flag(token->flags, WHITESPACE) == TRUE)
+		{
+			new_token = malloc(sizeof(t_token));
+			if (new_token == NULL)
+				return (NULL);
+			new_token->content = ft_strdup(joint_content);
+			free(joint_content);
+			joint_content = NULL;
+			new_token->handler = NONE;
+			new_token->flags = init_token_flags(new_token->content);
+			ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
+		}
+		head = head->next;
+	}
+	new_token = malloc(sizeof(t_token));
+	if (new_token == NULL)
+		return (NULL);
+	new_token->content = ft_strdup(joint_content);
+	free(joint_content);
+	joint_content = NULL;
+	new_token->handler = NONE;
+	new_token->flags = init_token_flags(new_token->content);
+	ft_lstadd_back(&new_token_list, ft_lstnew(new_token));
+	return (new_token_list);
 }
+
+t_lst	*split_token_none(t_lst **token_list, t_data *data)
+{
+	t_lst	*new_token_list;
+	t_lst	*head;
+
+	if (token_list == NULL || *token_list == NULL)
+		return (NULL);
+	new_token_list = NULL;
+	head = *token_list;
+	while (head != NULL)
+	{
+		t_token *token = head->content;
+		if (token->handler == NONE)
+		{
+			ft_lstadd_back(&new_token_list, tokenize_str(token->content, data)); // might need to do only for none.
+		}
+		else
+		{
+			ft_lstadd_back(&new_token_list, ft_lstnew(token)); // there's very finnicky memory problems here if trying to free
+		}
+		head = head->next;
+	}
+	return (new_token_list);
+}
+
+// t_bool	is_token_cmd(char *content, char *envp[])
+// {
+// 	char	*cmd_path;
+
+// 	cmd_path = find_cmd_path(content, envp);
+// 	if (cmd_path == NULL)
+// 		return (FALSE);
+// 	return (TRUE);
+// }
 
 t_bool	is_token_builtin(char *content)
 {
@@ -139,10 +237,19 @@ t_bool	is_token_builtin(char *content)
 		return (FALSE);
 }
 
-t_bool	is_token_executable(char *content)
+t_bool	is_token_executable(char *path)
 {
-	if (ft_strlen(content) >= 2 && content[0] == '.' && content[1] == '/')
+	int success;
+	struct stat	file_stat;
+	
+	success = access(path, X_OK);
+	if (success == 0)
+	{
+		stat(path, &file_stat);
+		if (S_ISDIR(file_stat.st_mode))
+			return (FALSE);
 		return (TRUE);
+	}
 	return (FALSE);
 }
 
@@ -163,7 +270,7 @@ t_bool	is_token_option(char *content)
 	return (FALSE);
 }
 
-t_bool	is_token_setvalue(char *content)
+t_bool	is_token_assignment(char *content)
 {
 	t_env_var	*env_var;
 
@@ -172,38 +279,13 @@ t_bool	is_token_setvalue(char *content)
 		env_var = split_setvalue(content);
 		if (env_var != NULL)
 		{
-			free(env_var);
+			free_env_var(env_var);
 			return (TRUE);
 		}
 	}
 	return (FALSE);
 }
 
-enum primary_token_type	get_primary_token_type(char *content)
-{
-	int	size;
-	int	index;
-
-	size = ft_strlen(content);
-	index = 0;
-	if (size == 0)
-		return (ERROR);
-	if (content[index] == ' ')
-		return (WHITESPACE);
-	else if (is_token_setvalue(content) == TRUE)
-		return (SET_VALUE); // variable first letter needs to be alpha, then variable itself needs to be alphanum, value can be ASCII
-	else if (ft_strchr(content, '|') && size == 1)
-		return (PIPE);
-	else if ((ft_strchr(content, '<') || ft_strchr(content, '>')) && size == 1)
-		return (REDIRECTION);
-	else if ((ft_strnstr(content, ">>", size) || ft_strnstr(content, "<<", size)) && size == 2)
-		return (REDIRECTION);
-	// else if (size >= 2 && content[0] == '$' && ft_isalpha_str(content + 1) == TRUE)
-	// 	return (VARIABLE);
-	else if (ft_isalnum_str(content) == TRUE)
-		return (ALPHANUMERIC);
-	return (ASCII);
-}
 /*
 	Modifies the **token_list's token types to more suitable token types like COMMAND, OPTION and ARGUMENT
 */
@@ -213,97 +295,29 @@ t_lst    *assign_cmd_opt_arg_type(t_lst **token_list, t_data *data)
 	t_lst    *head;
 	t_token    *token;
 
+	(void)data;
 	cmd_line_flag = 0;
 	head = *token_list;
 	while (head != NULL)
 	{
 		token = head->content;
-		if (token->primary_type != WHITESPACE)
+		if (has_token_flag(token->flags, WHITESPACE) == FALSE)
 		{
-			if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII ) && cmd_line_flag == 0)
+			if (has_token_flag(token->flags, ASSIGNMENT) && cmd_line_flag == 0)
 			{
-				if (is_token_cmd(token->content, data->envp) == TRUE || is_token_builtin(token->content) == TRUE || is_token_executable(token->content) == TRUE)
-				{
-					token->secondary_type = COMMAND;
-					cmd_line_flag = 1;
-				}
+				cmd_line_flag = 1;
 			}
-			// else if (token->primary_type == ASCII && cmd_line_flag == 0 && )
-			// {
-
-			// }
-			// else if (token->primary_type == ASCII && cmd_line_flag == 1)
-			// {
-			//     if (is_token_option(token->content) == TRUE)
-			//         token->secondary_type = ARGUMENT; // SUPPOSED TO BE OPTION BUT TURNED ARGUMENT
-			// }
-			else if ((token->primary_type == ALPHANUMERIC || token->primary_type == ASCII || token->primary_type == SET_VALUE) 
-				&& cmd_line_flag == 1)
-				token->secondary_type = ARGUMENT;
+			else if (has_token_flag(token->flags, WORD) && cmd_line_flag == 0)
+			{
+				token_add_flag(token->flags, COMMAND);
+				cmd_line_flag = 1;
+			}
+			else if ((has_token_flag(token->flags, WORD) || has_token_flag(token->flags, ASSIGNMENT)) && cmd_line_flag == 1)
+				token_add_flag(token->flags, ARGUMENT);
 			else
 				cmd_line_flag = 0;
 		}
 		head = head->next;
 	}
 	return (*token_list);
-}
-
-t_lst	**assign_redirection_type(t_lst	**token_list)
-{
-	t_lst	*head;
-	t_token	*token;
-	int		size;
-
-	if (token_list == NULL || *token_list == NULL)
-		return (NULL);
-	head = *token_list;
-	while (head != NULL)
-	{
-		token = head->content;
-		if (token->primary_type == REDIRECTION)
-		{
-			size = ft_strlen(token->content);
-			if (ft_strchr(token->content, '<') && size == 1)
-				token->secondary_type = REDIRECTION_INPUT;
-			else if (ft_strchr(token->content, '>') && size == 1)
-				token->secondary_type = REDIRECTION_OUTPUT;
-			else if (ft_strnstr(token->content, ">>", size) && size == 2)
-				token->secondary_type = REDIRECTION_APPEND;
-			else if (ft_strnstr(token->content, "<<", size) && size == 2)
-				token->secondary_type = REDIRECTION_DELIMITER;
-		}
-		head = head->next;
-	}
-	return (token_list);
-}
-
-void	assign_adjacent_whitespace(t_lst **token_list)
-{
-	t_lst	*head;
-	t_token	*token;
-	t_token	*adj_token;
-
-	head = *token_list;
-	while (head != NULL)
-	{
-		token = head->content;
-		if (token != NULL)
-		{
-			token->right_white_space = FALSE;
-			token->left_white_space = FALSE;
-			if (head->next != NULL)
-			{
-				adj_token = head->next->content;
-				if (adj_token != NULL && adj_token->primary_type == WHITESPACE)
-					token->right_white_space = TRUE;
-			}
-			if (ft_lstgetprevious(token_list, head) != NULL)
-			{
-				adj_token = ft_lstgetprevious(token_list, head)->content;
-				if (adj_token != NULL && adj_token->primary_type == WHITESPACE)
-					token->left_white_space = TRUE;
-			}
-		}
-		head = head->next;
-	}
 }
