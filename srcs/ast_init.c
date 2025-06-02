@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:57:03 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/01 13:03:59 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/02 13:32:26 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,16 +138,24 @@ t_ast	*init_redirection(t_lst **token_list, t_lst *redirection_token)
 t_ast	*init_input_redirection(t_lst **token_list, t_lst *redirection_token)
 {
 	t_ast	*result;
+	t_lst	*input_arg;
+	t_lst	*cmd_token_lst;
+	t_token	*input_token;
 
 	result = ft_calloc(1, sizeof(t_ast));
 	if (result == NULL || redirection_token == NULL || redirection_token->content == NULL )
 		return (NULL);
 	result->token = redirection_token->content;;
-	t_lst *input_arg = find_token_left(token_list, redirection_token, WORD, 3); // ARGUMENT | 2
+	input_arg = find_token_left(token_list, redirection_token, WORD, 2); // ARGUMENT
 	if (input_arg == NULL)
 		return (NULL);
+	input_token = input_arg->content;
+	if (input_token == NULL)
+		return (NULL);
+	token_rm_flag(input_token->flags, COMMAND);
+	token_add_flag(input_token->flags, ARGUMENT);
 	ft_lstadd_back(&result->node_list, ft_lstnew(init_argument(input_arg)));
-	t_lst	*cmd_token_lst = find_token_right(redirection_token, COMMAND, 3); // 2
+	cmd_token_lst = find_token_right(redirection_token, COMMAND, 2);
 	if (cmd_token_lst == NULL)
 		return (NULL);
 	ft_lstadd_back(&result->node_list, ft_lstnew(init_command(cmd_token_lst)));
@@ -160,6 +168,7 @@ t_ast	*init_output_redirection(t_lst **token_list, t_lst *redirection_token)
 	t_lst	*cmd_lst;
 	t_lst	*pipe_lst;
 	t_lst	*output_arg;
+	t_token	*output_token;
 
 	result = ft_calloc(1, sizeof(t_ast));
 	if (result == NULL)
@@ -169,14 +178,19 @@ t_ast	*init_output_redirection(t_lst **token_list, t_lst *redirection_token)
 	cmd_lst = NULL;
 	pipe_lst = find_token_left(token_list, redirection_token, PIPE, ft_lstsize(*token_list));
 	if (pipe_lst != NULL)
-		cmd_lst = find_token_right(pipe_lst, COMMAND, 3); // 2
+		cmd_lst = find_token_right(pipe_lst, COMMAND, 2);
 	else if (pipe_lst == NULL)
 		cmd_lst = find_token_left(token_list, redirection_token, COMMAND, ft_lstsize(*token_list));
 	if (cmd_lst == NULL)
 		return (NULL);
-	output_arg = find_token_right(redirection_token, WORD, 3); // 2
+	output_arg = find_token_right(redirection_token, WORD, 2);
 	if (output_arg == NULL)
 		return (NULL);
+	output_token = output_arg->content;
+	if (output_token == NULL)
+		return (NULL);
+	token_rm_flag(output_token->flags, COMMAND);
+	token_add_flag(output_token->flags, ARGUMENT);
 	ft_lstadd_back(&result->node_list, ft_lstnew(init_command(cmd_lst)));
 	ft_lstadd_back(&result->node_list, ft_lstnew(init_argument(output_arg)));
 	return (result);
@@ -191,11 +205,11 @@ t_ast	*init_command(t_lst	*command_token)
 		return (NULL);
 	result->token = command_token->content;
 	result->node_list = NULL;
-	t_lst	*arg_token_lst = find_token_right(command_token, ARGUMENT, 3);
+	t_lst	*arg_token_lst = find_token_right(command_token, ARGUMENT, 2);
 	while (arg_token_lst != NULL)
 	{
 		ft_lstadd_back(&result->node_list, ft_lstnew(init_argument(arg_token_lst)));
-		arg_token_lst = find_token_right(arg_token_lst->next, ARGUMENT, 3);
+		arg_token_lst = find_token_right(arg_token_lst->next, ARGUMENT, 1);
 	}
 	return (result);
 }

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/31 22:54:14 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/02 15:25:02 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ typedef int t_bool;
 enum	token_handler {
 	NONE,
 	DQUOTE,
-	SQUOTE
+	SQUOTE,
+	JOINT
 };
 
 typedef enum token_flag {
@@ -69,14 +70,11 @@ typedef enum token_flag {
 	COMMAND,
 	ARGUMENT,
 	ASSIGNMENT,
-	EMPTY
 } t_flag;
 
 typedef struct s_token {
 	char			*content;
 	enum	token_handler	handler;
-	// enum	primary_token_type	primary_type;
-	// enum	secondary_token_type	secondary_type;
 	t_flag				*flags;
 }	t_token;
 
@@ -110,7 +108,6 @@ void	shell_routine(t_data *data);
 t_data	*init_data(int argc, char **argv, char **envp);
 char	**get_envp_copy(char **envp, int extra);
 t_lst	*init_exported_env_var_lst(char ***envp);
-int		set_shlvl(t_lst *env_var_lst, char ***envp);
 
 // shell_env.c
 int		set_shlvl(t_lst *env_var_lst, char ***envp);
@@ -134,12 +131,16 @@ t_bool	is_token_cmd(char *content, char *envp[]);
 t_bool	is_token_builtin(char *content);
 t_bool	is_token_executable(char *content);
 t_bool	is_token_assignment(char *content);
-t_lst	*assign_cmd_opt_arg_type(t_lst	**token_list, t_data *data);
+t_lst	*assign_flags_cmd_arg(t_lst	**token_list, t_data *data);
 
 // token_flags.c
 t_bool	has_token_flag(t_flag *flags, t_flag flag);
-t_flag	*init_token_flags(char *content);
+t_flag	*init_token_flags(t_token *token);
 int		token_add_flag(t_flag *flag_arr, t_flag flag);
+int		token_add_flags(t_flag *flag_arr, t_flag *new_flag_arr);
+int		token_rm_flag(t_flag *flag_arr, t_flag flag);
+int		token_rm_flags(t_flag *flag_arr);
+t_flag	*token_dup_flag(t_flag *flag_arr);
 
 // history.c
 // void	ft_show_history(void);
@@ -236,11 +237,11 @@ void	store_history(t_data *data, const char *line);
 char	*expand_dollar_question(const char *arg, int last_exit_code);
 
 // export.c
-int	ft_addenv(char *arg, char ***envp);
-int	ft_setenv(char *key, char *value, char ***envp);
+int		ft_addenv(char *arg, char ***envp);
+int		ft_setenv(char *key, char *value, char ***envp);
 char	*ft_getenv(char *key, char **envp);
-int	ft_exportcheck(t_env_var *var, char ***envp);
-int	process_args(char **args, char ***envp, t_lst *env_var_lst);
+int		ft_exportcheck(t_env_var *var, char ***envp);
+int		process_args(char **args, char ***envp, t_lst *env_var_lst);
 
 // free.c
 void	free_envp(char **envp);
