@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/02 14:47:21 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/02 15:35:15 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,18 +39,16 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	token_list = tokenize_str(line, data);
 	if (token_list == NULL)
 		return (NULL);
-	printf("token list\n");
 	new_token_list = split_token_none(&token_list, data);
-	printf("split list\n");
 	ft_lstclear(&token_list, free_token);
 	token_list = new_token_list;
+	printf("Split list\n");
 	debug_token_list(token_list);
 	new_token_list = join_token_list(&token_list);
-	printf("join list\n");
+	printf("Join list\n");
 	debug_token_list(new_token_list);
 	ft_lstclear(&token_list, free_token);
 	assign_flags_cmd_arg(&new_token_list, data);
-	printf("assign list\n");
 	return (new_token_list);
 }
 
@@ -218,7 +216,8 @@ t_lst	*join_token_list(t_lst **token_list)
 		else if (has_token_flag(token->flags, WHITESPACE) == FALSE)
 		{
 			joint_content = add_joint_content(joint_content, token->content);
-			token_add_flags(joint_flags, token->flags);
+			if (!(has_token_flag(joint_flags, WORD) && has_token_flag(token->flags, ASSIGNMENT)))
+				token_add_flags(joint_flags, token->flags);
 		}
 		else if (has_token_flag(token->flags, WHITESPACE) == TRUE)
 		{
@@ -354,11 +353,7 @@ t_lst    *assign_flags_cmd_arg(t_lst **token_list, t_data *data)
 		token = head->content;
 		if (has_token_flag(token->flags, WHITESPACE) == FALSE)
 		{
-			if (has_token_flag(token->flags, ASSIGNMENT) && cmd_line_flag == 0)
-			{
-				cmd_line_flag = 1;
-			}
-			else if (has_token_flag(token->flags, WORD) && cmd_line_flag == 0)
+			if (has_token_flag(token->flags, WORD) && has_token_flag(token->flags, ASSIGNMENT) == FALSE && cmd_line_flag == 0)
 			{
 				token_add_flag(token->flags, COMMAND);
 				cmd_line_flag = 1;

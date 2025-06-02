@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/02 14:27:44 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/02 15:25:02 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ typedef enum token_flag {
 	COMMAND,
 	ARGUMENT,
 	ASSIGNMENT,
-	EMPTY
 } t_flag;
 
 typedef struct s_token {
