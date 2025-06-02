@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:48:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/02 13:07:02 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/02 14:32:04 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,8 @@ void	display_token_flag(enum token_flag flag)
 		printf("ASSIGNMENT");
 	else if (flag == EMPTY)
 		printf("EMPTY");
+	else
+		printf("%i", flag);
 }
 
 void	display_token_flags(enum token_flag *flags)
