@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 15:08:50 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/02 15:24:28 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/02 16:25:18 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,6 @@ int	token_rm_flags(t_flag *flag_arr)
 		flag_arr[i] = NO_FLAG;
 		i++;
 	}
-	display_token_flags(flag_arr);
 	return (0);
 }
 

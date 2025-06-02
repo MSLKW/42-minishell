@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/02 15:35:15 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/02 16:25:42 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,16 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	token_list = tokenize_str(line, data);
 	if (token_list == NULL)
 		return (NULL);
+	// printf("token_list\n");
+	// debug_token_list(token_list);
 	new_token_list = split_token_none(&token_list, data);
 	ft_lstclear(&token_list, free_token);
 	token_list = new_token_list;
-	printf("Split list\n");
-	debug_token_list(token_list);
+	// printf("Split list\n");
+	// debug_token_list(token_list);
 	new_token_list = join_token_list(&token_list);
-	printf("Join list\n");
-	debug_token_list(new_token_list);
+	// printf("Join list\n");
+	// debug_token_list(new_token_list);
 	ft_lstclear(&token_list, free_token);
 	assign_flags_cmd_arg(&new_token_list, data);
 	return (new_token_list);
