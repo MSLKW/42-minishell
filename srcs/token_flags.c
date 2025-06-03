@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 15:08:50 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/03 15:13:05 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/03 16:31:59 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,6 +198,7 @@ int	token_add_flags_iter(t_lst *token_list, t_flag flag)
 {
 	t_lst	*head;
 	t_token	*token;
+	t_flag	*flags;
 
 	if (token_list == NULL)
 		return (1);
@@ -205,8 +206,16 @@ int	token_add_flags_iter(t_lst *token_list, t_flag flag)
 	while (head != NULL)
 	{
 		token = head->content;
-		if (token_add_flag(token->flags, flag) != 0)
-			return (1);
+		flags = init_token_flags(token);
+		if (has_token_flag(flags, DELIMITER) == FALSE)
+		{
+			if (token_add_flag(token->flags, flag) != 0)
+			{
+				free(flags);
+				return (1);
+			}
+		}
+		free(flags);
 		head = head->next;
 	}
 	return (0);

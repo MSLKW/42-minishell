@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/03 15:16:39 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/03 16:26:41 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_token	*init_token(char *content, enum token_handler handler, t_flag *flags)
 	token->content = ft_strdup(content);
 	token->handler = handler;
 	if (flags == NULL)
-		token->flags = init_token_flags(token);
+		token->flags = init_empty_token_flags();
 	else
 	{
 		token->flags = token_dup_flag(flags);
@@ -46,8 +46,8 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	ft_lstclear(&token_list, free_token);
 	token_list = new_token_list;
 	apply_token_flags(token_list);
-	// printf("Split list\n");
-	// debug_token_list(token_list);
+	printf("Split list\n");
+	debug_token_list(token_list);
 	new_token_list = join_token_list(&token_list);
 	// printf("Join list\n");
 	// debug_token_list(new_token_list);
@@ -88,7 +88,7 @@ t_token	*handle_dquote(char *line, int *index)
 	content = ft_substr(line, *index, size);
 	if (content == NULL)
 		return (NULL);
-	token = init_token(content, DQUOTE, init_empty_token_flags());
+	token = init_token(content, DQUOTE, NULL);
 	free(content);
 	if (token == NULL)
 		return (NULL);
@@ -109,7 +109,7 @@ t_token	*handle_squote(char *line, int *index)
 	content = ft_substr(line, *index, size);
 	if (content == NULL)
 		return (NULL);
-	token = init_token(content, SQUOTE, init_empty_token_flags());
+	token = init_token(content, SQUOTE, NULL);
 	free(content);
 	if (token == NULL)
 		return (NULL);
@@ -142,7 +142,7 @@ t_token	*handle_none(char *line, int *index)
 	content = ft_substr(line, *index, size);
 	if (content == NULL)
 		return (NULL);
-	token = init_token(content, NONE, init_empty_token_flags());
+	token = init_token(content, NONE, NULL);
 	free(content);
 	if (token == NULL)
 		return (NULL);
@@ -385,6 +385,7 @@ t_lst	*expand_variable_token_list(t_lst *token_list, t_data *data)
 	t_lst	*head;
 	t_token	*token;
 	t_bool	status;
+	char	*content_ptr;
 
 	if (token_list == NULL)
 		return (NULL);
@@ -394,7 +395,9 @@ t_lst	*expand_variable_token_list(t_lst *token_list, t_data *data)
 		token = head->content;
 		if (token->handler == DQUOTE || token->handler == NONE)
 		{
-			token->content = variable_expansion(token->content, data, &status);
+			content_ptr = token->content;
+			token->content = variable_expansion(content_ptr, data, &status);
+			free(content_ptr);
 			if (status == TRUE && token->flags != NULL)
 				token_add_flag(token->flags, WORD);
 		}
