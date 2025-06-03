@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/02 16:28:43 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/03 13:33:26 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,12 @@ int	execute_ast(t_ast *ast, t_data *data)
 
 	if (has_token_flag(token->flags, PIPE))
 		return (execute_pipeline(ast, data));
-	// else if (token->primary_type == REDIRECTION)
-	// 	return (execute_redirection(ast)); // later
-	// else if (token->primary_type == REDIRECTION && token->secondary_type == REDIRECTION_OUTPUT)
-	// {
-	//    return execute_redirection_out(node, data);
-	// }
+	else if (has_token_flag(token->flags, REDIRECTION))
+		return (execute_redirection(ast)); // later
+	else if (has_token_flag(token->flags, REDIRECTION) && has_token_flag(token->flags, REDIRECTION_OUTPUT))
+	{
+		return execute_redirection_out(ast, data);
+	}
 	else if (has_token_flag(token->flags, COMMAND))
 		return (execute_command(ast, data));
 	else if (has_token_flag(token->flags, ASSIGNMENT))
@@ -46,28 +46,28 @@ int	execute_ast(t_ast *ast, t_data *data)
 		return (1);
 }
 
-// int execute_redirection_out(t_ast *node, t_data *data)
-// {
-// 	int fd;
-// 	int saved_stdout;
-// 	// t_ast *left = node->left;
-// 	// t_ast *right = node->right;
+int execute_redirection_out(t_ast *node, t_data *data)
+{
+	int fd;
+	int saved_stdout;
+	t_ast *left = node->left;
+	t_ast *right = node->right;
 
-// 	if (!left || !right)
-// 		return (set_error("Invalid redirection syntax"), 1);
+	if (!left || !right)
+		return (set_error("Invalid redirection syntax"), 1);
 
-// 	fd = open(right->token->content, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-// 	if (fd == -1)
-// 		return (perror("open"), 1);
-// 	saved_stdout = dup(STDOUT_FILENO);
-// 	dup2(fd, STDOUT_FILENO);
-// 	close(fd);
-// 	int status = execute_ast(left, data);
-// 	dup2(saved_stdout, STDOUT_FILENO);
-// 	close(saved_stdout);
+	fd = open(right->token->content, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
+		return (perror("open"), 1);
+	saved_stdout = dup(STDOUT_FILENO);
+	dup2(fd, STDOUT_FILENO);
+	close(fd);
+	int status = execute_ast(left, data);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdout);
 
-// 	return status;
-// }
+	return status;
+}
 
 // char	**build_cmd_args(t_ast *node)
 // {
