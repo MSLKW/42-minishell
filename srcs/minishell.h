@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/02 15:25:02 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/03 15:14:50 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,19 +121,21 @@ t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index);
 
 // tokenize.c
 t_lst	*tokenize_line(char *line, t_data *data);
-t_lst	*tokenize_str(char *line, t_data *data);
-t_token	*handle_dquote(char *line, int *index, t_data *data);
+t_lst	*tokenize_str(char *line);
+t_token	*handle_dquote(char *line, int *index);
 t_token	*handle_squote(char *line, int *index);
-t_token	*handle_none(char *line, int *index, t_data *data);
-t_lst	*split_token_none(t_lst **token_list, t_data *data);
+t_token	*handle_none(char *line, int *index);
+t_lst	*split_token_none(t_lst **token_list);
 t_lst	*join_token_list(t_lst **token_list);
 t_bool	is_token_cmd(char *content, char *envp[]);
 t_bool	is_token_builtin(char *content);
 t_bool	is_token_executable(char *content);
 t_bool	is_token_assignment(char *content);
 t_lst	*assign_flags_cmd_arg(t_lst	**token_list, t_data *data);
+t_lst	*expand_variable_token_list(t_lst *token_list, t_data *data);
 
 // token_flags.c
+t_flag	*init_empty_token_flags(void);
 t_bool	has_token_flag(t_flag *flags, t_flag flag);
 t_flag	*init_token_flags(t_token *token);
 int		token_add_flag(t_flag *flag_arr, t_flag flag);
@@ -141,6 +143,8 @@ int		token_add_flags(t_flag *flag_arr, t_flag *new_flag_arr);
 int		token_rm_flag(t_flag *flag_arr, t_flag flag);
 int		token_rm_flags(t_flag *flag_arr);
 t_flag	*token_dup_flag(t_flag *flag_arr);
+int		token_add_flags_iter(t_lst *token_list, t_flag flag);
+int		apply_token_flags(t_lst	*token_list);
 
 // history.c
 // void	ft_show_history(void);
@@ -188,7 +192,7 @@ void		free_env_var(void *content);
 void		display_env_var(t_data *data);
 
 // variable_expansion.c
-char	*variable_expansion(const char *arg, t_data *data);
+char	*variable_expansion(const char *arg, t_data *data, t_bool *status);
 t_lst	*tokens_variable_expansion(t_lst *tokens_lst, t_data *data);
 
 // execute_new.c
