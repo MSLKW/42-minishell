@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:26:34 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/01 13:54:57 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/03 18:11:54 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ void	free_token(void *content)
 	free(token->flags);
 	free(token);
 }
+
 void	free_ast(t_ast **ast)
 {
 	if (ast == NULL || *ast == NULL)
@@ -80,7 +81,7 @@ void	free_ast(t_ast **ast)
 void	free_ast_node(void	*content)
 {
 	t_ast	*ast_node;
-	
+
 	ast_node = (t_ast *)content;
 	if (ast_node == NULL)
 		return ;

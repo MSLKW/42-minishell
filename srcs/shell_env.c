@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:38:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/02 11:40:06 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/03 18:29:02 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,4 @@ int	set_shlvl(t_lst *env_var_lst, char ***envp)
 
 // int	set_shell_env(t_env_var **env_var_lst)
 // {
-	
 // }
