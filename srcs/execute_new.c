@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/02 16:28:43 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/03 18:20:29 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ int	execute_ast(t_ast *ast, t_data *data)
 
 	if (has_token_flag(token->flags, PIPE))
 		return (execute_pipeline(ast, data));
-	// else if (token->primary_type == REDIRECTION)
+	// else if (has_token_flag(token->flags, REDIRECTION))
 	// 	return (execute_redirection(ast)); // later
-	// else if (token->primary_type == REDIRECTION && token->secondary_type == REDIRECTION_OUTPUT)
+	// else if (has_token_flag(token->flags, REDIRECTION) && has_token_flag(token->flags, REDIRECTION_OUTPUT))
 	// {
-	//    return execute_redirection_out(node, data);
+	// 	return execute_redirection_out(ast, data);
 	// }
 	else if (has_token_flag(token->flags, COMMAND))
 		return (execute_command(ast, data));
@@ -50,8 +50,8 @@ int	execute_ast(t_ast *ast, t_data *data)
 // {
 // 	int fd;
 // 	int saved_stdout;
-// 	// t_ast *left = node->left;
-// 	// t_ast *right = node->right;
+// 	t_ast *left = node->left;
+// 	t_ast *right = node->right;
 
 // 	if (!left || !right)
 // 		return (set_error("Invalid redirection syntax"), 1);
@@ -134,6 +134,146 @@ char **build_cmd_args(t_ast *cmd_node)
 	return (args);
 }
 
+// int handle_redirection(t_ast *redir_node, t_data *data) {
+// 	printf("Handling redirection:\n");
+//     if (!redir_node || !redir_node->node_list || 
+//         ft_lstsize(redir_node->node_list) < 2) {
+//         fprintf(stderr, "Syntax error near redirection\n");
+//         return 1;
+//     }
+
+//     // Get the command and filename nodes
+//     t_ast *cmd_node = (t_ast *)redir_node->node_list->content;
+//     t_ast *file_node = (t_ast *)redir_node->node_list->next->content;
+
+//     if (!cmd_node || !file_node || !file_node->token) {
+//         fprintf(stderr, "Syntax error in redirection\n");
+//         return 1;
+//     }
+
+//     // Open the output file
+//     int fd = open(file_node->token->content, 
+//                  O_WRONLY | O_CREAT | O_TRUNC, 0644);
+//     if (fd < 0) {
+//         perror("minishell");
+//         return 1;
+//     }
+
+//     // Save original stdout
+//     int stdout_backup = dup(STDOUT_FILENO);
+//     if (stdout_backup < 0) {
+//         perror("minishell");
+//         close(fd);
+//         return 1;
+//     }
+
+//     // Redirect stdout to file
+//     if (dup2(fd, STDOUT_FILENO) < 0) {
+//         perror("minishell");
+//         close(fd);
+//         close(stdout_backup);
+//         return 1;
+//     }
+//     close(fd);
+
+//     // Execute the command
+//     int exit_code = execute_command(cmd_node, data);
+
+//     // Restore stdout
+//     if (dup2(stdout_backup, STDOUT_FILENO) < 0) {
+//         perror("minishell");
+//         exit_code = 1;
+//     }
+//     close(stdout_backup);
+
+//     return exit_code;
+// }
+
+// int handle_redirections(t_ast *node, t_data *data) {
+//     int stdout_backup = -1;
+//     t_ast *cmd_node = NULL;
+//     char *filename = NULL;
+
+//     // Find the command and redirection parts
+//     t_lst *current = node->node_list;
+//     while (current) {
+//         t_ast *child = (t_ast *)current->content;
+//         if (child && child->token) {
+//             if (has_token_flag(child->token->flags, REDIRECTION_OUTPUT)) {
+//                 // Get the filename from next node
+//                 if (current->next) {
+//                     t_ast *file_node = (t_ast *)current->next->content;
+//                     if (file_node && file_node->token) {
+//                         filename = file_node->token->content;
+//                     }
+//                 }
+//             }
+//             else if (has_token_flag(child->token->flags, COMMAND)) {
+//                 cmd_node = child;
+//             }
+//         }
+//         current = current->next;
+//     }
+
+//     // Set up redirection
+//     if (filename) {
+//         int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+//         if (fd < 0) return (perror("open"), 1);
+//         stdout_backup = dup(STDOUT_FILENO);
+//         dup2(fd, STDOUT_FILENO);
+//         close(fd);
+//     }
+
+//     // Execute the command
+//     int exit_code = 0;
+//     if (cmd_node) {
+//         exit_code = execute_command(cmd_node, data);
+//     }
+
+//     // Restore stdout if redirected
+//     if (stdout_backup != -1) {
+//         dup2(stdout_backup, STDOUT_FILENO);
+//         close(stdout_backup);
+//     }
+
+//     return exit_code;
+// }
+
+t_lst *find_redirections(t_ast *node) {
+    t_lst *redirs = NULL;
+    t_lst *current = node->node_list;
+    
+    while (current) {
+        t_ast *child = (t_ast *)current->content;
+        if (child->token && 
+            (has_token_flag(child->token->flags, REDIRECTION_OUTPUT) ||
+             has_token_flag(child->token->flags, REDIRECTION_INPUT))) {
+            ft_lstadd_back(&redirs, ft_lstnew(child));
+        }
+        current = current->next;
+    }
+    return redirs;
+}
+
+int setup_redirections(t_lst *redirections) {
+    t_lst *current = redirections;
+    while (current) {
+        t_ast *redir = (t_ast *)current->content;
+        if (has_token_flag(redir->token->flags, REDIRECTION_OUTPUT)) {
+            t_ast *file_node = (t_ast *)redir->node_list->content;
+            int fd = open(file_node->token->content, O_WRONLY|O_CREAT|O_TRUNC, 0644);
+            if (fd < 0 || dup2(fd, STDOUT_FILENO) < 0) {
+                perror("minishell");
+                return 1;
+            }
+            close(fd);
+        }
+        // Handle other redirection types similarly
+        current = current->next;
+    }
+    return 0;
+}
+
 int	execute_command(t_ast *node, t_data *data)
 {
 	char	**args;
@@ -142,7 +282,9 @@ int	execute_command(t_ast *node, t_data *data)
 	int		status;
 
 	args = build_cmd_args(node);
-	
+	t_lst *redirections = find_redirections(node);
+	if (setup_redirections(redirections) != 0)
+		return 1;
 	for (int i = 0; args && args[i]; i++)
 		printf("arg[%d] = \"%s\"\n", i, args[i]);
 	printf("Executing command: %s\n", args[0]);
