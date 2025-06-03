@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:20:26 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/26 15:42:25 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/03 18:14:23 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ void	free_exit(int exit_status, t_data *data)
 	exit(exit_status);
 }
 
-int	builtin_exit(char** args, t_data *data)
+int	builtin_exit(char **args, t_data *data)
 {
-	int exit_status;
+	int	exit_status;
 
 	exit_status = 0;
 	printf("exit\n");

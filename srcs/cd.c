@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:01:48 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/26 17:13:58 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/03 18:18:18 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static char	*get_change_cwd(char **args, t_data *data)
 /*
 	Sets OLDPWD to environment rl_dump_variables
 */
-int builtin_cd(char **args, t_data *data)
+int	builtin_cd(char **args, t_data *data)
 {
 	char	*oldpwd;
 	char	*newpwd;

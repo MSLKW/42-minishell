@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:30 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/01 13:37:00 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/03 12:40:55 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,34 +79,51 @@ static t_lst	*split_variable_list(const char *arg)
 /*
 	Iterates the list and expands any variable inside
 */
-static void	domain_variable_expansion(t_lst	*split_arg_list, t_data *data)
+static t_bool	expand_variable(t_lst *head, char *arg, t_data *data)
+{
+	t_env_var	*var;
+	t_bool		is_expanded;
+
+	arg = head->content;
+	is_expanded = FALSE;
+	if (ft_strlen(arg) >= 2 && arg[0] == '$')
+	{
+		if (arg[1] == '?')
+		{
+			head->content = ft_itoa(data->last_exit_code);
+			return (TRUE);
+		}
+		var = get_env_variable(arg + 1, data->env_var_lst);
+		if (var == NULL)
+			head->content = ft_strdup("");
+		free(arg);
+		if (var != NULL && var->value != NULL)
+		{
+			head->content = ft_strdup(var->value);
+			is_expanded = TRUE;
+		}
+		else if (var != NULL && var->value == NULL)
+			head->content = ft_strdup("");
+	}
+	return (is_expanded);
+}
+
+static t_bool	domain_variable_expansion(t_lst	*split_arg_list, t_data *data)
 {
 	t_lst		*head;
 	char		*arg;
-	t_env_var	*var;
+	t_bool		is_expanded;
 
+	is_expanded = FALSE;
 	head = split_arg_list;
 	while (head != NULL)
 	{
 		arg = head->content;
-		if (ft_strlen(arg) >= 2 && arg[0] == '$')
-		{
-			if (arg[1] == '?')
-				head->content = ft_itoa(data->last_exit_code);
-			else
-			{
-				var = get_env_variable(arg + 1, data->env_var_lst);
-				if (var == NULL)
-					head->content = ft_strdup("");
-				free(arg);
-				if (var != NULL && var->value != NULL)
-					head->content = ft_strdup(var->value);
-				else if (var != NULL && var->value == NULL)
-					head->content = ft_strdup("");
-			}
-		}
+		if (expand_variable(head, arg, data) == TRUE)
+			is_expanded = TRUE;
 		head = head->next;
 	}
+	return (is_expanded);
 }
 
 static char	*rejoining_strs(t_lst *split_arg)
@@ -135,17 +152,21 @@ static char	*rejoining_strs(t_lst *split_arg)
 
 /*
 	Returns argument with variables expanded in it
+	status returns TRUE if any variable is successfully expanded with content
 */
-char	*variable_expansion(const char *arg, t_data *data)
+char	*variable_expansion(const char *arg, t_data *data, t_bool *status)
 {
 	t_lst	*split_arg;
 	char	*result;
+	t_bool	is_expanded;
 
 	if (arg == NULL)
 		return (NULL);
 	split_arg = split_variable_list(arg);
 	// ft_lststrdisplay(split_arg);
-	domain_variable_expansion(split_arg, data);
+	is_expanded = domain_variable_expansion(split_arg, data);
+	if (status != NULL)
+		*status = is_expanded;
 	// ft_lststrdisplay(split_arg);
 	result = rejoining_strs(split_arg);
 	ft_lstclear(&split_arg, free);
