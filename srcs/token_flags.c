@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 15:08:50 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/02 16:25:18 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/03 16:31:59 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,23 @@ t_bool	has_token_flag(t_flag *flags, t_flag flag)
 	return (FALSE);
 }
 
+t_flag	*init_empty_token_flags(void)
+{
+	t_flag *flag_arr;
+
+	flag_arr = ft_calloc(TOKEN_FLAG_SIZE, sizeof(t_flag));
+	if (flag_arr == NULL)
+		return (NULL);
+	return (flag_arr);
+}
+
 t_flag	*init_token_flags(t_token *token)
 {
 	t_flag	*flag_arr;
 	int		size;
 	char	*content;
 
-	flag_arr = ft_calloc(TOKEN_FLAG_SIZE, sizeof(t_flag));
+	flag_arr = init_empty_token_flags();
 	if (token == NULL || flag_arr == NULL || token->content == NULL)
 		return (NULL);
 	content = token->content;
@@ -172,7 +182,7 @@ t_flag	*token_dup_flag(t_flag *flag_arr)
 
 	if (flag_arr == NULL)
 		return (NULL);
-	new_flag_arr = ft_calloc(TOKEN_FLAG_SIZE, sizeof(t_flag));
+	new_flag_arr = init_empty_token_flags();
 	if (new_flag_arr == NULL)
 		return (NULL);
 	i = 0;
@@ -182,4 +192,68 @@ t_flag	*token_dup_flag(t_flag *flag_arr)
 		i++;
 	}
 	return (new_flag_arr);
+}
+
+int	token_add_flags_iter(t_lst *token_list, t_flag flag)
+{
+	t_lst	*head;
+	t_token	*token;
+	t_flag	*flags;
+
+	if (token_list == NULL)
+		return (1);
+	head = token_list;
+	while (head != NULL)
+	{
+		token = head->content;
+		flags = init_token_flags(token);
+		if (has_token_flag(flags, DELIMITER) == FALSE)
+		{
+			if (token_add_flag(token->flags, flag) != 0)
+			{
+				free(flags);
+				return (1);
+			}
+		}
+		free(flags);
+		head = head->next;
+	}
+	return (0);
+}
+
+t_bool	is_token_flags_empty(t_flag *flags_arr)
+{
+	int	i;
+
+	if (flags_arr == NULL)
+		return (TRUE);
+	i = 0;
+	while (i < TOKEN_FLAG_SIZE)
+	{
+		if (flags_arr[i] != NO_FLAG)
+			return (FALSE);
+		i++;
+	}
+	return (TRUE);
+}
+
+int	apply_token_flags(t_lst	*token_list)
+{
+	t_lst	*head;
+	t_token	*token;
+	t_flag	*free_ptr;
+
+	head = token_list;
+	while (head != NULL)
+	{
+		token = head->content;
+		if (is_token_flags_empty(token->flags) == TRUE)
+		{
+			free_ptr = token->flags;
+			token->flags = init_token_flags(token);
+			free(free_ptr);
+		}
+		head = head->next;
+	}
+	return (0);
 }

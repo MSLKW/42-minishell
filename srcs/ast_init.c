@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast_init.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:57:03 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/02 13:32:26 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/03 16:48:26 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,11 +124,11 @@ t_ast	*init_redirection(t_lst **token_list, t_lst *redirection_token)
 	t_token	*token;
 
 	token = redirection_token->content;
-	if (has_token_flag(token->flags, REDIRECTION_INPUT) || has_token_flag(token->flags, REDIRECTION_DELIMITER))
+	if (has_token_flag(token->flags, REDIRECTION_INPUT))
 	{
 		return (init_input_redirection(token_list, redirection_token));
 	}
-	else if (has_token_flag(token->flags, REDIRECTION_OUTPUT) || has_token_flag(token->flags, REDIRECTION_APPEND))
+	else if (has_token_flag(token->flags, REDIRECTION_OUTPUT) || has_token_flag(token->flags, REDIRECTION_APPEND) || has_token_flag(token->flags, REDIRECTION_DELIMITER))
 	{
 		return (init_output_redirection(token_list, redirection_token));
 	}

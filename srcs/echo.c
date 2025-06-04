@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 21:09:52 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/25 18:38:15 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/03 18:13:45 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,26 @@
 
 int	is_n_flag(char *arg)
 {
+	int	i;
+
 	if (!arg || arg[0] != '-' || arg[1] != 'n')
 		return (0);
-	for (int i = 2; arg[i]; i++)
+	i = 2;
+	while (arg[i])
 	{
 		if (arg[i] != 'n')
 			return (0);
+		i++;
 	}
 	return (1);
 }
 
 int	builtin_echo(char **args)
 {
-	int i = 1;
-	int nl;
+	int	i;
+	int	nl;
 
+	i = 1;
 	nl = 1;
 	while (args[i] && is_n_flag(args[i]))
 	{

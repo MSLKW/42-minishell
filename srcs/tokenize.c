@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/02 16:25:42 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/03 17:27:39 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_token	*init_token(char *content, enum token_handler handler, t_flag *flags)
 	token->content = ft_strdup(content);
 	token->handler = handler;
 	if (flags == NULL)
-		token->flags = init_token_flags(token);
+		token->flags = init_empty_token_flags();
 	else
 	{
 		token->flags = token_dup_flag(flags);
@@ -36,14 +36,16 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	t_lst	*token_list;
 	t_lst	*new_token_list;
 
-	token_list = tokenize_str(line, data);
+	token_list = tokenize_str(line);
 	if (token_list == NULL)
 		return (NULL);
 	// printf("token_list\n");
 	// debug_token_list(token_list);
-	new_token_list = split_token_none(&token_list, data);
+	expand_variable_token_list(token_list, data);
+	new_token_list = split_token_none(&token_list);
 	ft_lstclear(&token_list, free_token);
 	token_list = new_token_list;
+	apply_token_flags(token_list);
 	// printf("Split list\n");
 	// debug_token_list(token_list);
 	new_token_list = join_token_list(&token_list);
@@ -54,7 +56,7 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	return (new_token_list);
 }
 
-t_lst	*tokenize_str(char *line, t_data *data)
+t_lst	*tokenize_str(char *line)
 {
 	int		index;
 	t_lst	*token_list;
@@ -64,21 +66,20 @@ t_lst	*tokenize_str(char *line, t_data *data)
 	while (line[index] != '\0')
 	{
 		if (line[index] == '\"')
-			ft_lstadd_back(&token_list, ft_lstnew(handle_dquote(line, &index, data)));
+			ft_lstadd_back(&token_list, ft_lstnew(handle_dquote(line, &index)));
 		else if (line[index] == '\'')
 			ft_lstadd_back(&token_list, ft_lstnew(handle_squote(line, &index)));
 		else
-			ft_lstadd_back(&token_list, ft_lstnew(handle_none(line, &index, data)));
+			ft_lstadd_back(&token_list, ft_lstnew(handle_none(line, &index)));
 	}
 	return (token_list);
 }
 
-t_token	*handle_dquote(char *line, int *index, t_data *data)
+t_token	*handle_dquote(char *line, int *index)
 {
 	int	size;
 	t_token	*token;
 	char	*content;
-	char	*expanded_content;
 
 	size = 0;
 	(*index)++;
@@ -87,12 +88,10 @@ t_token	*handle_dquote(char *line, int *index, t_data *data)
 	content = ft_substr(line, *index, size);
 	if (content == NULL)
 		return (NULL);
-	expanded_content = variable_expansion(content, data);
+	token = init_token(content, DQUOTE, NULL);
 	free(content);
-	token = init_token(expanded_content, DQUOTE, NULL);
 	if (token == NULL)
 		return (NULL);
-	free(expanded_content);
 	(*index) += size + 1;
 	return (token);
 }
@@ -111,19 +110,18 @@ t_token	*handle_squote(char *line, int *index)
 	if (content == NULL)
 		return (NULL);
 	token = init_token(content, SQUOTE, NULL);
+	free(content);
 	if (token == NULL)
 		return (NULL);
-	free(content);
 	(*index) += size + 1;
 	return (token);
 }
 
-t_token	*handle_none(char *line, int *index, t_data *data)
+t_token	*handle_none(char *line, int *index)
 {
 	int	size;
 	t_token	*token;
 	char	*content;
-	char	*expanded_content;
 
 	size = 0;
 	if (line[*index + size] == ' ')
@@ -136,20 +134,24 @@ t_token	*handle_none(char *line, int *index, t_data *data)
 		while ((line[*index + size] == '|' || line[*index + size] == '<' || line[*index + size] == '>') && line[*index + size] != '\0')
 			size++;
 	}
+	else if (line[*index + size] == '$')
+	{
+		size++;
+		while ((ft_isalnum(line[*index + size]) == TRUE || line[*index + size] == '_') && line[*index + size] != '\0')
+			size++;
+	}
 	else
 	{
-		while (line[*index + size] != ' ' && line[*index + size] != '\"' && line[*index + size] != '\'' && line[*index + size] != '|' && line[*index + size] != '<' && line[*index + size] != '>' && line[*index + size] != '\0')
+		while (line[*index + size] != ' ' && line[*index + size] != '\"' && line[*index + size] != '\'' && line[*index + size] != '|' && line[*index + size] != '<' && line[*index + size] != '>' && line[*index + size] != '$'&& line[*index + size] != '\0')
 			size++;
 	}
 	content = ft_substr(line, *index, size);
 	if (content == NULL)
 		return (NULL);
-	expanded_content = variable_expansion(content, data);
+	token = init_token(content, NONE, NULL);
 	free(content);
-	token = init_token(expanded_content, NONE, NULL);
 	if (token == NULL)
 		return (NULL);
-	free(expanded_content);
 	(*index) += size;
 	return (token);
 }
@@ -203,13 +205,13 @@ t_lst	*join_token_list(t_lst **token_list)
 	new_token_list = NULL;
 	head = *token_list;
 	joint_content = NULL;
-	joint_flags = ft_calloc(TOKEN_FLAG_SIZE, sizeof(t_flag));
+	joint_flags = init_empty_token_flags();
 	if (joint_flags == NULL)
 		return (NULL);
 	while (head != NULL)
 	{
 		token = head->content;
-		if (has_token_flag(token->flags, OPERATOR) == TRUE)
+		if (has_token_flag(token->flags, OPERATOR) == TRUE && (has_token_flag(joint_flags, ASSIGNMENT) == FALSE || token->handler == NONE))
 		{
 			capture_new_token(&joint_content, &new_token_list, joint_flags);
 			token_rm_flags(joint_flags);
@@ -218,8 +220,19 @@ t_lst	*join_token_list(t_lst **token_list)
 		else if (has_token_flag(token->flags, WHITESPACE) == FALSE)
 		{
 			joint_content = add_joint_content(joint_content, token->content);
-			if (!(has_token_flag(joint_flags, WORD) && has_token_flag(token->flags, ASSIGNMENT)))
+			
+			if (has_token_flag(joint_flags, WORD) && has_token_flag(token->flags, ASSIGNMENT))
+			{
+
+			}
+			else if (has_token_flag(joint_flags, ASSIGNMENT) && has_token_flag(token->flags, OPERATOR))
+ 			{
+
+			} 
+			else
 				token_add_flags(joint_flags, token->flags);
+			// if there is assignment before, and current token is an operator, then don't add flag
+
 		}
 		else if (has_token_flag(token->flags, WHITESPACE) == TRUE)
 		{
@@ -237,7 +250,7 @@ t_lst	*join_token_list(t_lst **token_list)
 	return (new_token_list);
 }
 
-t_lst	*split_token_none(t_lst **token_list, t_data *data)
+t_lst	*split_token_none(t_lst **token_list)
 {
 	t_lst	*new_token_list;
 	t_lst	*head;
@@ -252,7 +265,10 @@ t_lst	*split_token_none(t_lst **token_list, t_data *data)
 		token = head->content;
 		if (token->handler == NONE)
 		{
-			ft_lstadd_back(&new_token_list, tokenize_str(token->content, data)); // might only need to do for none
+			t_lst	*list = tokenize_str(token->content); // might only need to do for none
+			if (has_token_flag(token->flags, WORD))
+				token_add_flags_iter(list, WORD);
+			ft_lstadd_back(&new_token_list, list);
 		}
 		else
 		{
@@ -368,4 +384,30 @@ t_lst    *assign_flags_cmd_arg(t_lst **token_list, t_data *data)
 		head = head->next;
 	}
 	return (*token_list);
+}
+
+t_lst	*expand_variable_token_list(t_lst *token_list, t_data *data)
+{
+	t_lst	*head;
+	t_token	*token;
+	t_bool	status;
+	char	*content_ptr;
+
+	if (token_list == NULL)
+		return (NULL);
+	head = token_list;
+	while (head != NULL)
+	{
+		token = head->content;
+		if (token->handler == DQUOTE || token->handler == NONE)
+		{
+			content_ptr = token->content;
+			token->content = variable_expansion(content_ptr, data, &status);
+			free(content_ptr);
+			if (status == TRUE && token->flags != NULL)
+				token_add_flag(token->flags, WORD);
+		}
+		head = head->next;
+	}
+	return (token_list);
 }
