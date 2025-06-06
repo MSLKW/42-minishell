@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:48:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/02 15:25:17 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/06 17:54:30 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,4 +150,27 @@ void	display_ast_tree(t_ast *ast_node)
 			display_ast_tree(ast_list_node_re);
 		head = head->next;
 	}
+}
+
+void	display_env_var(t_data *data)
+{
+	t_lst		*head;
+	t_env_var	*env_var;
+	
+	printf("---env_var---\n");
+	head = data->env_var_lst;
+	while (head != NULL)
+	{
+		env_var = head->content;
+		if (env_var != NULL)
+		{
+			printf("display | env_var: %p | env_var key: %s | value: %s\n", env_var, env_var->key, env_var->value);
+		}
+		else
+		{
+			printf("env_var is null\n");
+		}
+		head = head->next;
+	}
+	printf("-------------\n");
 }

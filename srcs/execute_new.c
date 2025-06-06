@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/03 18:20:29 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/06 17:55:48 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -348,7 +348,7 @@ int	execute_setvalue(t_ast *node, t_data *data)
 	t_env_var *env_var;
 	t_ast		*arg_node;
 	
-	env_var = split_setvalue(node->token->content);
+	env_var = split_assignment(node->token->content);
 	if (env_var == NULL || env_var->key == NULL)
 		return (1);
 	else if (env_var->value == NULL || ft_strlen(env_var->value) == 0)

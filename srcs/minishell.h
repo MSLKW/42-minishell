@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/03 15:47:58 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/06 18:04:03 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,13 +183,14 @@ t_lst	*find_token_left(t_lst	**token_list, t_lst *current_token_lst, t_flag toke
 
 // variable.c
 t_env_var	*init_env_variable(char *key, char *value);
-t_env_var	*split_setvalue(char *content);
 t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, char ***envp);
 t_env_var	*get_env_variable(char *key, t_lst *env_var_lst);
-char		*get_env_var_value(char *key, t_lst *env_var_lst);
 int			unset_env_variable(char *key, t_lst **env_var_lst);
-void		free_env_var(void *content);
-void		display_env_var(t_data *data);
+
+// variable_helper.c
+t_bool		is_str_valid_key(char *key);
+char		*get_env_var_value(char *key, t_lst *env_var_lst);
+t_env_var	*split_assignment(char *content);
 
 // variable_expansion.c
 char	*variable_expansion(const char *arg, t_data *data, t_bool *status);
@@ -223,6 +224,7 @@ void	display_token_handler(enum token_handler handler);
 void	display_token_flag(enum token_flag flag);
 void	display_token_flags(enum token_flag *flags);
 void	display_ast_tree(t_ast *ast_node);
+void	display_env_var(t_data *data);
 
 // BUILTINS --
 int		builtin_echo(char **args);
@@ -255,6 +257,7 @@ void	free_tokens(t_lst **tokens_lst);
 void	free_token(void *content);
 void	free_ast(t_ast **ast);
 void	free_ast_node(void *content);
+void	free_env_var(void *content);
 
 // exit.c
 void	free_exit(int exit_status, t_data *data);

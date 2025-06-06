@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:26:34 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/03 18:11:54 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/06 18:03:38 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,4 +88,17 @@ void	free_ast_node(void	*content)
 	if (ast_node->node_list != NULL)
 		ft_lstclear(&ast_node->node_list, free_ast_node);
 	free(ast_node);
+}
+
+void	free_env_var(void *content)
+{
+	t_env_var	*env_var;
+
+	env_var = (t_env_var *)content;
+	if (env_var != NULL)
+	{
+		free(env_var->key);
+		free(env_var->value);
+		free(env_var);
+	}
 }
