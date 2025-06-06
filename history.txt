@@ -1,0 +1,1117 @@
+ 1189  make fclean
+ 1190  make
+ 1191  make fclean
+ 1192  make
+ 1193  make fclean
+ 1194  make
+ 1195  make fclean
+ 1196  make
+ 1197  make fclean
+ 1198  a="ec"
+ 1199  b="ho hi"
+ 1200  $a$b
+ 1201  b="ho hello        there"
+ 1202  $a$b
+ 1203  $a $b
+ 1204  '$a$b'
+ 1205  $a$b
+ 1206  "$a""$b"
+ 1207  "$a" "$b"
+ 1208  echo "$a""$b"
+ 1209  echo "$a"'c'"$b"
+ 1210  echo "$a" 'c' "$b"
+ 1211  echo "$a""$b"
+ 1212  echo "$a$b"
+ 1213  echo $a$b
+ 1214  abc="cool" "bad
+ 1215  "
+ 1216  echo $abc
+ 1217  a="ec"
+ 1218  b="ho hello   world"
+ 1219  $a$b
+ 1220  b="ho hello                world"
+ 1221  $a$b
+ 1222  b="ho       hello world"
+ 1223  $a$b
+ 1224  b="ho hello          world"
+ 1225  b="ho hello   world"
+ 1226  $a$b
+ 1227  echo $a$b
+ 1228  echo "$a$b"
+ 1229  echo "$a""$b"
+ 1230  echo "$a" "$b"
+ 1231  echo "$a"    "$b"
+ 1232  echo "$a""$b"
+ 1233  echo "$a$b"
+ 1234  echo "$b$a"
+ 1235  echo $b$a
+ 1236  echo '$a$b'
+ 1237  echo '$a''$b'
+ 1238  "$a$b"
+ 1239  echo "hello""world"
+ 1240  a="hello""world"
+ 1241  echo $a
+ 1242  a="hello" "ls"
+ 1243  a="hello" ls
+ 1244  echo $a
+ 1245  "a=helloworld"
+ 1246  unset a
+ 1247  a"=helloworld"
+ 1248  a="helloworld"
+ 1249  echo $a
+ 1250  unset a
+ 1251  echo $a
+ 1252  a="helloworld"
+ 1253  echo $a
+ 1254  a="hello   world"
+ 1255  echo $a
+ 1256  echo "$a"
+ 1257  $a
+ 1258  echo hello   world
+ 1259  echo "hello   world"
+ 1260  echo "hello   world""   a"
+ 1261  echo "hello   world"   a
+ 1262  'a='"helloworld"
+ 1263  a="hello" ls
+ 1264  echo $a
+ 1265  a=hello ls
+ 1266  echo $a
+ 1267  'a=helloworld'
+ 1268  a'=helloworld'
+ 1269  a='helloworld'
+ 1270  echo $a
+ 1271  "echo hello   world"
+ 1272  "echo hello world"
+ 1273  a="ec"
+ 1274  b="ho"
+ 1275  $a$b $a"hi"
+ 1276  $a$b "$ahi"
+ 1277  $a$b "$a.hi"
+ 1278  $a$b "$a.hi"'a'
+ 1279  $a'ho'
+ 1280  $a'ho' helloworld
+ 1281  $a"$b"
+ 1282  echo $a
+ 1283  echo $b
+ 1284  b="ho hello   world"
+ 1285  $a"$b"
+ 1286  "$a"$b
+ 1287  "a="helloworld
+ 1288  "$a"$b
+ 1289  "ec"ho hello   world
+ 1290  ec"ho hello   world"
+ 1291  ec"ho" hi
+ 1292  "ech"o "hello" "world"
+ 1293  "ech"o hello world
+ 1294  ec"ho" hi
+ 1295  ec"ho" hello world
+ 1296  ec"$a" hello world
+ 1297  a="ho"
+ 1298  ec$a hello world
+ 1299  ec"$a" hello world
+ 1300  "echo" "world"
+ 1301  make
+ 1302  ./minishell
+ 1303  echo $$
+ 1304  ./minishell
+ 1305  echo "$ $ $ $"
+ 1306  ./minishell
+ 1307  yes
+ 1308  ./minishell
+ 1309  \n
+ 1310  ./minishell
+ 1311  echo $INVALID
+ 1312  cd $INVLIAD
+ 1313  cd $INVALID
+ 1314  ./minishell
+ 1315  a="ec"
+ 1316  b="ho hello   world"
+ 1317  $a$b"hi"
+ 1318  $a$bhi
+ 1319  $a"$b"hi
+ 1320  $a"$b""hi"
+ 1321  $a"$b" "hi"
+ 1322  $a$b "hi"
+ 1323  $a$b
+ 1324  $a"$b"
+ 1325  "$a""$b"
+ 1326  "$a"$b
+ 1327  echo $b
+ 1328  echo "$b"
+ 1329  ./minishell
+ 1330  make
+ 1331  ./minishell
+ 1332  a="cat | cat | ls"
+ 1333  $a
+ 1334  "$a"
+ 1335  cat | cat | ls
+ 1336  $a
+ 1337  echo $a
+ 1338  a="cat | cat |    ls"
+ 1339  echo $a
+ 1340  a="env | grep SHLVL"
+ 1341  $a
+ 1342  "$a"
+ 1343  $a
+ 1344  a="grep SHLVL"
+ 1345  $a
+ 1346  a="env"
+ 1347  $a
+ 1348  echo $a
+ 1349  $a | grep SHLVL
+ 1350  a="env "
+ 1351  $a|grep SHLVL
+ 1352  $a | grep SHLVL
+ 1353  a="env"
+ 1354  $a|grep SHLVL
+ 1355  b="grep SHLVL"
+ 1356  $a|$b
+ 1357  b="env"
+ 1358  c="grep SHLVL"
+ 1359  $b|$c
+ 1360  $a
+ 1361  $b
+ 1362  $c
+ 1363  c="| grep SHLVL"
+ 1364  $b$c
+ 1365  $b $c
+ 1366  env| grep SHLVL
+ 1367  env"| grep SHLVL"
+ 1368  env| grep SHLVL
+ 1369  env|grep SHLVL
+ 1370  "env|"grep SHLVL
+ 1371  "env"|"grep"
+ 1372  "env"|"grep" SHLVL
+ 1373  "env""|""grep" SHLVL
+ 1374  "env"'|'"grep" SHLVL
+ 1375  cattest<echo
+ 1376  cattest < ech
+ 1377  cattest < echo
+ 1378  echo cattest
+ 1379  ./cattest < echo
+ 1380  echo ./cattest
+ 1381  cattest < cat
+ 1382  ./cattest < cat
+ 1383  cat > file.txt
+ 1384  file.txt < cat
+ 1385  "cat">"file.txt"
+ 1386  "cat>""file.txt"
+ 1387  "cat"">""file.txt"
+ 1388  "cat">"file.txt"
+ 1389  "cat">>"file.txt"
+ 1390  "cat"'>>'"file.txt"
+ 1391  cat>>file.txt
+ 1392  ./minishell
+ 1393  echo $a
+ 1394  a="env |"
+ 1395  b="grep SHLVL"
+ 1396  $a$b
+ 1397  a="env | "
+ 1398  $a$b
+ 1399  a="echo hel"
+ 1400  b="lo"
+ 1401  $a$b
+ 1402  "$a"$b
+ 1403  $a"$b
+ 1404  "
+ 1405  $a"$b"
+ 1406  echo hel"lo"
+ 1407  "echo hel"lo
+ 1408  "echo\n"
+ 1409  echo "hi\nworld"
+ 1410  echo "hi \n world"
+ 1411  ./minishell
+ 1412  read name; echo "$name"
+ 1413  echo "hello\nworld"
+ 1414  echo "hello\"test"
+ 1415  echo \$
+ 1416  echo "\$hi"
+ 1417  abc="hello" echo $abc
+ 1418  abc="hello"; echo $abc
+ 1419  abc="hello" echo
+ 1420  abc=hello echo "$abc"
+ 1421  abc=hello echo $abc
+ 1422  unset abc
+ 1423  abc=hello echo $abc
+ 1424  abc=hi echo "$abc"
+ 1425  /bin/sh
+ 1426  if hi
+ 1427  if
+ 1428  for for in for; do for=for; done; echo $for
+ 1429  echo $for
+ 1430  for for in for; do for=hi; done; echo $for
+ 1431  $"hello\nworld"
+ 1432  $'hello\nworld'
+ 1433  echo $'hello\nworld'
+ 1434  echo $"hello\nworld"
+ 1435  pre{one,two,three}post
+ 1436  echo pre{one,two,three}post
+ 1437  echo pre{one ,two,three}post
+ 1438  echo pre{"one ",two,three}post
+ 1439  var=value; echo $var
+ 1440  echo $var
+ 1441  unset var
+ 1442  var=value | echo $var
+ 1443  var=value echo $var
+ 1444  $IFS
+ 1445  echo $IFS
+ 1446  env | grep IFS
+ 1447  IFS=5
+ 1448  echo5world
+ 1449  echo $IFS
+ 1450  IFS=2
+ 1451  echo $IFS
+ 1452  env | grep IFS
+ 1453  export IFS=5
+ 1454  env | grep IFS
+ 1455  echo5HELLO
+ 1456  echo $IFS
+ 1457  echo "$IFS"
+ 1458  echo $IFS
+ 1459  unset IFS
+ 1460  echo "$IFS"
+ 1461  echo $IFS
+ 1462  IFS=
+ 1463  echo world
+ 1464  echoworld
+ 1465  apple banana orange
+ 1466  IFS=:
+ 1467  apple:banana:orange
+ 1468  echo "$IFS"
+ 1469  IFS=:; apple:banana:orange
+ 1470  set IFS=:
+ 1471  echo $IFS
+ 1472  echo:$IFS
+ 1473  IFS=":"
+ 1474  echo $IFS
+ 1475  echo:$IFS
+ 1476  echo :
+ 1477  env | grep IFS
+ 1478  make
+ 1479  ./minishell
+ 1480  $a="var="
+ 1481  a="var="
+ 1482  b="value"
+ 1483  $a$b
+ 1484  a=var=
+ 1485  b=value
+ 1486  $a$b
+ 1487  var=$b
+ 1488  echo $var
+ 1489  a="var"
+ 1490  b="value
+ 1491  "
+ 1492  $a=$b
+ 1493  echo $b
+ 1494  b="value
+ 1495  "
+ 1496  echo $b
+ 1497  5 + 5
+ 1498  $?
+ 1499  touch srcs/token_flags.c
+ 1500  ./minishell
+ 1501  a="var"
+ 1502  $a=value
+ 1503  "var"=value
+ 1504  a=var
+ 1505  $a=value
+ 1506  "va"r=value
+ 1507  git reset --hard
+ 1508  make
+ 1509  git reset --hard
+ 1510  fsck
+ 1511  git fsck
+ 1512  git fsck --lost-found
+ 1513  git rebase 6748b4e0b10fd927623a8d5a28ba40f913b48ffc
+ 1514  git rebase 0e6bbe64147eaba690e47db1b3a98fbec090517a
+ 1515  git reset --hard
+ 1516  git status
+ 1517  git logs
+ 1518  git log
+ 1519  git pull
+ 1520  git branch
+ 1521  cd ..
+ 1522  git clone https://github.com/MSLKW/42-minishell.git
+ 1523  ls
+ 1524  git clone https://github.com/MSLKW/42-minishell.git 42-minishell-new
+ 1525  cd 42-minishell-new
+ 1526  ls
+ 1527  cd ..
+ 1528  ls
+ 1529  rm -fr 42-minishell
+ 1530  mv 42-minishell-new 42-minishell
+ 1531  git status
+ 1532  git log
+ 1533  make
+ 1534  ./minishell
+ 1535  git status
+ 1536  make fclean
+ 1537  git status
+ 1538  git add .
+ 1539  git commit -m "Implemented SHLVL incrementing, Fixed variable expansion to get from shell envp instead of using getenv"
+ 1540  git push
+ 1541  make
+ 1542  ./minishell
+ 1543  make
+ 1544  ./minishell
+ 1545  make
+ 1546  ./minishell
+ 1547  make
+ 1548  ./minishell
+ 1549  make
+ 1550  ./minishell
+ 1551  make
+ 1552  ./minishell
+ 1553  make
+ 1554  ./minishell
+ 1555  make
+ 1556  ./minishell
+ 1557  $a
+ 1558  ./minishell
+ 1559  ""
+ 1560  make
+ 1561  ./minishell
+ 1562  make
+ 1563  ./minishell
+ 1564  make
+ 1565  ./minishell
+ 1566  git status
+ 1567  git add .
+ 1568  git commit -m "Implemented splitting and rejoining"
+ 1569  git push
+ 1570  touch srcs/token_flags.c
+ 1571  make srcs/token_flags.c
+ 1572  cc srcs/token_flags.c
+ 1573  cc -Wall -Wextra -Werror token_flags.c
+ 1574  cc -Wall -Wextra -Werror srcs/token_flags.c
+ 1575  make
+ 1576  cd srcs/
+ 1577  cc token_flags.c
+ 1578  cc token_flags.c -libft
+ 1579  ./a.out
+ 1580  ls -la
+ 1581  ls -la | grep ./a.out
+ 1582  cc token_flags.c
+ 1583  cc token_flags.c -libft
+ 1584  cc token_flags.c -llibft
+ 1585  cc token_flags.c ../libft/libft.a
+ 1586  ./a.out
+ 1587  cc token_flags.c ../libft/libft.a
+ 1588  ./a.out
+ 1589  cc token_flags.c ../libft/libft.a
+ 1590  ./a.out
+ 1591  cc token_flags.c ../libft/libft.a
+ 1592  ./a.out
+ 1593  cc token_flags.c ../libft/libft.a
+ 1594  ./a.out
+ 1595  cc token_flags.c ../libft/libft.a
+ 1596  ./a.out
+ 1597  cc token_flags.c ../libft/libft.a
+ 1598  ./a.out
+ 1599  cc token_flags.c ../libft/libft.a
+ 1600  ./a.out
+ 1601  cc token_flags.c ../libft/libft.a
+ 1602  ./a.out
+ 1603  cc token_flags.c ../libft/libft.a
+ 1604  ./a.out
+ 1605  cc token_flags.c ../libft/libft.a
+ 1606  ./a.out
+ 1607  cc token_flags.c ../libft/libft.a
+ 1608  ./a.out
+ 1609  cc token_flags.c ../libft/libft.a
+ 1610  ./a.out
+ 1611  cc token_flags.c ../libft/libft.a
+ 1612  ./a.out
+ 1613  cc token_flags.c ../libft/libft.a
+ 1614  ./a.out
+ 1615  cc token_flags.c ../libft/libft.a
+ 1616  ./a.out
+ 1617  cc token_flags.c ../libft/libft.a
+ 1618  ./a.out
+ 1619  make
+ 1620  cd srcs
+ 1621  ls -la | grep ./a.out
+ 1622  cd ..
+ 1623  make fclean
+ 1624  ls -la | grep ./a.out
+ 1625  cd srcs
+ 1626  ls -la | grep a.out
+ 1627  rm -fr a.out
+ 1628  cd ..
+ 1629  make
+ 1630  make fclean
+ 1631  make
+ 1632  hello world
+ 1633  ./minishell
+ 1634  make
+ 1635  ./minishell
+ 1636  make
+ 1637  ./minishell
+ 1638  make
+ 1639  ./minishell
+ 1640  make
+ 1641  ./minishell
+ 1642  make
+ 1643  ./minishell
+ 1644  a="'hi'"
+ 1645  echo $a
+ 1646  a="'ec'"
+ 1647  echo $a
+ 1648  $aho
+ 1649  $aho hi
+ 1650  echo $aho
+ 1651  b=ho
+ 1652  $a$b hi
+ 1653  a='"ho hello world"'
+ 1654  b=ec
+ 1655  $b$a
+ 1656  a='ho "hello world"'
+ 1657  $b$a
+ 1658  ec'ho "hello world"
+ 1659  '
+ 1660  ec'ho "hello world"'
+ 1661  a=ec
+ 1662  b='ho "hello world"'
+ 1663  b='ho "hello world"abc'
+ 1664  $a$b
+ 1665  b='ho "hello worldabc'
+ 1666  $a$b
+ 1667  $a'$b'
+ 1668  $a"$b"
+ 1669  b='ho "hello world"'
+ 1670  $a"$b"
+ 1671  git status
+ 1672  git add .
+ 1673  git commit -m "Replaced primary and secondary types with flags"
+ 1674  git status
+ 1675  git push
+ 1676  make fclean
+ 1677  git reset --hard
+ 1678  git pull
+ 1679  git branch
+ 1680  git checkout dev-mslkw
+ 1681  git pull
+ 1682  git branch
+ 1683  ls
+ 1684  rm srcs/minishell_history
+ 1685  yes
+ 1686  ./minishell
+ 1687  make
+ 1688  ./minishell
+ 1689  make
+ 1690  ./minishell
+ 1691  make
+ 1692  ./minishell
+ 1693  make
+ 1694  ./minishell
+ 1695  make
+ 1696  ./minishell
+ 1697  make
+ 1698  ./minishell
+ 1699  make
+ 1700  ./minishell
+ 1701  make
+ 1702  ./minishell
+ 1703  make
+ 1704  ./minishell
+ 1705  make
+ 1706  ./minishell
+ 1707  make
+ 1708  ./minishell
+ 1709  make
+ 1710  ./minishell
+ 1711  make
+ 1712  ./minishell
+ 1713  "ec""ho"|test
+ 1714  "l""s"|test
+ 1715  "l""s"|grep pwd
+ 1716  ls|grep pwd
+ 1717  ls | grep pwd
+ 1718  ls
+ 1719  ls | grep libft
+ 1720  ls|grep libft
+ 1721  "l""s"|grep libft
+ 1722  "l""s"|"gr""ep" libft
+ 1723  "l""s"|"gr""ep" "lib""ft"
+ 1724  "l""s"|"grep libft
+ 1725  "
+ 1726  "ls"
+ 1727  ./minishell
+ 1728  git status
+ 1729  git add .
+ 1730  git commit -m "Changed set_shlvl to shell_env.c | Fixed "cmd"|"cmd" being joined together"
+ 1731  git log
+ 1732  "cmd|cmd"
+ 1733  cmd<cmd
+ 1734  cmd<<cmd
+ 1735  test
+ 1736  cmd
+ 1737  cmd>>cmd
+ 1738  "cmd""|""cmd"
+ 1739  ./minishell
+ 1740  make
+ 1741  ./minishell
+ 1742  cmd||cmd
+ 1743  cmd|cmd
+ 1744  ls -la || grep libft
+ 1745  ls -la ||||| grep libft
+ 1746  ls -la ||| grep libft
+ 1747  ls -la | | | grep libft
+ 1748  ls -la || grep libft
+ 1749  ls -la | grep libft
+ 1750  ls -la || grep libft
+ 1751  make
+ 1752  ./minishell
+ 1753  make
+ 1754  ./minishell
+ 1755  make
+ 1756  ./minishell
+ 1757  make
+ 1758  ./minishell
+ 1759  make
+ 1760  ./minishell
+ 1761  make
+ 1762  ./minishell
+ 1763  echo <<<<<
+ 1764  echo <<
+ 1765  make
+ 1766  ./minishell
+ 1767  make
+ 1768  ./minishell
+ 1769  make
+ 1770  ./minishell
+ 1771  ls -la||grep libft
+ 1772  ls -la || grep libft
+ 1773  ls -la | grep libft
+ 1774  slep
+ 1775  sleep
+ 1776  sleep 5
+ 1777  ls -la | sleep 5
+ 1778  ls -la || sleep 5
+ 1779  ls -la || sleep 10
+ 1780  sleep 10 || ls -la
+ 1781  ./minishell
+ 1782  ls -la || sleep 1
+ 1783  ls -la "|||||" sleep 1
+ 1784  ls -la "||" sleep 1
+ 1785  ls -la || sleep 1
+ 1786  sleep || ls -la
+ 1787  sleep "||" ls -la
+ 1788  sleep 1 "||" ls -la
+ 1789  sleep || ls -la
+ 1790  "||"
+ 1791  ||
+ 1792  make
+ 1793  ./minishell
+ 1794  git status
+ 1795  git add .
+ 1796  git commit -m "Added \"JOINT\" handler, Fixed cmd|cmd splitting up into cmd | cmd now, together with the rest of the operators"
+ 1797  git push
+ 1798  ./minishell
+ 1799  make
+ 1800  ./minishell
+ 1801  make
+ 1802  ./minishell
+ 1803  make
+ 1804  ./minishell
+ 1805  make
+ 1806  ./minishell
+ 1807  make
+ 1808  ./minishell
+ 1809  make
+ 1810  ./minishell
+ 1811  make
+ 1812  ./minishell
+ 1813  make
+ 1814  ./minishell
+ 1815  make
+ 1816  ./minishell
+ 1817  make
+ 1818  ./minishell
+ 1819  make
+ 1820  ./minishell
+ 1821  make
+ 1822  ./minishell
+ 1823  make
+ 1824  ./minishell
+ 1825  make
+ 1826  ./minishell
+ 1827  make
+ 1828  ./minishell
+ 1829  make
+ 1830  ./minishell
+ 1831  make
+ 1832  ./minishell
+ 1833  make
+ 1834  ./minishell
+ 1835  make
+ 1836  ./minishell
+ 1837  make
+ 1838  ./minishell
+ 1839  make
+ 1840  ./minishell
+ 1841  make
+ 1842  ./minishell
+ 1843  make
+ 1844  ./minishell
+ 1845  make
+ 1846  ./minishell
+ 1847  make
+ 1848  ./minishell
+ 1849  make
+ 1850  ./minishell
+ 1851  b="ho hello   world"
+ 1852  echo $b
+ 1853  echo "$b"
+ 1854  ./minishell
+ 1855  git status
+ 1856  git add .
+ 1857  git commit -m "assignment looks good with all the ec\"ho hello world\" edgecases"
+ 1858  git push
+ 1859  ./minishell
+ 1860  va'=hi'
+ 1861  ./minishell
+ 1862  make
+ 1863  ./minishell
+ 1864  echo hello | sleep 5
+ 1865  sleep 5 | echo hello
+ 1866  ./minishell
+ 1867  echo hello | sleep 5
+ 1868  sleep 5 | echo hello
+ 1869  ./minishell
+ 1870  "va"r=value
+ 1871  ./minishell
+ 1872  echo $var
+ 1873  ./minishell
+ 1874  ""var=value
+ 1875  "" var=value
+ 1876  ""var=value
+ 1877  ./minishell
+ 1878  make
+ 1879  ./minishell
+ 1880  ""
+ 1881  make
+ 1882  ./minishell
+ 1883  make
+ 1884  ./minishell
+ 1885  make
+ 1886  ./minishell
+ 1887  var=a"lue"
+ 1888  echo $var
+ 1889  ./minishell
+ 1890  make
+ 1891  ./minishell
+ 1892  make
+ 1893  ./minishell
+ 1894  make
+ 1895  ./minishell
+ 1896  make
+ 1897  ./minishell
+ 1898  make
+ 1899  ./minishell
+ 1900  make
+ 1901  ./minishell
+ 1902  make
+ 1903  ./minishell
+ 1904  abc=cool bad
+ 1905  abc=cool echo hello world
+ 1906  echo $abc
+ 1907  ./minishell
+ 1908  git status
+ 1909  git add .
+ 1910  git commit -m "fixed abc=cool cmd bug"
+ 1911  git push
+ 1912  ./minishell
+ 1913  ""var=value
+ 1914  va="value"=hello
+ 1915  echo $va
+ 1916  ./minishell
+ 1917  va"=value""hello"
+ 1918  ./minishell
+ 1919  make re
+ 1920  valgrind -- ./minishell
+ 1921  valgrind --suppression=supp.supp -- ./minishell
+ 1922  valgrind --suppressions=supp.supp -- ./minishell
+ 1923  make fclean
+ 1924  make
+ 1925  ./minishell
+ 1926  make
+ 1927  ./minishsell
+ 1928  cmd|cmd
+ 1929  ./minishsel
+ 1930  ./minishell
+ 1931  make
+ 1932  ./minishell
+ 1933  make
+ 1934  ./minishell
+ 1935  make
+ 1936  ./minishell
+ 1937  make
+ 1938  ./minishell
+ 1939  make
+ 1940  ./minishell
+ 1941  make
+ 1942  ./minishell
+ 1943  git reset --hard
+ 1944  make
+ 1945  ./minishell
+ 1946  cmd|cmd
+ 1947  ./minishell
+ 1948  make
+ 1949  ./minishell
+ 1950  git status
+ 1951  make
+ 1952  ./minishell
+ 1953  git status
+ 1954  git add .
+ 1955  git commit -m "ready for merge to main"
+ 1956  git push
+ 1957  make fclean
+ 1958  git status
+ 1959  git add .
+ 1960  git log
+ 1961  git commit -m removed dollar_sign_expansion.c
+ 1962  git commit -m "removed dollar_sign_expansion.c"
+ 1963  git push
+ 1964  git pull
+ 1965  git checkout main
+ 1966  make
+ 1967  ./minishell echo hello world
+ 1968  ./minishell
+ 1969  git pull
+ 1970  ./minishell
+ 1971  make
+ 1972  ./minishell
+ 1973  make fclean
+ 1974  git branch
+ 1975  git checkout dev-mslkw
+ 1976  git branch
+ 1977  git status
+ 1978  git branch
+ 1979  git pull
+ 1980  git branch
+ 1981  make
+ 1982  ./minishell
+ 1983  echo hello | sleep 5
+ 1984  sleep 5 | echo hello
+ 1985  ./minishell
+ 1986  sleep 5 | echo hello
+ 1987  ./minishell
+ 1988  ""var=value
+ 1989  ./minishell
+ 1990  "cmd"var=value
+ 1991  var="value"
+ 1992  var"=value"
+ 1993  "var"=value
+ 1994  ./minishell
+ 1995  make fclean
+ 1996  git pull
+ 1997  ls
+ 1998  grep
+ 1999  grep out.txt
+ 2000  grep
+ 2001  grep --help
+ 2002  grep t out.txt
+ 2003  grep << tea t out.txt
+helo
+tea
+
+ 2004  grep t out.txt << tea 
+hi
+t
+tea
+
+ 2005  grep << tea
+hi
+tea
+
+ 2006  << tea grep
+hi
+world
+tea
+
+ 2007  cat << eof | grep tea
+hi
+world
+tea
+eof
+
+ 2008  cat << eof | grep tea
+hi
+world
+eof
+
+ 2009  cat << eof | grep tea << eon
+hi
+tea
+eof
+wat
+eon
+
+ 2010  cat << eof | grep tea << eon
+hi
+tea
+eof
+wat
+eon
+
+ 2011  cat << eof | grep tea << eon
+eon
+eof
+eon
+
+ 2012  cat << eof | grep tea << eon
+tea
+
+
+ 2013  cat << eof | grep tea << eon
+ 2014  < infile cat
+ 2015  < out.txt cat
+ 2016  out.txt < cat
+ 2017  echi hi
+ 2018  echo hi | cat < infile
+ 2019  echo hi | cat < out.txt
+ 2020  cat << eof
+hi
+hi
+eof
+
+ 2021  cat out.txt
+ 2022  cat << eof out.txt
+hi
+txt
+eof
+
+ 2023  cat out.txt << eof
+hi
+eof
+
+ 2024  echo "hello""world"
+ 2025  echo "hello""world""hi"
+ 2026  make
+ 2027  ./minishell
+ 2028  touch outfile
+ 2029  cat < out.txt 
+ 2030  cat < outfile
+ 2031  cat < out.txt < outfile
+ 2032  cat < outfile >a.txt >b.txt
+ 2033  > outfile
+ 2034  > outfile cat "hello world"
+ 2035  < outfile
+ 2036  < outfile cat
+ 2037  cat < outfile
+ 2038  outfile < cat
+ 2039  < infile cat
+ 2040  < a.txt cat
+ 2041  < b.txt cat
+ 2042  cat < b.txt
+ 2043  < b.txt < out.txt cat
+ 2044  < out.txt < b.txt
+ 2045  < out.txt < b.txt cat
+ 2046  cat < out.txt
+ 2047  cat < out.txt < b.txt
+ 2048  ./minishell
+ 2049  cat < out.txt < a.txt
+ 2050  cat < out.txt | cat < a.txt
+ 2051  cat < out.txt | grep m < a.txt
+ 2052  cat < out.txt | grep m < b.txt
+ 2053  cat < out.txt
+ 2054  cat < out.txt | grep m
+ 2055  cat < out.txt | grep m < b.txt
+ 2056  cat < out.txt | grep m < b.txt | sleep 5
+ 2057  cat < out.txt | grep m < b.txt | sleep 5 | stdin/out
+ 2058  cat < out.txt | grep m < b.txt | sleep 5 | /dev/stdout
+ 2059  cat < out.txt | grep m < b.txt | sleep 5 | /dev/null
+ 2060  cat < out.txt | grep m < b.txt
+ 2061  cat | grep m < b.txt
+ 2062  < out.txt cat
+ 2063  < out.txt /dev/stdout
+ 2064  < out.txt 0
+ 2065  cat < out.txt
+ 2066  cat < out.txt | grep m < b.txt
+ 2067  grep m < b.txt
+ 2068  cat < out.txt | grep m < b.txt | cat < out.txt
+ 2069  cat < out.txt | grep m < b.txt
+ 2070  cat < out.txt | grep m < b.txt < out.txt
+ 2071  cat < out.txt | grep m < b.txt < a.txt
+ 2072  < a.txt out.txt
+ 2073  ./minishell
+ 2074  cat a.txt out.txt
+ 2075  touch infile
+ 2076  touch infile2
+ 2077  cat "this is outfile" > outfile
+ 2078  cat > outfile
+ 2079  cat > outfile2
+ 2080  < infile < infile2 cat
+ 2081  < infile < infile cat
+ 2082  < infile2 < infile cat
+ 2083  < outfile < outfile2 cat
+ 2084  < infile < infile2 cat | cat > outfile > outfile2
+ 2085  < infile < infile2 cat | cat > outfile2 > outfile
+ 2086  < infile < infile2 cat > outfile2 > outfile
+ 2087  < infile < infile2 cat > outfile > outfile2
+ 2088  < infile < infile2 > outfile > outfile2 cat
+ 2089  < infile < infile2 > outfile2 > outfile cat
+ 2090  < infile > outfile < infile2 > outfile2
+ 2091  < infile > outfile < infile2 > outfile2 cat
+ 2092  < infile2 > outfile < infile > outfile2 cat
+ 2093  < infile2 > outfile < infile > outfile2 | cat
+ 2094  < infile2 > outfile < infile > outfile2 grep m
+ 2095  < infile2 > outfile < infile > outfile2 grep this
+ 2096  < infile2 > outfile < infile > outfile2 grep is
+ 2097  < infile2 > outfile < infile > outfile2 grep hello
+ 2098  < infile2 > outfile < infile grep hello > outfile2 
+ 2099  < infile2 > outfile < infile grep this > outfile2 
+ 2100  < infile2 > outfile < infile grep this > outfile2 | grep this
+ 2101  < infile2 > outfile < infile grep this > outfile2 | cat
+ 2102  < infile2 > outfile < infile grep this >
+ 2103  < infile2 > outfile < infile grep this >a
+ 2104  < infile2 > outfile < infile grep this >\ 
+ 2105  0 < infile
+ 2106  0< infile
+ 2107  0< infile grep hi
+ 2108  1< infile grep
+ 2109  1< infile grep hi
+ 2110  3< infile grep hi
+ 2111  0< infile grep hi
+ 2112  0< infile grep infile
+ 2113  grep infile
+ 2114  grep 0< infile
+ 2115  grep hey0< infile
+ 2116  grep hi 0< infile
+ 2117  cat &> outfile
+ 2118  cat -&> outfile
+ 2119  cat - &> outfile
+ 2120  < infile > outfile cat
+ 2121  < infile >> outfile cat
+ 2122  < infile > outfile cat
+ 2123  < infile < infile2 >> outfile cat
+ 2124  < infile < infile2 >outfile >> outfile cat
+ 2125  < infile < infile2 > outfile >> outfile cat
+ 2126  < infile < infile2 > outfile2 >> outfile cat
+ 2127  < infile < infile2 > outfile >> outfile cat
+ 2128  < infile << infile2 > outfile >> outfile cat
+hello
+infile2
+
+ 2129  << infile < infile2 > outfile >> outfile cat
+
+hi
+infile
+
+ 2130  << infile < infile2 > outfile >> outfile cat
+hello
+infile
+
+ 2131  < infile << infile2 > outfile >> outfile cat
+
+hello
+infile2
+
+ 2132  < infile << infile2 > outfile >> outfile cat
+
+hello
+infile2
+
+ 2133  < infile << infile2 > outfile >> outfile cat
+hey
+there
+infile2
+
+ 2134  < infile << infile2 >> outfile > outfile cat
+hey
+hey
+infile2
+
+ 2135  < infile << infile2 > outfile cat
+ey
+infile2
+
+ 2136  < infile << infile2 > outfile >> outfile cat
+heyhey
+infile2
+
+ 2137  < infile << infile2 >> outfile cat
+
+hey
+hi
+hi
+infile2
+
+ 2138  < infile << infile2 >> outfile > outfile2 cat
+hello
+infile2
+
+ 2139  < infile << infile2 >outfile2 >> outfile cat
+
+to outfile2
+infile2
+
+ 2140  < infile << infile2 > outfile2 >> outfile cat
+to outfile2
+infile
+infile2
+
+ 2141  < infile << infile2 > outfile >> outfile cat
+replace
+outfile?
+infile2
+
+ 2142  < infile << infile2 > outfile >> outfile cat
+ 2143  < infile > outfile >> outfile cat
+ 2144  < infile > outfile2 >> outfile cat
+ 2145  < infile << eof > outfile
+ 2146  < infile << eof > outfile cat
+hello there
+eof
+
+ 2147  < infile << eof > outfile cat
+here-doc
+eof
+
+ 2148  << eof < infile > outfile cat
+here-doc
+
+ 2149  << eof < infile > outfile cat
+here-doc
+eof
+
+ 2150  < infile >> outfile > outfile cat
+ 2151  < infile > outfile >> outfile cat
+ 2152  < infile >> outfile > outfile >> outfile cat
+ 2153  0< infile cat
+ 2154  n< infile
+ 2155  100< infile
+ 2156  100n<infile
+ 2157  -n<infile
+ 2158  n-<infile
+ 2159  ./minishell
+ 2160  cat 0< infile
+ 2161  make fclean
+ 2162  rm a
+ 2163  rm infile
+ 2164  rm infile2
+ 2165  rm outfile
+ 2166  rm outfile2
+ 2167  ls
+ 2168  cd srcs
+ 2169  norminette variable_expansion.c
+ 2170  norminette variable.c
+ 2171  touch variable_helper.c
+ 2172  norminette variable_helper.c
+ 2173  norminette variable.c
+ 2174  norminette variable_helper.c
+ 2175  norminette variable_expansion.c
+ 2176  cd ..
+ 2177  make
+ 2178  ./minishell
+ 2179  git add .
+ 2180  git commit -m "fixed norme errors in variable_helper.c and variable.c, might not be fully fixed cuz my norminette is not up-to-date"
+ 2181  git push
+ 2182  git reset --hard
+ 2183  make fclean
+ 2184  history
+ 2185  clear
+ 2186  history
+ 2187  man history
+ 2188  history > history.txt
