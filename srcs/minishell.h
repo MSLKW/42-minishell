@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/03 15:47:58 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/06 20:26:46 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,8 @@ int		execute_command(t_ast *node, t_data *data);
 int		execute_setvalue(t_ast *node, t_data *data);
 int		prepare_args_and_redirect(t_ast *ast, char **args);
 int		execute_pipeline(t_ast *pipe_node, t_data *data);
+int		execute_redirection_out(t_ast *redir_node, t_data *data);
+int		execute_redirection_in(t_ast *redir_node, t_data *data);
 
 // interactive_mode.c
 void	ctrlc_handler(int sig);
