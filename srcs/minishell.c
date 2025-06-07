@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/02 11:40:01 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/06 18:24:54 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ t_data	*init_data(int argc, char **argv, char **envp)
 	t_data	*data;
 
 	data = ft_calloc(1, sizeof(t_data));
-	if (data == NULL || argc != 1)
+	if (data == NULL)
 		return (NULL);
 	data->argc = argc;
 	data->argv = argv;
@@ -86,7 +86,7 @@ t_lst	*init_exported_env_var_lst(char ***envp)
 	result = ft_lstnew(NULL);
 	while ((*envp)[i] != NULL)
 	{
-		env_var = split_setvalue((*envp)[i]);
+		env_var = split_assignment((*envp)[i]);
 		if (env_var != NULL)
 		{
 			env_var = set_env_variable(result, env_var, envp);

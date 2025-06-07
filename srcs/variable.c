@@ -6,31 +6,11 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:47:35 by maxliew           #+#    #+#             */
-/*   Updated: 2025/05/26 17:12:32 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/06 18:03:05 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-t_bool	is_str_valid_key(char *key)
-{
-	int i;
-
-	if (key == NULL)
-		return (FALSE);
-	if (ft_strlen(key) > 0 && ft_isalpha(key[0]) == TRUE)
-	{
-		i = 0;
-		while (key[i] != '\0')
-		{
-			if (ft_isalnum(key[i]) == FALSE && key[i] != '_')
-				return (FALSE);
-			i++;
-		}
-		return (TRUE);
-	}
-	return (FALSE);
-}
 
 t_env_var	*init_env_variable(char *key, char *value)
 {
@@ -53,33 +33,12 @@ t_env_var	*init_env_variable(char *key, char *value)
 	return (NULL);
 }
 
-t_env_var	*split_setvalue(char *content)
-{
-	char		*key;
-	char		*value;
-	int			i;
-	t_env_var	*result;
-
-	if (ft_strchr(content, '=') == NULL)
-		return (NULL);
-	i = 0;
-	while (content[i] != '\0' && content[i] != '=')
-		i++;
-	key = ft_substr(content, 0, i);
-	value = ft_substr(content, i + 1, ft_strlen(content));
-	if (key == NULL)
-		return (NULL);
-	result = init_env_variable(key, value);
-	free(key);
-	free(value);
-	return (result);
-}
-
-
 /*
-	Frees env_var after use if used to set, returns pointer to env_var in env_var_lst
+	Frees env_var after use if used to set
+	returns pointer to env_var in env_var_lst
 */
-t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, char ***envp)
+t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, \
+char ***envp)
 {
 	t_env_var	*list_env_var;
 
@@ -101,19 +60,9 @@ t_env_var	*set_env_variable(t_lst *env_var_lst, t_env_var *env_var, char ***envp
 	return (env_var);
 }
 
-char	*get_env_var_value(char *key, t_lst *env_var_lst)
-{
-	t_env_var	*env_var;
-
-	env_var = get_env_variable(key, env_var_lst);
-	if (env_var == NULL)
-		return (NULL);
-	return (env_var->value);
-}
-
 t_env_var	*get_env_variable(char *key, t_lst *env_var_lst)
 {
-	t_lst	*head;
+	t_lst		*head;
 	t_env_var	*env_var;
 
 	head = env_var_lst;
@@ -153,42 +102,4 @@ int	unset_env_variable(char *key, t_lst **env_var_lst)
 		head = head->next;
 	}
 	return (1);
-}
-
-void	free_env_var(void *content)
-{
-	t_env_var	*env_var;
-
-	env_var = (t_env_var *)content;
-	if (env_var != NULL)
-	{
-		free(env_var->key);
-		free(env_var->value);
-		free(env_var);
-	}
-}
-
-// debug
-
-void	display_env_var(t_data *data)
-{
-	t_lst		*head;
-	t_env_var	*env_var;
-	
-	printf("---env_var---\n");
-	head = data->env_var_lst;
-	while (head != NULL)
-	{
-		env_var = head->content;
-		if (env_var != NULL)
-		{
-			printf("display | env_var: %p | env_var key: %s | value: %s\n", env_var, env_var->key, env_var->value);
-		}
-		else
-		{
-			printf("env_var is null\n");
-		}
-		head = head->next;
-	}
-	printf("-------------\n");
 }

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:07:10 by zernest           #+#    #+#             */
-/*   Updated: 2025/05/26 14:26:25 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/06 18:26:56 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	builtin_history(t_data *data)
 
 	i = -1;
 	while (++i < data->history_size)
-		printf("%d: %s\n", i + 1, data->history[i]);
+		printf(" %d  %s\n", i + 1, data->history[i]);
 	return (0);
 }
 

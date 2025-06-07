@@ -6,21 +6,11 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:30 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/03 12:40:55 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/06 18:05:36 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// handle setting var through var_name=value with execution
-// handle unsetting env and var_name
-
-// if variable is in env, env variable gets changed.
-
-// if var is exported, then set through var=value
-// var is seen on env.
-
-// export will take from variable.c and set if there is any to be set, but will display any variable with value from variable.c
 
 static t_lst	*split_variable_list(const char *arg)
 {
@@ -64,18 +54,6 @@ static t_lst	*split_variable_list(const char *arg)
 	return (arg_list);
 }
 
-// static char	*clear_new_lines(const char *str)
-// {
-// 	int		i;
-// 	char	*
-
-// 	i = 0;
-// 	while (str[i] != '\0')
-// 	{
-// 		if (str[i] != '\n')
-// 			i++;
-// 	}
-// }
 /*
 	Iterates the list and expands any variable inside
 */

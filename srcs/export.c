@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:45:01 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/03 18:14:58 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/06 17:55:48 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	find_env_index(char **envp, const char *key)
 	i = 0;
 	while (envp[i] != NULL)
 	{
-		env_var = split_setvalue(envp[i]);
+		env_var = split_assignment(envp[i]);
 		if (env_var != NULL)
 		{
 			if (ft_strncmp(env_var->key, key, \
@@ -96,7 +96,7 @@ char	*ft_getenv(char *key, char **envp)
 	env_index = find_env_index(envp, key);
 	if (env_index == -1)
 		return (NULL);
-	env_var = split_setvalue(envp[env_index]);
+	env_var = split_assignment(envp[env_index]);
 	if (env_var == NULL)
 		return (NULL);
 	return (env_var->value);
@@ -123,7 +123,7 @@ int	process_args(char **args, char ***envp, t_lst *env_var_lst)
 	while (args[i] != NULL)
 	{
 		// "export var=value"
-		var = split_setvalue(args[i]);
+		var = split_assignment(args[i]);
 		if (var != NULL)
 		{
 			var->is_export = TRUE;
