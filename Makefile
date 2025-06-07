@@ -24,6 +24,7 @@ SRCS_FILES :=	minishell.c \
 				pwd.c \
 				unset.c \
 				variable.c \
+				variable_helper.c \
 				variable_expansion.c \
 				token_flags.c \
 				shell_env.c \
