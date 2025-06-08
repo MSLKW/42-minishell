@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/06 17:55:48 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/08 16:34:58 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,7 @@ t_lst	*join_token_list(t_lst **token_list)
 	while (head != NULL)
 	{
 		token = head->content;
-		if (has_token_flag(token->flags, OPERATOR) == TRUE && (has_token_flag(joint_flags, ASSIGNMENT) == FALSE || token->handler == NONE))
+		if (has_token_flag(token->flags, OPERATOR) == TRUE)
 		{
 			capture_new_token(&joint_content, &new_token_list, joint_flags);
 			token_rm_flags(joint_flags);
@@ -225,10 +225,6 @@ t_lst	*join_token_list(t_lst **token_list)
 			{
 
 			}
-			else if (has_token_flag(joint_flags, ASSIGNMENT) && has_token_flag(token->flags, OPERATOR))
- 			{
-
-			} 
 			else
 				token_add_flags(joint_flags, token->flags);
 			// if there is assignment before, and current token is an operator, then don't add flag
@@ -355,7 +351,7 @@ t_bool	is_token_assignment(char *content)
 }
 
 /*
-	Modifies the **token_list's token types to more suitable token types like COMMAND, OPTION and ARGUMENT
+	Modifies the **token_list's token flags to more suitable token types like COMMAND and ARGUMENT
 */
 t_lst    *assign_flags_cmd_arg(t_lst **token_list, t_data *data)
 {
@@ -378,7 +374,7 @@ t_lst    *assign_flags_cmd_arg(t_lst **token_list, t_data *data)
 			}
 			else if ((has_token_flag(token->flags, WORD) || has_token_flag(token->flags, ASSIGNMENT)) && cmd_line_flag == 1)
 				token_add_flag(token->flags, ARGUMENT);
-			else
+			else if (has_token_flag(token->flags, PIPE) && cmd_line_flag == 1)
 				cmd_line_flag = 0;
 		}
 		head = head->next;

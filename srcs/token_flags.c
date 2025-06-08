@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 15:08:50 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/03 16:31:59 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/08 16:30:05 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ t_flag	*init_token_flags(t_token *token)
 		token_add_flag(flag_arr, DELIMITER);
 		token_add_flag(flag_arr, WHITESPACE);
 	}
-	else if (((ft_strchr(content, '|') || ft_strchr(content, '<') || ft_strchr(content, '>')) && size == 1) || ((ft_strnstr(content, ">>", size) || ft_strnstr(content, "<<", size)) && size == 2))
+	else if (token->handler == NONE && (((ft_strchr(content, '|') || ft_strchr(content, '<') || ft_strchr(content, '>')) && size == 1) || ((ft_strnstr(content, ">>", size) || ft_strnstr(content, "<<", size)) && size == 2)))
 	{
 		token_add_flag(flag_arr, OPERATOR);
 		if (ft_strchr(content, '|') && size == 1)

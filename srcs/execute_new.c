@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/07 16:03:13 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/08 16:18:22 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ int	execute_ast(t_ast *ast, t_data *data)
 
 	if (has_token_flag(token->flags, PIPE))
 		return (execute_pipeline(ast, data));
-	else if (has_token_flag(token->flags, REDIRECTION_OUTPUT))
-		return (execute_redirection_out(ast, data)); // redirection
-	else if (has_token_flag(token->flags, REDIRECTION_INPUT))
-		return (execute_redirection_in(ast, data)); // redirection in
+	// else if (has_token_flag(token->flags, REDIRECTION_OUTPUT))
+	// 	return (execute_redirection_out(ast, data)); // redirection
+	// else if (has_token_flag(token->flags, REDIRECTION_INPUT))
+	// 	return (execute_redirection_in(ast, data)); // redirection in
 	else if (has_token_flag(token->flags, COMMAND))
 		return (execute_command(ast, data));
 	else if (has_token_flag(token->flags, ASSIGNMENT))
@@ -44,87 +44,87 @@ int	execute_ast(t_ast *ast, t_data *data)
 		return (1);
 }
 
-int execute_redirection_in(t_ast *redir_node, t_data *data)
-{
-	t_ast *cmd_node = (t_ast *)redir_node->node_list->content;
-	t_ast *file_node = (t_ast *)redir_node->node_list->next->content;
+// int execute_redirection_in(t_ast *redir_node, t_data *data)
+// {
+// 	t_ast *cmd_node = (t_ast *)redir_node->node_list->content;
+// 	t_ast *file_node = (t_ast *)redir_node->node_list->next->content;
 
-	if (!redir_node || !redir_node->node_list || 
-		ft_lstsize(redir_node->node_list) != 2)
-	{
-		printf(stderr, "minishell: syntax error near input redirection\n");
-		return (1);
-	}
-	if (!file_node->token || !file_node->token->content)
-	{
-		printf(stderr, "minishell: missing input filename\n");
-		return (1);
-	}
-	int fd = open(file_node->token->content, O_RDONLY);
-	if (fd < 0)
-	{
-		perror("minishell");
-		return (1);
-	}
-	int stdin_backup = dup(0);
-	if (stdin_backup < 0)
-	{
-		perror("dup");
-		close(fd);
-		return (1);
-	}
+// 	if (!redir_node || !redir_node->node_list || 
+// 		ft_lstsize(redir_node->node_list) != 2)
+// 	{
+// 		printf(stderr, "minishell: syntax error near input redirection\n");
+// 		return (1);
+// 	}
+// 	if (!file_node->token || !file_node->token->content)
+// 	{
+// 		printf(stderr, "minishell: missing input filename\n");
+// 		return (1);
+// 	}
+// 	int fd = open(file_node->token->content, O_RDONLY);
+// 	if (fd < 0)
+// 	{
+// 		perror("minishell");
+// 		return (1);
+// 	}
+// 	int stdin_backup = dup(0);
+// 	if (stdin_backup < 0)
+// 	{
+// 		perror("dup");
+// 		close(fd);
+// 		return (1);
+// 	}
 
-	if (dup2(fd, 0) < 0)
-	{
-		perror("dup2");
-		close(fd);
-		close(stdin_backup);
-		return (1);
-	}
-	close(fd);
-	int exit_code = execute_command(cmd_node, data);
-	if (dup2(stdin_backup, 0) < 0)
-	{
-		perror("restore stdin");
-	}
-	close(stdin_backup);
-	return exit_code;
-}
+// 	if (dup2(fd, 0) < 0)
+// 	{
+// 		perror("dup2");
+// 		close(fd);
+// 		close(stdin_backup);
+// 		return (1);
+// 	}
+// 	close(fd);
+// 	int exit_code = execute_command(cmd_node, data);
+// 	if (dup2(stdin_backup, 0) < 0)
+// 	{
+// 		perror("restore stdin");
+// 	}
+// 	close(stdin_backup);
+// 	return exit_code;
+// }
 
-int execute_redirection_out(t_ast *redir_node, t_data *data){
+// int execute_redirection_out(t_ast *redir_node, t_data *data){
 
-	if (!redir_node || !redir_node->node_list || 
-		ft_lstsize(redir_node->node_list) != 2) {
-		printf(stderr, "Syntax error near redirection\n");
-		return 1;
-	}
+// 	if (!redir_node || !redir_node->node_list || 
+// 		ft_lstsize(redir_node->node_list) != 2) {
+// 		printf(stderr, "Syntax error near redirection\n");
+// 		return 1;
+// 	}
 
-	t_ast *cmd_node = (t_ast *)redir_node->node_list->content;
-	t_ast *file_node = (t_ast *)redir_node->node_list->next->content;
-	int fd = open(file_node->token->content, 
-				O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd < 0) {
-		perror("minishell");
-		return 1;
-	}
+// 	t_ast *cmd_node = (t_ast *)redir_node->node_list->content;
+// 	t_ast *file_node = (t_ast *)redir_node->node_list->next->content;
+// 	int fd = open(file_node->token->content, 
+// 				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+// 	if (fd < 0) {
+// 		perror("minishell");
+// 		return 1;
+// 	}
 
-	int stdout_backup = dup(1);
-	if (stdout_backup < 0 || dup2(fd, 1) < 0) {
-		perror("minishell");
-		close(fd);
-		return 1;
-	}
-	close(fd);
-	int exit_code = execute_command(cmd_node, data);
+// 	int stdout_backup = dup(1);
+// 	if (stdout_backup < 0 || dup2(fd, 1) < 0) {
+// 		perror("minishell");
+// 		close(fd);
+// 		return 1;
+// 	}
+// 	close(fd);
+// 	int exit_code = execute_command(cmd_node, data);
 
-	if (dup2(stdout_backup, 1) < 0) {
-		perror("minishell");
-		exit_code = 1;
-	}
-	close(stdout_backup);
+// 	if (dup2(stdout_backup, 1) < 0) {
+// 		perror("minishell");
+// 		exit_code = 1;
+// 	}
+// 	close(stdout_backup);
 
-	return exit_code;
-}
+// 	return exit_code;
+// }
 
 char **build_cmd_args(t_ast *cmd_node)
 {
