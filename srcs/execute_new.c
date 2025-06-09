@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/07 16:03:13 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/09 17:17:31 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,12 @@ int execute_redirection_in(t_ast *redir_node, t_data *data)
 	if (!redir_node || !redir_node->node_list || 
 		ft_lstsize(redir_node->node_list) != 2)
 	{
-		printf(stderr, "minishell: syntax error near input redirection\n");
+		fprintf(stderr, "minishell: syntax error near input redirection\n");
 		return (1);
 	}
 	if (!file_node->token || !file_node->token->content)
 	{
-		printf(stderr, "minishell: missing input filename\n");
+		fprintf(stderr, "minishell: missing input filename\n");
 		return (1);
 	}
 	int fd = open(file_node->token->content, O_RDONLY);
@@ -95,7 +95,7 @@ int execute_redirection_out(t_ast *redir_node, t_data *data){
 
 	if (!redir_node || !redir_node->node_list || 
 		ft_lstsize(redir_node->node_list) != 2) {
-		printf(stderr, "Syntax error near redirection\n");
+		fprintf(stderr, "Syntax error near redirection\n");
 		return 1;
 	}
 
@@ -195,6 +195,8 @@ int	execute_command(t_ast *node, t_data *data)
 	pid = fork();
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		if (is_token_executable(args[0]) == TRUE)
 			cmd_path = args[0];
 		else
@@ -213,7 +215,17 @@ int	execute_command(t_ast *node, t_data *data)
 		free_exit(127, data);
 	}
 	else
+	{	signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 		waitpid(pid, &status, 0);
+		if (WIFSIGNALED(status))
+		{
+			if (WTERMSIG(status) == SIGINT)
+				write(STDOUT_FILENO, "\n", 1);
+			}
+		signal(SIGINT, ctrlc_handler);
+		signal(SIGQUIT, SIG_IGN);
+	}
 	free_tokens(&data->free_ptr_tokens);
 	free_ast(&data->free_ptr_ast);
 	free_str_arr(args);

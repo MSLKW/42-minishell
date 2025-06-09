@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/06 18:24:54 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/09 16:35:53 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 int	main(int argc, char *argv[], char *envp[])
 {
 	t_data	*data;
+
+	rl_catch_signals = 0;
 
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, ctrlc_handler);
