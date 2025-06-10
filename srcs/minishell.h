@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/06 20:26:46 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/11 00:41:04 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef enum token_flag {
 	REDIRECTION_OUTPUT,
 	REDIRECTION_APPEND,
 	REDIRECTION_DELIMITER,
+	REDIRECTION_ARGUMENT,
 	WORD,
 	COMMAND,
 	ARGUMENT,
@@ -82,6 +83,18 @@ typedef struct s_ast {
 	t_token	*token;
 	t_lst	*node_list;
 }	t_ast;
+
+typedef struct s_cmd_seq {
+	t_lst	*token_list;
+	char	*command;
+	char	**args;
+	t_lst	*io_list;
+}	t_cmd_seq;
+
+typedef struct s_io {
+	char	*content;
+	t_flag	flag;
+}	t_io;
 
 typedef struct s_env_var {
 	char	*key;
@@ -120,6 +133,7 @@ char	*ft_get_prompt_environment(void);
 t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index);
 
 // tokenize.c
+t_token	*init_token(char *content, enum token_handler handler, t_flag *flags);
 t_lst	*tokenize_line(char *line, t_data *data);
 t_lst	*tokenize_str(char *line);
 t_token	*handle_dquote(char *line, int *index);
@@ -131,7 +145,8 @@ t_bool	is_token_cmd(char *content, char *envp[]);
 t_bool	is_token_builtin(char *content);
 t_bool	is_token_executable(char *content);
 t_bool	is_token_assignment(char *content);
-t_lst	*assign_flags_cmd_arg(t_lst	**token_list, t_data *data);
+t_lst	*assign_flags_cmd_arg(t_lst	**token_list);
+void	assign_flags_redir_arg(t_lst *token_list);
 t_lst	*expand_variable_token_list(t_lst *token_list, t_data *data);
 
 // token_flags.c
@@ -145,6 +160,7 @@ int		token_rm_flags(t_flag *flag_arr);
 t_flag	*token_dup_flag(t_flag *flag_arr);
 int		token_add_flags_iter(t_lst *token_list, t_flag flag);
 int		apply_token_flags(t_lst	*token_list);
+int		count_token_with_flag(t_lst	*token_list, t_flag flag);
 
 // history.c
 // void	ft_show_history(void);
@@ -176,6 +192,17 @@ t_ast	*init_output_redirection(t_lst **token_list, t_lst *redirection_token);
 t_ast	*init_command(t_lst	*command_token);
 t_ast	*init_argument(t_lst *argument_token);
 t_ast	*init_setvalue(t_lst *setvalue_token);
+
+// cmd_seq.c
+t_cmd_seq	*init_cmd_seq(t_lst	*token_list);
+t_lst		*init_cmd_seqs(t_lst *token_list);
+char		*cmd_seq_get_command(t_lst *token_list);
+char		**cmd_seq_get_args(t_lst *token_list);
+
+// io.c
+t_io	*init_io(char *content, t_flag flag);
+t_flag	get_redirection_flag(t_flag *flags);
+t_lst	*get_io_list(t_lst *token_list);
 
 // ast_search.c
 t_lst	*find_token_right(t_lst *current_token_lst, t_flag token_flag, int size);
@@ -227,6 +254,7 @@ void	display_token_flag(enum token_flag flag);
 void	display_token_flags(enum token_flag *flags);
 void	display_ast_tree(t_ast *ast_node);
 void	display_env_var(t_data *data);
+void	display_cmd_seq(t_lst *cmd_seq_list);
 
 // BUILTINS --
 int		builtin_echo(char **args);
