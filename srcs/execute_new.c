@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/09 17:17:31 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/11 21:29:50 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,6 +259,8 @@ int execute_pipeline(t_ast *pipe_node, t_data *data)
 {
 	int pipe_fd[2];
 	pid_t pid1, pid2;
+	int	status1;
+	int	status2;
 
 	if (!pipe_node || ft_lstsize(pipe_node->node_list) != 2)
 		return (1);
@@ -289,8 +291,13 @@ int execute_pipeline(t_ast *pipe_node, t_data *data)
 	}
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
-	waitpid(pid1, NULL, 0);
-	waitpid(pid2, NULL, 0);
+	waitpid(pid1, &status1, 0);
+	waitpid(pid2, &status2, 0);
+	printf("Left exit: %d\n", WEXITSTATUS(status1));
+	printf("Right exit: %d\n", WEXITSTATUS(status2));
 
-	return (0);
+	if (WIFEXITED(status2))
+		return WEXITSTATUS(status2);
+	else
+		return 1;
 }
