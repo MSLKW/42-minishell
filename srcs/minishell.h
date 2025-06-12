@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/12 15:06:15 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/12 19:45:21 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,7 @@ int		execute_assignment(t_cmd_seq *cmd_seq, t_data *data);
 int		ft_isalpha_str(char *str);
 int		ft_isalnum_str(char *str);
 int		count_null_terminated_arr(char **str_arr);
+t_bool	ft_has_whitespace(char *str);
 
 // ast_init.c
 t_ast	*find_pipes(t_lst	*token_list);

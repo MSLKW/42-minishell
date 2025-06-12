@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/10 23:58:17 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/12 20:01:21 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,19 +40,26 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	if (token_list == NULL)
 		return (NULL);
 	printf("token_list\n");
-	debug_token_list(token_list);
+	apply_token_flags(token_list);
+	
 	expand_variable_token_list(token_list, data);
+	debug_token_list(token_list);
+
 	new_token_list = split_token_none(&token_list);
 	ft_lstclear(&token_list, free_token);
 	token_list = new_token_list;
+
 	apply_token_flags(token_list);
 	printf("Split list\n");
 	debug_token_list(token_list);
+
 	new_token_list = join_token_list(&token_list);
 	printf("Join list\n");
 	debug_token_list(new_token_list);
 	ft_lstclear(&token_list, free_token);
+
 	assign_flags_redir_arg(new_token_list);
+
 	assign_flags_cmd_arg(&new_token_list);
 	return (new_token_list);
 }
@@ -117,6 +124,11 @@ t_token	*handle_squote(char *line, int *index)
 	(*index) += size + 1;
 	return (token);
 }
+
+// static int	handle_none_get_size(char *line, int index)
+// {
+	
+// }
 
 t_token	*handle_none(char *line, int *index)
 {
@@ -260,7 +272,7 @@ t_lst	*split_token_none(t_lst **token_list)
 	while (head != NULL)
 	{
 		token = head->content;
-		if (token->handler == NONE)
+		if (token->handler == NONE && ft_has_whitespace(token->content))
 		{
 			t_lst	*list = tokenize_str(token->content); // might only need to do for none
 			if (has_token_flag(token->flags, WORD))
@@ -379,6 +391,25 @@ void	assign_flags_redir_arg(t_lst *token_list)
 	}
 }
 
+t_bool	delimiter_non_expansion(t_lst *token_list, t_lst *head)
+{
+	t_lst *prev_lst;
+	t_token	*prev_token;
+
+	// prev_lst = ft_lstgetprevious(&token_list, head);
+	prev_lst = find_token_left(&token_list, head, REDIRECTION_DELIMITER, 3);
+	if (prev_lst == NULL)
+		return (TRUE);
+	prev_token = prev_lst->content;
+	if (prev_token == NULL)
+		return (TRUE);
+	if (has_token_flag(prev_token->flags, REDIRECTION_DELIMITER))
+	{
+		return (FALSE);
+	}
+	return (TRUE);
+}
+
 t_lst	*expand_variable_token_list(t_lst *token_list, t_data *data)
 {
 	t_lst	*head;
@@ -392,7 +423,7 @@ t_lst	*expand_variable_token_list(t_lst *token_list, t_data *data)
 	while (head != NULL)
 	{
 		token = head->content;
-		if (token->handler == DQUOTE || token->handler == NONE)
+		if ((token->handler == DQUOTE || token->handler == NONE) && delimiter_non_expansion(token_list, head))
 		{
 			content_ptr = token->content;
 			token->content = variable_expansion(content_ptr, data, &status);
