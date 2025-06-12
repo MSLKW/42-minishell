@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/11 00:41:04 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/12 15:06:15 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,8 @@ typedef struct s_ast {
 
 typedef struct s_cmd_seq {
 	t_lst	*token_list;
-	char	*command;
-	char	**args;
+	char	*assignment;
+	char	**argv;
 	t_lst	*io_list;
 }	t_cmd_seq;
 
@@ -175,7 +175,9 @@ char	**get_args_from_ast(t_lst *node_list);
 // execute_new.c
 int		execute_ast(t_ast *ast, t_data *data);
 char	**build_cmd_args(t_ast *node);
-int		execute_command(t_ast *node, t_data *data);
+int		execute_command(t_cmd_seq *cmd_seq, t_data *data);
+int		execute_cmd_seqs(t_lst *cmd_seqs, t_data *data);
+int		execute_assignment(t_cmd_seq *cmd_seq, t_data *data);
 
 // helper.c
 int		ft_isalpha_str(char *str);
@@ -196,8 +198,9 @@ t_ast	*init_setvalue(t_lst *setvalue_token);
 // cmd_seq.c
 t_cmd_seq	*init_cmd_seq(t_lst	*token_list);
 t_lst		*init_cmd_seqs(t_lst *token_list);
-char		*cmd_seq_get_command(t_lst *token_list);
-char		**cmd_seq_get_args(t_lst *token_list);
+char		*cmd_seq_get_assignment(t_lst *token_list);
+char		**cmd_seq_get_argv(t_lst *token_list);
+char		**cmd_seq_get_cmd_args(char *cmd, char **args);
 
 // io.c
 t_io	*init_io(char *content, t_flag flag);
@@ -226,7 +229,7 @@ t_lst	*tokens_variable_expansion(t_lst *tokens_lst, t_data *data);
 // execute_new.c
 int		execute_ast(t_ast *ast, t_data *data);
 char	**build_cmd_args(t_ast *node);
-int		execute_command(t_ast *node, t_data *data);
+// int		execute_command(t_ast *node, t_data *data);
 int		execute_setvalue(t_ast *node, t_data *data);
 int		prepare_args_and_redirect(t_ast *ast, char **args);
 int		execute_pipeline(t_ast *pipe_node, t_data *data);

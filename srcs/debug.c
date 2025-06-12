@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:48:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/11 00:51:21 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/12 15:16:27 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,9 +220,9 @@ void	display_cmd_seq(t_lst *cmd_seq_list)
 		if (cmd_seq != NULL)
 		{
 			debug_token_list(cmd_seq->token_list);
-			printf("cmd_seq->command: %s\n", cmd_seq->command);
-			printf("cmd_seq->args: ");
-			display_str_arr(cmd_seq->args);
+			printf("cmd_seq->assignment: %s\n", cmd_seq->assignment);
+			printf("cmd_seq->argv: ");
+			display_str_arr(cmd_seq->argv);
 			printf("\n");
 			display_io_list(cmd_seq->io_list);
 		}

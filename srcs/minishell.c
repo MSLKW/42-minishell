@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/09 20:56:55 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/12 15:03:25 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	shell_routine(t_data *data)
 	// display_ast_tree(ast_node);
 	free(line);
 	// data->last_exit_code = execute_ast(ast_node, data);
+	data->last_exit_code = execute_cmd_seqs(cmd_seq_list, data);
 	// free_tokens(&data->free_ptr_tokens);
 	// free_ast(&data->free_ptr_ast);
 }

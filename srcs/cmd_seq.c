@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 17:48:43 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/11 00:50:47 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/11 14:29:42 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ t_cmd_seq	*init_cmd_seq(t_lst	*token_list)
 	if (cmd_seq == NULL || token_list == NULL)
 		return (NULL);
 	cmd_seq->token_list = token_list;
-	cmd_seq->command = cmd_seq_get_command(token_list);
-	cmd_seq->args = cmd_seq_get_args(token_list);
+	cmd_seq->assignment = cmd_seq_get_assignment(token_list);
+	cmd_seq->argv = cmd_seq_get_argv(token_list);
 	cmd_seq->io_list = get_io_list(token_list);
 	return (cmd_seq);
 }
@@ -59,7 +59,7 @@ t_lst	*init_cmd_seqs(t_lst *token_list)
 	return (cmd_seq_list);
 }
 
-char	*cmd_seq_get_command(t_lst *token_list)
+char	*cmd_seq_get_assignment(t_lst *token_list)
 {
 	t_lst	*head;
 	t_token	*token;
@@ -70,7 +70,7 @@ char	*cmd_seq_get_command(t_lst *token_list)
 	while (head != NULL)
 	{
 		token = head->content;
-		if (has_token_flag(token->flags, COMMAND) || has_token_flag(token->flags, ASSIGNMENT))
+		if (has_token_flag(token->flags, ASSIGNMENT))
 		{
 			return (ft_strdup(token->content));
 		}
@@ -79,7 +79,7 @@ char	*cmd_seq_get_command(t_lst *token_list)
 	return (NULL);
 }
 
-char	**cmd_seq_get_args(t_lst *token_list)
+char	**cmd_seq_get_argv(t_lst *token_list)
 {
 	char	**args_arr;
 	int		size;
@@ -87,7 +87,7 @@ char	**cmd_seq_get_args(t_lst *token_list)
 	t_lst	*head;
 	t_token	*token;
 
-	size = count_token_with_flag(token_list, ARGUMENT);
+	size = count_token_with_flag(token_list, ARGUMENT) + count_token_with_flag(token_list, COMMAND);
 	if (token_list == NULL || size == -1)
 		return (NULL);
 	args_arr = ft_calloc(size + 1, sizeof(char *));
@@ -96,7 +96,7 @@ char	**cmd_seq_get_args(t_lst *token_list)
 	while (head != NULL && i < size)
 	{
 		token = head->content;
-		if (has_token_flag(token->flags, ARGUMENT))
+		if (has_token_flag(token->flags, COMMAND) || has_token_flag(token->flags, ARGUMENT))
 		{
 			args_arr[i] = ft_strdup(token->content);
 			i++;
