@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 15:08:50 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/03 16:31:59 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/11 00:21:22 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ t_flag	*init_token_flags(t_token *token)
 		token_add_flag(flag_arr, DELIMITER);
 		token_add_flag(flag_arr, WHITESPACE);
 	}
-	else if (((ft_strchr(content, '|') || ft_strchr(content, '<') || ft_strchr(content, '>')) && size == 1) || ((ft_strnstr(content, ">>", size) || ft_strnstr(content, "<<", size)) && size == 2))
+	else if (token->handler == NONE && (((ft_strchr(content, '|') || ft_strchr(content, '<') || ft_strchr(content, '>')) && size == 1) || ((ft_strnstr(content, ">>", size) || ft_strnstr(content, "<<", size)) && size == 2)))
 	{
 		token_add_flag(flag_arr, OPERATOR);
 		if (ft_strchr(content, '|') && size == 1)
@@ -256,4 +256,24 @@ int	apply_token_flags(t_lst	*token_list)
 		head = head->next;
 	}
 	return (0);
+}
+
+int	count_token_with_flag(t_lst	*token_list, t_flag flag)
+{
+	int		count;
+	t_lst	*head;
+	t_token	*token;
+
+	if (token_list == NULL)
+		return (-1);
+	count = 0;
+	head = token_list;
+	while (head != NULL)
+	{
+		token = head->content;
+		if (has_token_flag(token->flags, flag) == TRUE)
+			count++;
+		head = head->next;
+	}
+	return (count);
 }

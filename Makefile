@@ -28,6 +28,8 @@ SRCS_FILES :=	minishell.c \
 				variable_expansion.c \
 				token_flags.c \
 				shell_env.c \
+				cmd_seq.c \
+				io.c \
 				free.c
 
 DEPS_FILES :=	minishell.h

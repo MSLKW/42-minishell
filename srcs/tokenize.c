@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/06 17:55:48 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/10 23:58:17 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	printf("Join list\n");
 	debug_token_list(new_token_list);
 	ft_lstclear(&token_list, free_token);
-	assign_flags_cmd_arg(&new_token_list, data);
+	assign_flags_redir_arg(new_token_list);
+	assign_flags_cmd_arg(&new_token_list);
 	return (new_token_list);
 }
 
@@ -211,7 +212,7 @@ t_lst	*join_token_list(t_lst **token_list)
 	while (head != NULL)
 	{
 		token = head->content;
-		if (has_token_flag(token->flags, OPERATOR) == TRUE && (has_token_flag(joint_flags, ASSIGNMENT) == FALSE || token->handler == NONE))
+		if (has_token_flag(token->flags, OPERATOR) == TRUE)
 		{
 			capture_new_token(&joint_content, &new_token_list, joint_flags);
 			token_rm_flags(joint_flags);
@@ -225,10 +226,6 @@ t_lst	*join_token_list(t_lst **token_list)
 			{
 
 			}
-			else if (has_token_flag(joint_flags, ASSIGNMENT) && has_token_flag(token->flags, OPERATOR))
- 			{
-
-			} 
 			else
 				token_add_flags(joint_flags, token->flags);
 			// if there is assignment before, and current token is an operator, then don't add flag
@@ -279,16 +276,6 @@ t_lst	*split_token_none(t_lst **token_list)
 	return (new_token_list);
 }
 
-// t_bool	is_token_cmd(char *content, char *envp[])
-// {
-// 	char	*cmd_path;
-
-// 	cmd_path = find_cmd_path(content, envp);
-// 	if (cmd_path == NULL)
-// 		return (FALSE);
-// 	return (TRUE);
-// }
-
 t_bool	is_token_builtin(char *content)
 {
 	if (ft_strncmp(content, "echo", ft_strlen(content)) == 0 ||
@@ -321,23 +308,6 @@ t_bool	is_token_executable(char *path)
 	return (FALSE);
 }
 
-t_bool	is_token_option(char *content)
-{
-	if (content == NULL)
-		return (FALSE);
-	// shortform | rm -fr
-	if (ft_strlen(content) > 0 && content[0] == '-')
-	{
-		return (TRUE);
-	}
-	// longform | rm --force
-	// else if (ft_strlen(content) >= 2 && content[0] == '-' && content[1] == '-')
-	// {
-		// 	return (TRUE);
-		// }
-	return (FALSE);
-}
-
 t_bool	is_token_assignment(char *content)
 {
 	t_env_var	*env_var;
@@ -355,21 +325,20 @@ t_bool	is_token_assignment(char *content)
 }
 
 /*
-	Modifies the **token_list's token types to more suitable token types like COMMAND, OPTION and ARGUMENT
+	Modifies the **token_list's token flags to more suitable token types like COMMAND and ARGUMENT
 */
-t_lst    *assign_flags_cmd_arg(t_lst **token_list, t_data *data)
+t_lst    *assign_flags_cmd_arg(t_lst **token_list)
 {
 	int    cmd_line_flag;
 	t_lst    *head;
 	t_token    *token;
 
-	(void)data;
 	cmd_line_flag = 0;
 	head = *token_list;
 	while (head != NULL)
 	{
 		token = head->content;
-		if (has_token_flag(token->flags, WHITESPACE) == FALSE)
+		if (has_token_flag(token->flags, WHITESPACE) == FALSE && has_token_flag(token->flags, REDIRECTION_ARGUMENT) == FALSE)
 		{
 			if (has_token_flag(token->flags, WORD) && has_token_flag(token->flags, ASSIGNMENT) == FALSE && cmd_line_flag == 0)
 			{
@@ -378,12 +347,36 @@ t_lst    *assign_flags_cmd_arg(t_lst **token_list, t_data *data)
 			}
 			else if ((has_token_flag(token->flags, WORD) || has_token_flag(token->flags, ASSIGNMENT)) && cmd_line_flag == 1)
 				token_add_flag(token->flags, ARGUMENT);
-			else
+			else if (has_token_flag(token->flags, PIPE) && cmd_line_flag == 1)
 				cmd_line_flag = 0;
 		}
 		head = head->next;
 	}
 	return (*token_list);
+}
+
+void	assign_flags_redir_arg(t_lst *token_list)
+{
+	t_lst	*head;
+	t_token	*token;
+	int		redir_arg;
+
+	head = token_list;
+	redir_arg = 0;
+	while (head != NULL)
+	{
+		token = head->content;
+		if (has_token_flag(token->flags, REDIRECTION) && redir_arg == 0)
+			redir_arg = 1;
+		else if (has_token_flag(token->flags, WORD) && redir_arg == 1)
+		{
+			token_add_flag(token->flags, REDIRECTION_ARGUMENT);
+			redir_arg = 0;
+		}
+		else
+			redir_arg = 0;
+		head = head->next;
+	}
 }
 
 t_lst	*expand_variable_token_list(t_lst *token_list, t_data *data)

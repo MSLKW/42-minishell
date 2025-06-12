@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:48:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/06 17:54:30 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/12 15:16:27 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ void	display_token_flag(enum token_flag flag)
 		printf("REDIRECTION_APPEND");
 	else if (flag == REDIRECTION_DELIMITER)
 		printf("REDIRECTION_DELIMITER");
+	else if (flag == REDIRECTION_ARGUMENT)
+		printf("REDIRECTION_ARGUMENT");
 	else if (flag == WORD)
 		printf("WORD");
 	else if (flag == COMMAND)
@@ -173,4 +175,58 @@ void	display_env_var(t_data *data)
 		head = head->next;
 	}
 	printf("-------------\n");
+}
+
+void	display_str_arr(char **str_arr)
+{
+	int	i;
+
+	if (str_arr == NULL)
+		return ;
+	i = 0;
+	while (str_arr[i] != NULL)
+	{
+		printf("%s,", str_arr[i]);
+		i++;
+	}
+}
+
+void	display_io_list(t_lst *io_list)
+{
+	t_lst	*head;
+	t_io	*io;
+
+	head = io_list;
+	while (head != NULL)
+	{
+		io = head->content;
+		printf("io | io->content: %s | io->flag: ", io->content);
+		display_token_flag(io->flag);
+		printf("\n");
+		head = head->next;
+	}
+}
+
+void	display_cmd_seq(t_lst *cmd_seq_list)
+{
+	t_lst	*head;
+	t_cmd_seq	*cmd_seq;
+
+	printf("---Command Sequence---\n");
+	head = cmd_seq_list;
+	while (head != NULL)
+	{
+		cmd_seq = head->content;
+		if (cmd_seq != NULL)
+		{
+			debug_token_list(cmd_seq->token_list);
+			printf("cmd_seq->assignment: %s\n", cmd_seq->assignment);
+			printf("cmd_seq->argv: ");
+			display_str_arr(cmd_seq->argv);
+			printf("\n");
+			display_io_list(cmd_seq->io_list);
+		}
+		head = head->next;
+	}
+	printf("--------------------\n");
 }

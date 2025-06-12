@@ -14,32 +14,40 @@
 
 // int	execute_ast(t_ast *ast, t_data *data)
 // {
-// 	if (!ast)
+// 	t_token *token;
+
+// 	if (!ast || !ast->token)
 // 		return (1);
-// 	if (ast->token->primary_type == SET_VALUE)
-// 		return (execute_setvalue(ast, data));
-// 	return (execute_command(ast, data));
+
+// 	token = (t_token *)ast->token;
+
+// 	if (has_token_flag(token->flags, PIPE))
+// 		return (execute_pipeline(ast, data));
+// 	// else if (has_token_flag(token->flags, REDIRECTION_OUTPUT))
+// 	// 	return (execute_redirection_out(ast, data)); // redirection
+// 	// else if (has_token_flag(token->flags, REDIRECTION_INPUT))
+// 	// 	return (execute_redirection_in(ast, data)); // redirection in
+// 	else if (has_token_flag(token->flags, COMMAND))
+// 		return (execute_command(ast, data));
+// 	else if (has_token_flag(token->flags, ASSIGNMENT))
+// 		return (execute_setvalue(ast, data)); // like export/assign
+// 	else
+// 		return (1);
 // }
 
-int	execute_ast(t_ast *ast, t_data *data)
+int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 {
-	t_token *token;
+	// t_lst	*head;
+	t_cmd_seq	*cmd_seq;
 
-	if (!ast || !ast->token)
-		return (1);
-
-	token = (t_token *)ast->token;
-
-	if (has_token_flag(token->flags, PIPE))
-		return (execute_pipeline(ast, data));
-	else if (has_token_flag(token->flags, REDIRECTION_OUTPUT))
-		return (execute_redirection_out(ast, data)); // redirection
-	else if (has_token_flag(token->flags, REDIRECTION_INPUT))
-		return (execute_redirection_in(ast, data)); // redirection in
-	else if (has_token_flag(token->flags, COMMAND))
-		return (execute_command(ast, data));
-	else if (has_token_flag(token->flags, ASSIGNMENT))
-		return (execute_setvalue(ast, data)); // like export/assign
+	// head = cmd_seqs;
+	cmd_seq = cmd_seqs->content;
+	if (ft_lstsize(cmd_seqs) == 1 && count_null_terminated_arr(cmd_seq->argv) == 0 && cmd_seq->assignment != NULL)
+	{
+		return (execute_assignment(cmd_seq, data));
+	}
+	else if (count_null_terminated_arr(cmd_seq->argv) >= 1)
+		return (execute_command(cmd_seq, data));
 	else
 		return (1);
 }
@@ -153,15 +161,14 @@ char **build_cmd_args(t_ast *cmd_node)
 	return (args);
 }
 
-int	execute_command(t_ast *node, t_data *data)
+int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 {
 	char	**args;
 	pid_t	pid;
 	char	*cmd_path;
 	int		status;
 
-	printf("test prinft to see if execute_command function is running\n");
-	args = build_cmd_args(node);
+	args = cmd_seq->argv;
 	for (int i = 0; args && args[i]; i++)
 		printf("arg[%d] = \"%s\"\n", i, args[i]);
 	printf("Executing command: %s\n", args[0]);
@@ -232,26 +239,37 @@ int	execute_command(t_ast *node, t_data *data)
 	return (WEXITSTATUS(status));
 }
 
-int	execute_setvalue(t_ast *node, t_data *data)
+// int	execute_setvalue(t_ast *node, t_data *data)
+// {
+// 	t_env_var *env_var;
+// 	t_ast		*arg_node;
+	
+// 	env_var = split_assignment(node->token->content);
+// 	if (env_var == NULL || env_var->key == NULL)
+// 		return (1);
+// 	else if (env_var->value == NULL || ft_strlen(env_var->value) == 0)
+// 	{
+// 		if (node->node_list != NULL && node->node_list->content != NULL)
+// 		{
+// 			arg_node = node->node_list->content;
+// 			free(env_var->value);
+// 			env_var->value = ft_strdup(arg_node->token->content);
+// 		}
+// 	}
+// 	set_env_variable(data->env_var_lst, env_var, &data->envp);
+// 	free_tokens(&data->free_ptr_tokens);
+// 	free_ast(&data->free_ptr_ast);
+// 	return (0);
+// }
+
+int	execute_assignment(t_cmd_seq *cmd_seq, t_data *data)
 {
 	t_env_var *env_var;
-	t_ast		*arg_node;
-	
-	env_var = split_assignment(node->token->content);
+
+	env_var = split_assignment(cmd_seq->assignment);
 	if (env_var == NULL || env_var->key == NULL)
 		return (1);
-	else if (env_var->value == NULL || ft_strlen(env_var->value) == 0)
-	{
-		if (node->node_list != NULL && node->node_list->content != NULL)
-		{
-			arg_node = node->node_list->content;
-			free(env_var->value);
-			env_var->value = ft_strdup(arg_node->token->content);
-		}
-	}
 	set_env_variable(data->env_var_lst, env_var, &data->envp);
-	free_tokens(&data->free_ptr_tokens);
-	free_ast(&data->free_ptr_ast);
 	return (0);
 }
 
