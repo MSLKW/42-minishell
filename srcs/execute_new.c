@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/12 15:05:50 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/12 15:25:53 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,12 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 // 	if (!redir_node || !redir_node->node_list || 
 // 		ft_lstsize(redir_node->node_list) != 2)
 // 	{
-// 		printf(stderr, "minishell: syntax error near input redirection\n");
+// 		fprintf(stderr, "minishell: syntax error near input redirection\n");
 // 		return (1);
 // 	}
 // 	if (!file_node->token || !file_node->token->content)
 // 	{
-// 		printf(stderr, "minishell: missing input filename\n");
+// 		fprintf(stderr, "minishell: missing input filename\n");
 // 		return (1);
 // 	}
 // 	int fd = open(file_node->token->content, O_RDONLY);
@@ -103,7 +103,7 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 
 // 	if (!redir_node || !redir_node->node_list || 
 // 		ft_lstsize(redir_node->node_list) != 2) {
-// 		printf(stderr, "Syntax error near redirection\n");
+// 		fprintf(stderr, "Syntax error near redirection\n");
 // 		return 1;
 // 	}
 
@@ -202,6 +202,8 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 	pid = fork();
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		if (is_token_executable(args[0]) == TRUE)
 			cmd_path = args[0];
 		else
@@ -220,7 +222,17 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 		free_exit(127, data);
 	}
 	else
+	{	signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 		waitpid(pid, &status, 0);
+		if (WIFSIGNALED(status))
+		{
+			if (WTERMSIG(status) == SIGINT)
+				write(STDOUT_FILENO, "\n", 1);
+			}
+		signal(SIGINT, ctrlc_handler);
+		signal(SIGQUIT, SIG_IGN);
+	}
 	free_tokens(&data->free_ptr_tokens);
 	free_ast(&data->free_ptr_ast);
 	free_str_arr(args);
@@ -265,6 +277,8 @@ int	execute_assignment(t_cmd_seq *cmd_seq, t_data *data)
 // {
 // 	int pipe_fd[2];
 // 	pid_t pid1, pid2;
+// 	int	status1;
+// 	int	status2;
 
 // 	if (!pipe_node || ft_lstsize(pipe_node->node_list) != 2)
 // 		return (1);
@@ -295,8 +309,13 @@ int	execute_assignment(t_cmd_seq *cmd_seq, t_data *data)
 // 	}
 // 	close(pipe_fd[0]);
 // 	close(pipe_fd[1]);
-// 	waitpid(pid1, NULL, 0);
-// 	waitpid(pid2, NULL, 0);
+// 	waitpid(pid1, &status1, 0);
+// 	waitpid(pid2, &status2, 0);
+// 	printf("Left exit: %d\n", WEXITSTATUS(status1));
+// 	printf("Right exit: %d\n", WEXITSTATUS(status2));
 
-// 	return (0);
+// 	if (WIFEXITED(status2))
+// 		return WEXITSTATUS(status2);
+// 	else
+// 		return 1;
 // }

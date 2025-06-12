@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interactive_mode.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 12:58:47 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/03 18:16:13 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/12 15:01:37 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,5 @@ void	ctrlc_handler(int sig)
 void	ctrld_handler(t_data *data)
 {
 	write(1, "exit\n", 5);
-	free_exit(0, data);
+	free_exit(data->last_exit_code, data);
 }
