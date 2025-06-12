@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/09 16:35:53 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/12 15:02:54 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	main(int argc, char *argv[], char *envp[])
 		shell_routine(data);
 	}
 	rl_clear_history();
-	return (0);
+	return (data->last_exit_code);
 }
 
 void	shell_routine(t_data *data)
