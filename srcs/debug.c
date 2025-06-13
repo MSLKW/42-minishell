@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:48:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/12 15:16:27 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:52:35 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,37 +120,6 @@ void	display_token_flags(enum token_flag *flags)
 			printf(",");
 		}
 		i++;
-	}
-}
-
-void	display_ast_tree(t_ast *ast_node)
-{
-	t_lst	*head;
-
-	if (ast_node == NULL || ast_node->token == NULL)
-	{
-		printf("NULL\n\n");
-		return ;
-	}
-	display_token(ast_node->token);
-	printf("--AST NODE LIST (%s)--\n", ast_node->token->content);
-	if (ast_node->node_list == NULL)
-		ft_printf("AST_NODE does not have NODE_LIST\n");
-	head = ast_node->node_list;
-	while (head != NULL)
-	{
-		t_ast	*ast_list_node = head->content;
-		display_token(ast_list_node->token);
-		head = head->next;
-	}
-	printf("\n");
-	head = ast_node->node_list;
-	while (head != NULL)
-	{
-		t_ast	*ast_list_node_re = head->content;
-		if (ast_list_node_re != NULL && has_token_flag(ast_list_node_re->token->flags, ARGUMENT) == FALSE)
-			display_ast_tree(ast_list_node_re);
-		head = head->next;
 	}
 }
 

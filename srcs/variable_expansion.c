@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:30 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/06 18:05:36 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 16:33:34 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,16 @@ static t_lst	*split_variable_list(const char *arg)
 			end_index = 1;
 			if (ft_isalpha(arg[start_index + end_index]) == TRUE || arg[start_index + end_index] == '?')
 			{
-				while (arg[start_index + end_index] != '\0' && (ft_isalnum(arg[start_index + end_index]) == TRUE || arg[start_index + end_index] == '_' || arg[start_index + end_index] == '?'))
+				if (arg[start_index + end_index] == '?')
 				{
 					end_index++;
+				}
+				else
+				{
+					while (arg[start_index + end_index] != '\0' && (ft_isalnum(arg[start_index + end_index]) == TRUE || arg[start_index + end_index] == '_'))
+					{
+						end_index++;
+					}
 				}
 				ft_lstadd_back(&arg_list, ft_lstnew(ft_substr(arg, start_index, end_index)));
 				start_index += end_index;

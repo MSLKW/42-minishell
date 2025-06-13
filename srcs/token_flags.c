@@ -6,16 +6,11 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 15:08:50 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/11 00:21:22 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 16:04:26 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// enum token_flag	operator_token_flag(char *content, int size)
-// {
-	
-// }
 
 t_bool	has_token_flag(t_flag *flags, t_flag flag)
 {
@@ -56,7 +51,7 @@ t_flag	*init_token_flags(t_token *token)
 	size = ft_strlen(content);
 	if (size == 0)
 		token_add_flag(flag_arr, WORD);
-	else if (content[0] == ' ' && size > 0)
+	else if (ft_is_delimiter(content) && size > 0)
 	{
 		token_add_flag(flag_arr, DELIMITER);
 		token_add_flag(flag_arr, WHITESPACE);
@@ -102,7 +97,7 @@ int	token_add_flag(t_flag *flag_arr, t_flag flag)
 	i = 0;
 	while (i < TOKEN_FLAG_SIZE)
 	{
-		if (flag_arr[i] == NO_FLAG)
+		if (flag_arr[i] == NO_FLAG || flag_arr[i] == flag)
 		{
 			flag_arr[i] = flag;
 			return (0);
