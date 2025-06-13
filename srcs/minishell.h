@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/12 15:06:15 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 16:37:57 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@
 # define TRUE 1
 # define FALSE 0
 # define TOKEN_FLAG_SIZE 14
+
+# define DEBUG 1
 
 // ===== Minishell Types =====
 
@@ -79,11 +81,6 @@ typedef struct s_token {
 	t_flag				*flags;
 }	t_token;
 
-typedef struct s_ast {
-	t_token	*token;
-	t_lst	*node_list;
-}	t_ast;
-
 typedef struct s_cmd_seq {
 	t_lst	*token_list;
 	char	*assignment;
@@ -111,7 +108,7 @@ typedef struct	s_data {
 	char	**history;
 	int		history_size;
 	t_lst	*free_ptr_tokens;
-	t_ast	*free_ptr_ast;
+	t_lst	*free_ptr_cmd_seqs;
 }	t_data;
 
 // ===== Minishell Functions =====
@@ -168,13 +165,10 @@ int		count_token_with_flag(t_lst	*token_list, t_flag flag);
 
 // execute.c
 char	*find_cmd_path(char *cmd, t_lst *env_var_lst);
-void	execute_cmd(t_ast *cmd_ast, t_data *data);
 void	execute_builtin(char *cmd_name, char **args, t_data *data);
 char	**get_args_from_ast(t_lst *node_list);
 
 // execute_new.c
-int		execute_ast(t_ast *ast, t_data *data);
-char	**build_cmd_args(t_ast *node);
 int		execute_command(t_cmd_seq *cmd_seq, t_data *data);
 int		execute_cmd_seqs(t_lst *cmd_seqs, t_data *data);
 int		execute_assignment(t_cmd_seq *cmd_seq, t_data *data);
@@ -183,17 +177,8 @@ int		execute_assignment(t_cmd_seq *cmd_seq, t_data *data);
 int		ft_isalpha_str(char *str);
 int		ft_isalnum_str(char *str);
 int		count_null_terminated_arr(char **str_arr);
-
-// ast_init.c
-t_ast	*find_pipes(t_lst	*token_list);
-t_ast	*init_ast(t_lst	**token_list);
-t_ast	*init_pipe(t_lst **token_list, t_lst *pipe_token);
-t_ast	*init_redirection(t_lst **token_list, t_lst *redirection_token);
-t_ast	*init_input_redirection(t_lst **token_list, t_lst *redirection_token);
-t_ast	*init_output_redirection(t_lst **token_list, t_lst *redirection_token);
-t_ast	*init_command(t_lst	*command_token);
-t_ast	*init_argument(t_lst *argument_token);
-t_ast	*init_setvalue(t_lst *setvalue_token);
+t_bool	ft_has_whitespace(char *str);
+t_bool	ft_is_delimiter(char *str);
 
 // cmd_seq.c
 t_cmd_seq	*init_cmd_seq(t_lst	*token_list);
@@ -207,7 +192,7 @@ t_io	*init_io(char *content, t_flag flag);
 t_flag	get_redirection_flag(t_flag *flags);
 t_lst	*get_io_list(t_lst *token_list);
 
-// ast_search.c
+// token_search.c
 t_lst	*find_token_right(t_lst *current_token_lst, t_flag token_flag, int size);
 t_lst	*find_token_left(t_lst	**token_list, t_lst *current_token_lst, t_flag token_flag, int size);
 
@@ -227,14 +212,13 @@ char	*variable_expansion(const char *arg, t_data *data, t_bool *status);
 t_lst	*tokens_variable_expansion(t_lst *tokens_lst, t_data *data);
 
 // execute_new.c
-int		execute_ast(t_ast *ast, t_data *data);
-char	**build_cmd_args(t_ast *node);
+// char	**build_cmd_args(t_ast *node);
 // int		execute_command(t_ast *node, t_data *data);
-int		execute_setvalue(t_ast *node, t_data *data);
-int		prepare_args_and_redirect(t_ast *ast, char **args);
-int		execute_pipeline(t_ast *pipe_node, t_data *data);
-int		execute_redirection_out(t_ast *redir_node, t_data *data);
-int		execute_redirection_in(t_ast *redir_node, t_data *data);
+// int		execute_setvalue(t_ast *node, t_data *data);
+// int		prepare_args_and_redirect(t_ast *ast, char **args);
+// int		execute_pipeline(t_ast *pipe_node, t_data *data);
+// int		execute_redirection_out(t_ast *redir_node, t_data *data);
+// int		execute_redirection_in(t_ast *redir_node, t_data *data);
 
 // interactive_mode.c
 void	ctrlc_handler(int sig);
@@ -255,7 +239,6 @@ void	display_token(t_token *token);
 void	display_token_handler(enum token_handler handler);
 void	display_token_flag(enum token_flag flag);
 void	display_token_flags(enum token_flag *flags);
-void	display_ast_tree(t_ast *ast_node);
 void	display_env_var(t_data *data);
 void	display_cmd_seq(t_lst *cmd_seq_list);
 
@@ -272,9 +255,6 @@ int		builtin_history(t_data *data);
 int		builtin_temphistory(void);
 void	store_history(t_data *data, const char *line);
 
-//dollar_sign_expansions.c
-char	*expand_dollar_question(const char *arg, int last_exit_code);
-
 // export.c
 int		ft_addenv(char *arg, char ***envp);
 int		ft_setenv(char *key, char *value, char ***envp);
@@ -288,9 +268,11 @@ void	free_data(t_data *data);
 void	free_str_arr(char **str_arr);
 void	free_tokens(t_lst **tokens_lst);
 void	free_token(void *content);
-void	free_ast(t_ast **ast);
 void	free_ast_node(void *content);
 void	free_env_var(void *content);
+void	free_cmd_seqs(t_lst **cmd_seqs);
+void	free_cmd_seq(void *content);
+void	free_io(void *content);
 
 // exit.c
 void	free_exit(int exit_status, t_data *data);
