@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 15:08:50 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/11 00:21:22 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 11:18:30 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int	token_add_flag(t_flag *flag_arr, t_flag flag)
 	i = 0;
 	while (i < TOKEN_FLAG_SIZE)
 	{
-		if (flag_arr[i] == NO_FLAG)
+		if (flag_arr[i] == NO_FLAG || flag_arr[i] == flag)
 		{
 			flag_arr[i] = flag;
 			return (0);

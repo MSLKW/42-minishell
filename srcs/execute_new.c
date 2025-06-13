@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/12 15:25:53 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:31:59 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,9 +193,8 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 		status = builtin_history(data);
 	if (status != -1)
 	{
-		free_str_arr(args);
 		free_tokens(&data->free_ptr_tokens);
-		free_ast(&data->free_ptr_ast);
+		free_cmd_seqs(&data->free_ptr_cmd_seqs);
 		return (status);
 	}
 	printf("Last exit code: %d\n", data->last_exit_code);
@@ -218,7 +217,7 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 		else
 			printf("%s: command not found\n", args[0]);
 		// perror("execve");
-		free_str_arr(args);
+		// free_str_arr(args);
 		free_exit(127, data);
 	}
 	else
@@ -234,8 +233,7 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 		signal(SIGQUIT, SIG_IGN);
 	}
 	free_tokens(&data->free_ptr_tokens);
-	free_ast(&data->free_ptr_ast);
-	free_str_arr(args);
+	free_cmd_seqs(&data->free_ptr_cmd_seqs);
 	return (WEXITSTATUS(status));
 }
 
@@ -270,6 +268,8 @@ int	execute_assignment(t_cmd_seq *cmd_seq, t_data *data)
 	if (env_var == NULL || env_var->key == NULL)
 		return (1);
 	set_env_variable(data->env_var_lst, env_var, &data->envp);
+	free_tokens(&data->free_ptr_tokens);
+	free_cmd_seqs(&data->free_ptr_cmd_seqs);
 	return (0);
 }
 

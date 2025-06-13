@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/12 19:45:21 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 11:40:07 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ typedef struct	s_data {
 	char	**history;
 	int		history_size;
 	t_lst	*free_ptr_tokens;
-	t_ast	*free_ptr_ast;
+	t_lst	*free_ptr_cmd_seqs;
 }	t_data;
 
 // ===== Minishell Functions =====
@@ -292,6 +292,9 @@ void	free_token(void *content);
 void	free_ast(t_ast **ast);
 void	free_ast_node(void *content);
 void	free_env_var(void *content);
+void	free_cmd_seqs(t_lst **cmd_seqs);
+void	free_cmd_seq(void *content);
+void	free_io(void *content);
 
 // exit.c
 void	free_exit(int exit_status, t_data *data);

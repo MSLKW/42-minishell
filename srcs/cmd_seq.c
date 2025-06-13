@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 17:48:43 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/11 14:29:42 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 14:59:23 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ t_lst	*init_cmd_seqs(t_lst *token_list)
 			cmd_seq_token_list = NULL;
 		}
 		else
-			ft_lstadd_back(&cmd_seq_token_list, ft_lstnew(token));
+			ft_lstadd_back(&cmd_seq_token_list, ft_lstnew(init_token(token->content, token->handler, token->flags)));
 		head = head->next;
 	}
 	if (cmd_seq_token_list != NULL)

@@ -9,6 +9,10 @@ SRCS_FILES :=	minishell.c \
 				parse.c \
 				history.c \
 				tokenize.c \
+				tokenize_expansion.c \
+				tokenize_flags.c \
+				tokenize_handle.c \
+				tokenize_join.c \
 				execute.c \
 				helper.c \
 				ast_init.c \

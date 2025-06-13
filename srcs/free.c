@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:26:34 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/06 18:03:38 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:14:44 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ void	free_data(t_data *data)
 	free_str_arr(data->history);
 	if (data->free_ptr_tokens != NULL)
 		free_tokens(&data->free_ptr_tokens);
-	if (data->free_ptr_ast != NULL)
-		free_ast(&data->free_ptr_ast);
+	if (data->free_ptr_cmd_seqs != NULL)
+		free_cmd_seqs(&data->free_ptr_cmd_seqs);
 	free(data);
 }
 
@@ -65,9 +65,45 @@ void	free_token(void *content)
 	t_token	*token;
 
 	token = (t_token *)content;
+	if (token == NULL)
+		return ;
 	free(token->content);
 	free(token->flags);
 	free(token);
+}
+
+void	free_cmd_seqs(t_lst **cmd_seqs)
+{
+	ft_lstclear(cmd_seqs, free_cmd_seq);
+	*cmd_seqs = NULL;
+}
+
+void	free_cmd_seq(void *content)
+{
+	t_cmd_seq *cmd_seq;
+
+	cmd_seq = (t_cmd_seq *)content;
+	if (cmd_seq == NULL)
+		return ;
+	free_tokens(&cmd_seq->token_list);
+	free(cmd_seq->assignment);
+	free_str_arr(cmd_seq->argv);
+	if (cmd_seq->io_list != NULL)
+		ft_lstclear(&cmd_seq->io_list, free_io);
+	free(cmd_seq);
+}
+
+void	free_io(void *content)
+{
+	t_io *io;
+
+	if (content == NULL)
+		return ;
+	io = (t_io *)content;
+	if (io == NULL)
+		return ;
+	free(io->content);
+	free(io);
 }
 
 void	free_ast(t_ast **ast)
