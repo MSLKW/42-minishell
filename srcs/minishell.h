@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 15:55:51 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 16:04:07 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,7 @@ int		ft_isalpha_str(char *str);
 int		ft_isalnum_str(char *str);
 int		count_null_terminated_arr(char **str_arr);
 t_bool	ft_has_whitespace(char *str);
+t_bool	ft_is_delimiter(char *str);
 
 // cmd_seq.c
 t_cmd_seq	*init_cmd_seq(t_lst	*token_list);

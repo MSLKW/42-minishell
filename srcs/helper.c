@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 15:32:10 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 11:06:35 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 16:03:57 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,18 @@ t_bool	ft_has_whitespace(char *str)
 		index++;
 	}
 	return (FALSE);
+}
+
+t_bool	ft_is_delimiter(char *str)
+{
+	int	index;
+
+	index = 0;
+	while (str[index] != '\0')
+	{
+		if (str[index] != ' ')
+			return (FALSE);
+		index++;
+	}
+	return (TRUE);
 }
