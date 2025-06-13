@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 11:12:54 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:50:40 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,7 @@ t_token	*init_token(char *content, enum token_handler handler, t_flag *flags)
 	if (flags == NULL)
 		token->flags = init_empty_token_flags();
 	else
-	{
 		token->flags = token_dup_flag(flags);
-	}
 	return (token);
 }
 
@@ -49,7 +47,7 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	ft_lstclear(&token_list, free_token);
 	token_list = new_token_list;
 
-	apply_token_flags(token_list);
+	apply_token_flags(token_list); // reapply token flags for whitespaces
 	printf("Split list\n");
 	debug_token_list(token_list);
 

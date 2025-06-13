@@ -6,16 +6,11 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 15:08:50 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 11:18:30 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:51:32 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// enum token_flag	operator_token_flag(char *content, int size)
-// {
-	
-// }
 
 t_bool	has_token_flag(t_flag *flags, t_flag flag)
 {

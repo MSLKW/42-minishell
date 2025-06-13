@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 11:38:33 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:52:01 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void	shell_routine(t_data *data)
 {
 	char	*line;
 	t_lst	*tokens;
-	// t_ast	*ast_node;
 
 	line = ft_get_line(data);
 	if (line && *line)
@@ -50,18 +49,12 @@ void	shell_routine(t_data *data)
 	tokens = tokenize_line(line, data);
 	data->free_ptr_tokens = tokens;
 	debug_token_list(tokens);
-	// ast_node = init_ast(&tokens);
-	// data->free_ptr_ast = ast_node;
-	// ft_printf("----- AST TREE -----\n");
 	t_lst *cmd_seq_list = init_cmd_seqs(tokens);
 	data->free_ptr_cmd_seqs = cmd_seq_list;
 	display_cmd_seq(cmd_seq_list);
-	// display_ast_tree(ast_node);
 	free(line);
-	// data->last_exit_code = execute_ast(ast_node, data);
 	data->last_exit_code = execute_cmd_seqs(cmd_seq_list, data);
 	// free_tokens(&data->free_ptr_tokens);
-	// free_ast(&data->free_ptr_ast);
 }
 
 t_data	*init_data(int argc, char **argv, char **envp)

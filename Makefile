@@ -15,10 +15,9 @@ SRCS_FILES :=	minishell.c \
 				tokenize_join.c \
 				execute.c \
 				helper.c \
-				ast_init.c \
+				token_search.c \
 				interactive_mode.c \
 				debug.c \
-				ast_search.c \
 				execute_new.c \
 				cd.c \
 				echo.c \

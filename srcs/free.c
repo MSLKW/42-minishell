@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:26:34 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 15:14:44 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:53:23 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,26 +104,6 @@ void	free_io(void *content)
 		return ;
 	free(io->content);
 	free(io);
-}
-
-void	free_ast(t_ast **ast)
-{
-	if (ast == NULL || *ast == NULL)
-		return ;
-	free_ast_node(*ast);
-	*ast = NULL;
-}
-
-void	free_ast_node(void	*content)
-{
-	t_ast	*ast_node;
-
-	ast_node = (t_ast *)content;
-	if (ast_node == NULL)
-		return ;
-	if (ast_node->node_list != NULL)
-		ft_lstclear(&ast_node->node_list, free_ast_node);
-	free(ast_node);
 }
 
 void	free_env_var(void *content)

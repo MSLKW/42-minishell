@@ -6,34 +6,11 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/13 15:31:59 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:53:57 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// int	execute_ast(t_ast *ast, t_data *data)
-// {
-// 	t_token *token;
-
-// 	if (!ast || !ast->token)
-// 		return (1);
-
-// 	token = (t_token *)ast->token;
-
-// 	if (has_token_flag(token->flags, PIPE))
-// 		return (execute_pipeline(ast, data));
-// 	// else if (has_token_flag(token->flags, REDIRECTION_OUTPUT))
-// 	// 	return (execute_redirection_out(ast, data)); // redirection
-// 	// else if (has_token_flag(token->flags, REDIRECTION_INPUT))
-// 	// 	return (execute_redirection_in(ast, data)); // redirection in
-// 	else if (has_token_flag(token->flags, COMMAND))
-// 		return (execute_command(ast, data));
-// 	else if (has_token_flag(token->flags, ASSIGNMENT))
-// 		return (execute_setvalue(ast, data)); // like export/assign
-// 	else
-// 		return (1);
-// }
 
 int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 {
@@ -133,33 +110,6 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 
 // 	return exit_code;
 // }
-
-char **build_cmd_args(t_ast *cmd_node)
-{
-	int		count;
-	char	**args;
-	t_lst	*cur;
-	int		i = 0;
-
-	if (!cmd_node)
-		return (NULL);
-	count = ft_lstsize(cmd_node->node_list);
-	args = malloc(sizeof(char *) * (count + 2)); // +1 for command, +1 for NULL
-	if (!args)
-		return (NULL);
-	if (cmd_node->token)
-		args[i++] = ft_strdup(((t_token *)cmd_node->token)->content);
-	cur = cmd_node->node_list;
-	while (cur)
-	{
-		t_ast *child = (t_ast *)cur->content;
-		if (child && child->token)
-			args[i++] = ft_strdup(((t_token *)child->token)->content);
-		cur = cur->next;
-	}
-	args[i] = NULL;
-	return (args);
-}
 
 int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 {
