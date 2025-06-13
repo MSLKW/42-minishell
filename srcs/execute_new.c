@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/13 16:14:38 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 17:12:08 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,211 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 	else
 		return (1);
 }
+
+void apply_redirections(t_lst *io_list)
+{
+	t_io *io;
+	int fd;
+
+	while (io_list)
+	{
+		io = (t_io *)io_list->content;
+		if (io->flag == REDIRECTION_OUTPUT)
+		{
+			fd = open(io->content, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			if (fd < 0)
+				perror("open");
+			else
+			{
+				dup2(fd, 1);
+				close(fd);
+			}
+		}
+		else if (io->flag == REDIRECTION_APPEND)
+		{
+			fd = open(io->content, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			if (fd < 0)
+				perror("open");
+			else
+			{
+				dup2(fd, 1);
+				close(fd);
+			}
+		}
+		else if (io->flag == REDIRECTION_INPUT)
+		{
+			fd = open(io->content, O_RDONLY);
+			if (fd < 0)
+				perror("open");
+			else
+			{
+				dup2(fd, 0);
+				close(fd);
+			}
+		}
+		io_list = io_list->next;
+	}
+}
+
+int is_builtin(char *cmd)
+{
+	return ( ft_strncmp(cmd, "pwd", 4) == 0
+		|| ft_strncmp(cmd, "echo", 5) == 0
+		|| ft_strncmp(cmd, "cd", 3) == 0
+		|| ft_strncmp(cmd, "env", 4) == 0
+		|| ft_strncmp(cmd, "exit", 5) == 0
+		|| ft_strncmp(cmd, "unset", 6) == 0
+		|| ft_strncmp(cmd, "export", 7) == 0
+		|| ft_strncmp(cmd, "history", 8) == 0
+	);
+}
+
+int run_builtin(char **args, t_data *data)
+{
+	if (ft_strncmp(args[0], "pwd", 4) == 0)
+		return (builtin_pwd());
+	if (ft_strncmp(args[0], "echo", 5) == 0)
+		return (builtin_echo(args));
+	if (ft_strncmp(args[0], "cd", 3) == 0)
+		return (builtin_cd(args + 1, data));
+	if (ft_strncmp(args[0], "env", 4) == 0)
+		return (builtin_env(data->envp));
+	if (ft_strncmp(args[0], "exit", 5) == 0)
+		return (builtin_exit(args, data));
+	if (ft_strncmp(args[0], "unset", 6) == 0)
+		return (builtin_unset_env(args[1], &data->envp, &data->env_var_lst));
+	if (ft_strncmp(args[0], "export", 7) == 0)
+		return (builtin_export(args, &data->envp, data));
+	if (ft_strncmp(args[0], "history", 8) == 0)
+		return (builtin_history(data));
+	return (1);
+}
+
+int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
+{
+	char	**args;
+	pid_t	pid;
+	char	*cmd_path;
+	int		status;
+
+	args = cmd_seq->argv;
+	if (DEBUG == 1)
+	{
+		for (int i = 0; args && args[i]; i++)
+			printf("arg[%d] = \"%s\"\n", i, args[i]);
+		printf("Executing command: %s\n", args[0]);
+	}
+
+	status = -1;
+	if (!args || !args[0])
+		return (1);
+	if (is_builtin(args[0]) && cmd_seq->io_list == NULL)
+	{
+		status = run_builtin(args, data);
+		free_tokens(&data->free_ptr_tokens);
+		free_cmd_seqs(&data->free_ptr_cmd_seqs);
+		return (status);
+	}
+	if (DEBUG == 1)
+		printf("Last exit code: %d\n", data->last_exit_code);
+	pid = fork();
+	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+		if (is_token_executable(args[0]) == TRUE)
+			cmd_path = args[0];
+		else
+			cmd_path = find_cmd_path(args[0], data->env_var_lst);
+		if (DEBUG == 1)
+			printf("cmd_path: %s\n", cmd_path);
+		apply_redirections(cmd_seq->io_list);
+		if (cmd_path != NULL)
+			execve(cmd_path, args, data->envp);
+		if (get_env_var_value("PATH", data->env_var_lst) == NULL)
+			printf("%s: No such file or directory\n", args[0]);
+		else
+			printf("%s: command not found\n", args[0]);
+		// perror("execve");
+		// free_str_arr(args);
+		free_exit(127, data);
+	}
+	else
+	{	signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
+		waitpid(pid, &status, 0);
+		if (WIFSIGNALED(status))
+		{
+			if (WTERMSIG(status) == SIGINT)
+				write(STDOUT_FILENO, "\n", 1);
+			}
+		signal(SIGINT, ctrlc_handler);
+		signal(SIGQUIT, SIG_IGN);
+	}
+	free_tokens(&data->free_ptr_tokens);
+	free_cmd_seqs(&data->free_ptr_cmd_seqs);
+	return (WEXITSTATUS(status));
+}
+
+int	execute_assignment(t_cmd_seq *cmd_seq, t_data *data)
+{
+	t_env_var *env_var;
+
+	env_var = split_assignment(cmd_seq->assignment);
+	if (env_var == NULL || env_var->key == NULL)
+		return (1);
+	set_env_variable(data->env_var_lst, env_var, &data->envp);
+	free_tokens(&data->free_ptr_tokens);
+	free_cmd_seqs(&data->free_ptr_cmd_seqs);
+	return (0);
+}
+
+// int execute_pipeline(t_ast *pipe_node, t_data *data)
+// {
+// 	int pipe_fd[2];
+// 	pid_t pid1, pid2;
+// 	int	status1;
+// 	int	status2;
+
+// 	if (!pipe_node || ft_lstsize(pipe_node->node_list) != 2)
+// 		return (1);
+// 	t_ast *left = (t_ast *)pipe_node->node_list->content;
+// 	t_ast *right = (t_ast *)pipe_node->node_list->next->content;
+// 	if (pipe(pipe_fd) < 0)
+// 	{
+// 		perror("pipe");
+// 		return (1);
+// 	}
+// 	pid1 = fork();
+// 	// left side
+// 	if (pid1 == 0)
+// 	{
+// 		close(pipe_fd[0]);
+// 		dup2(pipe_fd[1], 1);
+// 		close(pipe_fd[1]);
+// 		exit(execute_ast(left, data));
+// 	}
+// 	// right side
+// 	pid2 = fork();
+// 	if (pid2 == 0)
+// 	{
+// 		close(pipe_fd[1]);
+// 		dup2(pipe_fd[0], 0);
+// 		close(pipe_fd[0]);
+// 		exit(execute_ast(right, data));
+// 	}
+// 	close(pipe_fd[0]);
+// 	close(pipe_fd[1]);
+// 	waitpid(pid1, &status1, 0);
+// 	waitpid(pid2, &status2, 0);
+// 	printf("Left exit: %d\n", WEXITSTATUS(status1));
+// 	printf("Right exit: %d\n", WEXITSTATUS(status2));
+
+// 	if (WIFEXITED(status2))
+// 		return WEXITSTATUS(status2);
+// 	else
+// 		return 1;
+// }
 
 // int execute_redirection_in(t_ast *redir_node, t_data *data)
 // {
@@ -109,169 +314,4 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 // 	close(stdout_backup);
 
 // 	return exit_code;
-// }
-
-int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
-{
-	char	**args;
-	pid_t	pid;
-	char	*cmd_path;
-	int		status;
-
-	args = cmd_seq->argv;
-	if (DEBUG == 1)
-	{
-		for (int i = 0; args && args[i]; i++)
-			printf("arg[%d] = \"%s\"\n", i, args[i]);
-		printf("Executing command: %s\n", args[0]);
-	}
-
-	status = -1;
-	if (!args || !args[0])
-		return (1);
-	if (ft_strncmp(args[0], "pwd", 4) == 0)
-		status = builtin_pwd();
-	if (ft_strncmp(args[0], "echo", 5) == 0)
-		status = builtin_echo(args);
-	if (ft_strncmp(args[0], "cd", 3) == 0)
-		status = builtin_cd(args + 1, data);
-	if (ft_strncmp(args[0], "env", 4) == 0)
-		status = builtin_env(data->envp);
-	if (ft_strncmp(args[0], "exit", 5) == 0)
-		status = builtin_exit(args, data);
-	if (ft_strncmp(args[0], "unset", 6) == 0)
-		status = builtin_unset_env(args[1], &data->envp, &data->env_var_lst);
-	if (ft_strncmp(args[0], "export", 7) == 0)
-		status = builtin_export(args, &data->envp, data);
-	if (ft_strncmp(args[0], "history", 8) == 0)
-		status = builtin_history(data);
-	if (status != -1)
-	{
-		free_tokens(&data->free_ptr_tokens);
-		free_cmd_seqs(&data->free_ptr_cmd_seqs);
-		return (status);
-	}
-	if (DEBUG == 1)
-		printf("Last exit code: %d\n", data->last_exit_code);
-	pid = fork();
-	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
-		if (is_token_executable(args[0]) == TRUE)
-			cmd_path = args[0];
-		else
-			cmd_path = find_cmd_path(args[0], data->env_var_lst);
-		if (DEBUG == 1)
-			printf("cmd_path: %s\n", cmd_path);
-		if (cmd_path != NULL)
-		{
-			execve(cmd_path, args, data->envp);
-		}
-		if (get_env_var_value("PATH", data->env_var_lst) == NULL)
-			printf("%s: No such file or directory\n", args[0]);
-		else
-			printf("%s: command not found\n", args[0]);
-		// perror("execve");
-		// free_str_arr(args);
-		free_exit(127, data);
-	}
-	else
-	{	signal(SIGINT, SIG_IGN);
-		signal(SIGQUIT, SIG_IGN);
-		waitpid(pid, &status, 0);
-		if (WIFSIGNALED(status))
-		{
-			if (WTERMSIG(status) == SIGINT)
-				write(STDOUT_FILENO, "\n", 1);
-			}
-		signal(SIGINT, ctrlc_handler);
-		signal(SIGQUIT, SIG_IGN);
-	}
-	free_tokens(&data->free_ptr_tokens);
-	free_cmd_seqs(&data->free_ptr_cmd_seqs);
-	return (WEXITSTATUS(status));
-}
-
-// int	execute_setvalue(t_ast *node, t_data *data)
-// {
-// 	t_env_var *env_var;
-// 	t_ast		*arg_node;
-	
-// 	env_var = split_assignment(node->token->content);
-// 	if (env_var == NULL || env_var->key == NULL)
-// 		return (1);
-// 	else if (env_var->value == NULL || ft_strlen(env_var->value) == 0)
-// 	{
-// 		if (node->node_list != NULL && node->node_list->content != NULL)
-// 		{
-// 			arg_node = node->node_list->content;
-// 			free(env_var->value);
-// 			env_var->value = ft_strdup(arg_node->token->content);
-// 		}
-// 	}
-// 	set_env_variable(data->env_var_lst, env_var, &data->envp);
-// 	free_tokens(&data->free_ptr_tokens);
-// 	free_ast(&data->free_ptr_ast);
-// 	return (0);
-// }
-
-int	execute_assignment(t_cmd_seq *cmd_seq, t_data *data)
-{
-	t_env_var *env_var;
-
-	env_var = split_assignment(cmd_seq->assignment);
-	if (env_var == NULL || env_var->key == NULL)
-		return (1);
-	set_env_variable(data->env_var_lst, env_var, &data->envp);
-	free_tokens(&data->free_ptr_tokens);
-	free_cmd_seqs(&data->free_ptr_cmd_seqs);
-	return (0);
-}
-
-// int execute_pipeline(t_ast *pipe_node, t_data *data)
-// {
-// 	int pipe_fd[2];
-// 	pid_t pid1, pid2;
-// 	int	status1;
-// 	int	status2;
-
-// 	if (!pipe_node || ft_lstsize(pipe_node->node_list) != 2)
-// 		return (1);
-// 	t_ast *left = (t_ast *)pipe_node->node_list->content;
-// 	t_ast *right = (t_ast *)pipe_node->node_list->next->content;
-// 	if (pipe(pipe_fd) < 0)
-// 	{
-// 		perror("pipe");
-// 		return (1);
-// 	}
-// 	pid1 = fork();
-// 	// left side
-// 	if (pid1 == 0)
-// 	{
-// 		close(pipe_fd[0]);
-// 		dup2(pipe_fd[1], 1);
-// 		close(pipe_fd[1]);
-// 		exit(execute_ast(left, data));
-// 	}
-// 	// right side
-// 	pid2 = fork();
-// 	if (pid2 == 0)
-// 	{
-// 		close(pipe_fd[1]);
-// 		dup2(pipe_fd[0], 0);
-// 		close(pipe_fd[0]);
-// 		exit(execute_ast(right, data));
-// 	}
-// 	close(pipe_fd[0]);
-// 	close(pipe_fd[1]);
-// 	waitpid(pid1, &status1, 0);
-// 	waitpid(pid2, &status2, 0);
-// 	printf("Left exit: %d\n", WEXITSTATUS(status1));
-// 	printf("Right exit: %d\n", WEXITSTATUS(status2));
-
-// 	if (WIFEXITED(status2))
-// 		return WEXITSTATUS(status2);
-// 	else
-// 		return 1;
 // }
