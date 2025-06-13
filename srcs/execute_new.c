@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/13 17:12:08 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/13 18:29:40 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,8 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 		free_exit(127, data);
 	}
 	else
-	{	signal(SIGINT, SIG_IGN);
+	{	
+		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
 		waitpid(pid, &status, 0);
 		if (WIFSIGNALED(status))
