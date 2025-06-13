@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/13 15:53:57 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 16:14:38 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,9 +119,13 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 	int		status;
 
 	args = cmd_seq->argv;
-	for (int i = 0; args && args[i]; i++)
-		printf("arg[%d] = \"%s\"\n", i, args[i]);
-	printf("Executing command: %s\n", args[0]);
+	if (DEBUG == 1)
+	{
+		for (int i = 0; args && args[i]; i++)
+			printf("arg[%d] = \"%s\"\n", i, args[i]);
+		printf("Executing command: %s\n", args[0]);
+	}
+
 	status = -1;
 	if (!args || !args[0])
 		return (1);
@@ -147,7 +151,8 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 		free_cmd_seqs(&data->free_ptr_cmd_seqs);
 		return (status);
 	}
-	printf("Last exit code: %d\n", data->last_exit_code);
+	if (DEBUG == 1)
+		printf("Last exit code: %d\n", data->last_exit_code);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -157,7 +162,8 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 			cmd_path = args[0];
 		else
 			cmd_path = find_cmd_path(args[0], data->env_var_lst);
-		printf("cmd_path: %s\n", cmd_path);
+		if (DEBUG == 1)
+			printf("cmd_path: %s\n", cmd_path);
 		if (cmd_path != NULL)
 		{
 			execve(cmd_path, args, data->envp);
