@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 11:07:35 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 11:10:13 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 16:27:33 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ t_token	*handle_none(char *line, int *index)
 	else if (line[*index + size] == '$')
 	{
 		size++;
-		while ((ft_isalnum(line[*index + size]) == TRUE || line[*index + size] == '_') && line[*index + size] != '\0')
+		while ((ft_isalnum(line[*index + size]) == TRUE || line[*index + size] == '_' || line[*index + size] == '?') && line[*index + size] != '\0')
 			size++;
 	}
 	else

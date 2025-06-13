@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 16:12:32 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/13 16:26:33 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_lst	*tokenize_line(char *line, t_data *data)
 	if (token_list == NULL)
 		return (NULL);
 	apply_token_flags(token_list);
-		
+
 	expand_variable_token_list(token_list, data);
 	if (DEBUG == 1)
 	{
