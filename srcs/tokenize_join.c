@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 11:08:44 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 11:10:16 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/14 15:26:44 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ t_lst	*join_token_list(t_lst **token_list)
 			token_rm_flags(joint_flags);
 			ft_lstadd_back(&new_token_list, ft_lstnew(init_token(token->content, token->handler, token->flags)));
 		}
-		else if (has_token_flag(token->flags, WHITESPACE) == FALSE)
+		else if (has_token_flag(token->flags, DELIMITER) == FALSE)
 		{
 			joint_content = add_joint_content(joint_content, token->content);
 			
@@ -86,7 +86,7 @@ t_lst	*join_token_list(t_lst **token_list)
 			// if there is assignment before, and current token is an operator, then don't add flag
 
 		}
-		else if (has_token_flag(token->flags, WHITESPACE) == TRUE)
+		else if (has_token_flag(token->flags, DELIMITER) == TRUE)
 		{
 			capture_new_token(&joint_content, &new_token_list, joint_flags);
 			token_rm_flags(joint_flags);

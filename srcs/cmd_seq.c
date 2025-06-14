@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 17:48:43 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 14:59:23 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/14 17:22:00 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,22 @@
 t_cmd_seq	*init_cmd_seq(t_lst	*token_list)
 {
 	t_cmd_seq	*cmd_seq;
+	int			status;
 
+	status = 0;
 	cmd_seq = ft_calloc(1, sizeof(t_cmd_seq));
 	if (cmd_seq == NULL || token_list == NULL)
 		return (NULL);
 	cmd_seq->token_list = token_list;
 	cmd_seq->assignment = cmd_seq_get_assignment(token_list);
 	cmd_seq->argv = cmd_seq_get_argv(token_list);
-	cmd_seq->io_list = get_io_list(token_list);
+	cmd_seq->io_list = get_io_list(token_list, &status);
+	if (status == 1)
+	{
+		printf("Syntax error\n");
+		free_cmd_seq(cmd_seq);
+		return (NULL);
+	}
 	return (cmd_seq);
 }
 
