@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 19:34:24 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/14 15:06:24 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ t_lst	*split_token_none(t_lst **token_list)
 	while (head != NULL)
 	{
 		token = head->content;
-		if (token->handler == NONE && ft_has_whitespace(token->content))
+		if (token->handler == NONE && ft_has_delimiter(token->content))
 		{
 			list = tokenize_str(token->content); // might only need to do for none
 			if (has_token_flag(token->flags, WORD))

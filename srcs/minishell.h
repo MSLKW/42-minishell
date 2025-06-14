@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/14 11:00:10 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/14 15:07:23 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,8 +179,9 @@ int		execute_assignment(t_cmd_seq *cmd_seq, t_data *data);
 int		ft_isalpha_str(char *str);
 int		ft_isalnum_str(char *str);
 int		count_null_terminated_arr(char **str_arr);
-t_bool	ft_has_whitespace(char *str);
-t_bool	ft_is_delimiter(char *str);
+t_bool	ft_has_delimiter(char *str);
+t_bool	ft_fully_delimiter(char *str);
+t_bool	ft_is_delimiter(char c);
 
 // cmd_seq.c
 t_cmd_seq	*init_cmd_seq(t_lst	*token_list);
