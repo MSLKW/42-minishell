@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:45:01 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/06 17:55:48 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/14 14:20:57 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,10 +156,37 @@ int	process_args(char **args, char ***envp, t_lst *env_var_lst)
 	return (0);
 }
 
+static int display_export(t_lst *env_var_lst)
+{
+	t_lst		*head;
+	t_env_var	*env_var;
+
+	if (env_var_lst == NULL)
+		return (1);
+	head = env_var_lst;
+	while (head != NULL)
+	{
+		env_var = head->content;
+		if (env_var != NULL && env_var->key != NULL && env_var->is_export == TRUE)
+		{
+			if (env_var->value == NULL || ft_strlen(env_var->value) == 0)
+				printf("declare -x %s\n", env_var->key);
+			else
+				printf("declare -x %s=\"%s\"\n", env_var->key, env_var->value);
+		}
+		head = head->next;
+	}
+	return (0);
+}
+
 int	builtin_export(char **args, char ***envp, t_data *data)
 {
 	// validate args to have only 1 argument
-	process_args(args, envp, data->env_var_lst);
-	// builtin_env(*envp);
+	if (args == NULL || envp == NULL || data == NULL)
+		return (1);
+	if (count_null_terminated_arr(args) == 1)
+		display_export(data->env_var_lst);
+	else
+		process_args(args, envp, data->env_var_lst);
 	return (0);
 }
