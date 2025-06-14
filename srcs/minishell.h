@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/14 15:07:23 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/14 17:16:27 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,7 @@ char		**cmd_seq_get_cmd_args(char *cmd, char **args);
 // io.c
 t_io	*init_io(char *content, t_flag flag);
 t_flag	get_redirection_flag(t_flag *flags);
-t_lst	*get_io_list(t_lst *token_list);
+t_lst	*get_io_list(t_lst *token_list, int *status);
 
 // token_search.c
 t_lst	*find_token_right(t_lst *current_token_lst, t_flag token_flag, int size);
