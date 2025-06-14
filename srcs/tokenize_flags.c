@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 11:11:31 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 11:11:39 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/14 15:26:14 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ t_lst    *assign_flags_cmd_arg(t_lst **token_list)
 	while (head != NULL)
 	{
 		token = head->content;
-		if (has_token_flag(token->flags, WHITESPACE) == FALSE && has_token_flag(token->flags, REDIRECTION_ARGUMENT) == FALSE)
+		if (has_token_flag(token->flags, DELIMITER) == FALSE && has_token_flag(token->flags, REDIRECTION_ARGUMENT) == FALSE)
 		{
 			if (has_token_flag(token->flags, WORD) && has_token_flag(token->flags, ASSIGNMENT) == FALSE && cmd_line_flag == 0)
 			{

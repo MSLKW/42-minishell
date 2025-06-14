@@ -120,7 +120,9 @@ char	**get_envp_copy(char **envp, int extra);
 t_lst	*init_exported_env_var_lst(char ***envp);
 
 // shell_env.c
+int		set_shell_env(t_lst *env_var_lst, char ***envp);
 int		set_shlvl(t_lst *env_var_lst, char ***envp);
+int		set_oldpwd_env(t_lst *env_var_lst, char ***envp);
 
 // parse.c
 char	*ft_get_line(t_data *data);
@@ -180,8 +182,9 @@ int		execute_assignment(t_cmd_seq *cmd_seq, t_data *data);
 int		ft_isalpha_str(char *str);
 int		ft_isalnum_str(char *str);
 int		count_null_terminated_arr(char **str_arr);
-t_bool	ft_has_whitespace(char *str);
-t_bool	ft_is_delimiter(char *str);
+t_bool	ft_has_delimiter(char *str);
+t_bool	ft_fully_delimiter(char *str);
+t_bool	ft_is_delimiter(char c);
 
 // cmd_seq.c
 t_cmd_seq	*init_cmd_seq(t_lst	*token_list);
@@ -193,7 +196,7 @@ char		**cmd_seq_get_cmd_args(char *cmd, char **args);
 // io.c
 t_io	*init_io(char *content, t_flag flag);
 t_flag	get_redirection_flag(t_flag *flags);
-t_lst	*get_io_list(t_lst *token_list);
+t_lst	*get_io_list(t_lst *token_list, int *status);
 
 // token_search.c
 t_lst	*find_token_right(t_lst *current_token_lst, t_flag token_flag, int size);
@@ -251,7 +254,8 @@ int		builtin_pwd(void);
 int		builtin_cd(char **cmd, t_data *data);
 int		builtin_env(char **envp);
 int		builtin_exit(char **args, t_data *data);
-int		builtin_unset_env(char *key, char ***envp_copy, t_lst **env_var_lst);
+int		unset_env(char *key, char ***envp_copy, t_lst **env_var_lst);
+int		builtin_unset(char **args, char ***envp_copy, t_lst **env_var_lst);
 int		builtin_export(char **arg, char ***envp, t_data *data);
 // int		handle_export(char **args, char ***envp);
 int		builtin_history(t_data *data);

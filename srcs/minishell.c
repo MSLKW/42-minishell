@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 16:14:20 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/14 13:56:22 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	main(int argc, char *argv[], char *envp[])
 		printf("Argument Error\n");
 		return (1);
 	}
-	set_shlvl(data->env_var_lst, &data->envp);
+	set_shell_env(data->env_var_lst, &data->envp);
 	while (1)
 	{
 		shell_routine(data);

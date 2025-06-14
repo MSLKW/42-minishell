@@ -20,8 +20,12 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 	if (ft_lstsize(cmd_seqs) > 1)
 		return (execute_pipeline(cmd_seqs, data));
 	// head = cmd_seqs;
+	if (cmd_seqs == NULL)
+		return (1);
 	cmd_seq = cmd_seqs->content;
-	if (ft_lstsize(cmd_seqs) == 1 && count_null_terminated_arr(cmd_seq->argv) == 0 && cmd_seq->assignment != NULL)
+	if (cmd_seq == NULL)
+		return (1);
+	else if (ft_lstsize(cmd_seqs) == 1 && count_null_terminated_arr(cmd_seq->argv) == 0 && cmd_seq->assignment != NULL)
 		return (execute_assignment(cmd_seq, data));
 	else if (count_null_terminated_arr(cmd_seq->argv) >= 1)
 		return (execute_command(cmd_seq, data));
@@ -154,7 +158,7 @@ int run_builtin(char **args, t_data *data)
 	if (ft_strncmp(args[0], "exit", 5) == 0)
 		return (builtin_exit(args, data));
 	if (ft_strncmp(args[0], "unset", 6) == 0)
-		return (builtin_unset_env(args[1], &data->envp, &data->env_var_lst));
+		return (builtin_unset(args, &data->envp, &data->env_var_lst));
 	if (ft_strncmp(args[0], "export", 7) == 0)
 		return (builtin_export(args, &data->envp, data));
 	if (ft_strncmp(args[0], "history", 8) == 0)
@@ -221,7 +225,8 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 		execve_wrapper(cmd_seq, data);
 	}
 	else
-	{	signal(SIGINT, SIG_IGN);
+	{	
+		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
 		waitpid(pid, &status, 0);
 		if (WIFSIGNALED(status))

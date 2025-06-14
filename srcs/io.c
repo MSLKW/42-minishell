@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 00:40:28 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/11 00:40:45 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/14 17:21:14 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_flag	get_redirection_flag(t_flag *flags)
 	return (NO_FLAG);
 }
 
-t_lst	*get_io_list(t_lst *token_list)
+t_lst	*get_io_list(t_lst *token_list, int *status)
 {
 	t_lst	*head;
 	t_token	*token;
@@ -55,8 +55,15 @@ t_lst	*get_io_list(t_lst *token_list)
 		else if (has_token_flag(token->flags, REDIRECTION_ARGUMENT))
 		{
 			ft_lstadd_back(&io_list, ft_lstnew(init_io(ft_strdup(token->content), io_flag)));
+			io_flag = NO_FLAG;
 		}
 		head = head->next;
+	}
+	if (io_flag != NO_FLAG)
+	{
+		if (io_list != NULL)
+			ft_lstclear(&io_list, free_io);
+		*status = 1;
 	}
 	return (io_list);
 }
