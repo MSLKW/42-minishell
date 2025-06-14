@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 08:01:48 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/03 18:18:18 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/14 09:46:39 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,14 @@ static void	set_env_pwds(char *oldpwd, char *newpwd, t_data *data)
 	{
 		oldpwd_var = init_env_variable("OLDPWD", oldpwd);
 		if (oldpwd_var != NULL)
-		{
-			oldpwd_var->is_export = TRUE;
 			set_env_variable(data->env_var_lst, oldpwd_var, &data->envp);
-		}
 		free(oldpwd);
 	}
 	if (newpwd != NULL)
 	{
 		newpwd_var = init_env_variable("PWD", newpwd);
 		if (newpwd_var != NULL)
-		{
-			newpwd_var->is_export = TRUE;
 			set_env_variable(data->env_var_lst, newpwd_var, &data->envp);
-		}
 		free(newpwd);
 	}
 }
