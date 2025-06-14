@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/14 17:16:27 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/14 17:42:02 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,9 @@ void	execute_builtin(char *cmd_name, char **args, t_data *data);
 char	**get_args_from_ast(t_lst *node_list);
 
 // execute_new.c
+void	execve_wrapper(t_cmd_seq *cmd_seq, t_data *data);
+void	apply_redirections(t_lst *io_list);
+int		execute_pipeline(t_lst *cmd_seqs, t_data *data);
 int		execute_command(t_cmd_seq *cmd_seq, t_data *data);
 int		execute_cmd_seqs(t_lst *cmd_seqs, t_data *data);
 int		execute_assignment(t_cmd_seq *cmd_seq, t_data *data);

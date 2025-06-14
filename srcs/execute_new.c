@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/14 13:54:41 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/14 18:01:45 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 	// t_lst	*head;
 	t_cmd_seq	*cmd_seq;
 
+	if (ft_lstsize(cmd_seqs) > 1)
+		return (execute_pipeline(cmd_seqs, data));
 	// head = cmd_seqs;
 	if (cmd_seqs == NULL)
 		return (1);
@@ -24,13 +26,65 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 	if (cmd_seq == NULL)
 		return (1);
 	else if (ft_lstsize(cmd_seqs) == 1 && count_null_terminated_arr(cmd_seq->argv) == 0 && cmd_seq->assignment != NULL)
-	{
 		return (execute_assignment(cmd_seq, data));
-	}
 	else if (count_null_terminated_arr(cmd_seq->argv) >= 1)
 		return (execute_command(cmd_seq, data));
 	else
 		return (1);
+}
+
+int execute_pipeline(t_lst *cmd_seqs, t_data *data)
+{
+	int		pipe_fd[2];
+	int		prev_fd = -1;
+	pid_t	pid;
+	int		status;
+	t_cmd_seq *cmd_seq;
+
+	while (cmd_seqs)
+	{
+		cmd_seq = (t_cmd_seq *)cmd_seqs->content;
+
+		if (cmd_seqs->next)
+			pipe(pipe_fd);
+
+		pid = fork();
+		if (pid == 0)
+		{
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
+
+			if (prev_fd != -1)
+			{
+				dup2(prev_fd, 0);
+				close(prev_fd);
+			}
+			if (cmd_seqs->next)
+			{
+				close(pipe_fd[0]);
+				dup2(pipe_fd[1], 1);
+				close(pipe_fd[1]);
+			}
+			apply_redirections(cmd_seq->io_list);
+			execve_wrapper(cmd_seq, data);
+		}
+		else
+		{
+			signal(SIGINT, SIG_IGN);
+			signal(SIGQUIT, SIG_IGN);
+			if (prev_fd != -1)
+				close(prev_fd);
+			if (cmd_seqs->next)
+			{
+				close(pipe_fd[1]);
+				prev_fd = pipe_fd[0];
+			}
+		}
+		cmd_seqs = cmd_seqs->next;
+	}
+
+	while (wait(&status) > 0);
+	return (WEXITSTATUS(status));
 }
 
 void apply_redirections(t_lst *io_list)
@@ -112,11 +166,36 @@ int run_builtin(char **args, t_data *data)
 	return (1);
 }
 
+void execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
+{
+	char **args = cmd_seq->argv;
+	char *cmd_path;
+
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	if (is_builtin(args[0]))
+		exit(run_builtin(args, data));
+	if (is_token_executable(args[0]))
+		cmd_path = args[0];
+	else
+		cmd_path = find_cmd_path(args[0], data->env_var_lst);
+	if (DEBUG == 1)
+		printf("cmd_path: %s\n", cmd_path);
+	apply_redirections(cmd_seq->io_list);
+	if (cmd_path)
+		execve(cmd_path, args, data->envp);
+	// Handle failure
+	if (get_env_var_value("PATH", data->env_var_lst) == NULL)
+		printf("%s: No such file or directory\n", args[0]);
+	else
+		printf("%s: command not found\n", args[0]);
+	free_exit(127, data);
+}
+
 int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 {
 	char	**args;
 	pid_t	pid;
-	char	*cmd_path;
 	int		status;
 
 	args = cmd_seq->argv;
@@ -142,24 +221,8 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 	pid = fork();
 	if (pid == 0)
 	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
-		if (is_token_executable(args[0]) == TRUE)
-			cmd_path = args[0];
-		else
-			cmd_path = find_cmd_path(args[0], data->env_var_lst);
-		if (DEBUG == 1)
-			printf("cmd_path: %s\n", cmd_path);
 		apply_redirections(cmd_seq->io_list);
-		if (cmd_path != NULL)
-			execve(cmd_path, args, data->envp);
-		if (get_env_var_value("PATH", data->env_var_lst) == NULL)
-			printf("%s: No such file or directory\n", args[0]);
-		else
-			printf("%s: command not found\n", args[0]);
-		// perror("execve");
-		// free_str_arr(args);
-		free_exit(127, data);
+		execve_wrapper(cmd_seq, data);
 	}
 	else
 	{	
