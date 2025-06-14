@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/14 09:06:52 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/14 11:00:10 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 # define FALSE 0
 # define TOKEN_FLAG_SIZE 14
 
-# define DEBUG 0
+# define DEBUG 1
 
 // ===== Minishell Types =====
 
@@ -250,7 +250,8 @@ int		builtin_pwd(void);
 int		builtin_cd(char **cmd, t_data *data);
 int		builtin_env(char **envp);
 int		builtin_exit(char **args, t_data *data);
-int		builtin_unset_env(char *key, char ***envp_copy, t_lst **env_var_lst);
+int		unset_env(char *key, char ***envp_copy, t_lst **env_var_lst);
+int		builtin_unset(char **args, char ***envp_copy, t_lst **env_var_lst);
 int		builtin_export(char **arg, char ***envp, t_data *data);
 // int		handle_export(char **args, char ***envp);
 int		builtin_history(t_data *data);
