@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:47:35 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/06 18:03:05 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/15 15:09:44 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_env_var	*init_env_variable(char *key, char *value)
 		if (value != NULL)
 			env_var->value = ft_strdup(value);
 		else if (value == NULL)
-			env_var->value = ft_strdup("");
+			env_var->value = NULL;
 		env_var->is_export = FALSE;
 		return (env_var);
 	}
