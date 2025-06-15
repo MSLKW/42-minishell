@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/15 14:29:41 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/15 16:25:25 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ typedef struct s_cmd_seq {
 typedef struct s_io {
 	char	*content;
 	t_flag	flag;
+	int		fd;
 }	t_io;
 
 typedef struct s_env_var {
@@ -172,6 +173,7 @@ void	execute_builtin(char *cmd_name, char **args, t_data *data);
 char	**get_args_from_ast(t_lst *node_list);
 
 // execute_new.c
+int		process_heredocs(t_lst *cmd_seqs);
 void	execve_wrapper(t_cmd_seq *cmd_seq, t_data *data);
 void	apply_redirections(t_lst *io_list);
 int		execute_pipeline(t_lst *cmd_seqs, t_data *data);
