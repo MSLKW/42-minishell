@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:45:01 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/14 14:20:57 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/15 15:16:59 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,8 @@ static int display_export(t_lst *env_var_lst)
 		env_var = head->content;
 		if (env_var != NULL && env_var->key != NULL && env_var->is_export == TRUE)
 		{
-			if (env_var->value == NULL || ft_strlen(env_var->value) == 0)
+			// printf("value: %s\n", env_var->value);
+			if (env_var->value == NULL)
 				printf("declare -x %s\n", env_var->key);
 			else
 				printf("declare -x %s=\"%s\"\n", env_var->key, env_var->value);
