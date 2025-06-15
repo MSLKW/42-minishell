@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
 /*   Updated: 2025/06/15 16:25:25 by zernest          ###   ########.fr       */
@@ -42,7 +42,7 @@
 # define FALSE 0
 # define TOKEN_FLAG_SIZE 14
 
-# define DEBUG 1
+# define DEBUG 0
 
 // ===== Minishell Types =====
 
@@ -124,6 +124,7 @@ t_lst	*init_exported_env_var_lst(char ***envp);
 int		set_shell_env(t_lst *env_var_lst, char ***envp);
 int		set_shlvl(t_lst *env_var_lst, char ***envp);
 int		set_oldpwd_env(t_lst *env_var_lst, char ***envp);
+int		set_pwd_env(t_lst *env_var_lst, char ***envp);
 
 // parse.c
 char	*ft_get_line(t_data *data);

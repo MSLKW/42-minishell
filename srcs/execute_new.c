@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
 /*   Updated: 2025/06/15 17:24:36 by zernest          ###   ########.fr       */
@@ -243,6 +243,7 @@ void execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 	apply_redirections(cmd_seq->io_list);
 	if (cmd_path)
 		execve(cmd_path, args, data->envp);
+	// Handle failure somehow use perror properly?
 	if (get_env_var_value("PATH", data->env_var_lst) == NULL)
 		printf("%s: No such file or directory\n", args[0]);
 	else
