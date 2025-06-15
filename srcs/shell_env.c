@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:38:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/14 09:59:13 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/15 14:29:13 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	set_shell_env(t_lst *env_var_lst, char ***envp)
 {
 	set_shlvl(env_var_lst, envp);
 	set_oldpwd_env(env_var_lst, envp);
+	set_pwd_env(env_var_lst, envp);
 	return (0);
 }
 /*
@@ -50,18 +51,31 @@ int	set_shlvl(t_lst *env_var_lst, char ***envp)
 int	set_oldpwd_env(t_lst *env_var_lst, char ***envp)
 {
 	t_env_var	*old_pwd;
-	t_env_var	*pwd;
 
-	if (env_var_lst == NULL || envp == NULL || *envp == NULL || **envp == NULL)
+	if (env_var_lst == NULL || envp == NULL)
 		return (1);
 	old_pwd = init_env_variable("OLDPWD", NULL);
-	pwd = init_env_variable("PWD", NULL);
-	if (old_pwd == NULL || pwd == NULL)
+	if (old_pwd == NULL)
 		return (1);
-	pwd->is_export = TRUE;
 	set_env_variable(env_var_lst, old_pwd, envp);
-	set_env_variable(env_var_lst, pwd, envp);
 	old_pwd->is_export = TRUE;
+	return (0);
+}
+
+int	set_pwd_env(t_lst *env_var_lst, char ***envp)
+{
+	t_env_var	*pwd;
+	char		*cwd;
+
+	if (env_var_lst == NULL || envp == NULL)
+		return (1);
+	cwd = getcwd(NULL, 0);
+	if (cwd == NULL)
+		return (1);
+	pwd = init_env_variable("PWD", cwd);
+	pwd->is_export = TRUE;
+	set_env_variable(env_var_lst, pwd, envp);
+	free(cwd);
 	return (0);
 }
 
