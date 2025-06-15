@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/14 18:01:45 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/15 17:24:36 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,18 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 	// t_lst	*head;
 	t_cmd_seq	*cmd_seq;
 
-	if (ft_lstsize(cmd_seqs) > 1)
-		return (execute_pipeline(cmd_seqs, data));
-	// head = cmd_seqs;
 	if (cmd_seqs == NULL)
 		return (1);
 	cmd_seq = cmd_seqs->content;
+	if (cmd_seq == NULL)
+		return (1);
+	if (DEBUG)
+		printf("%p\n", cmd_seqs->content);
+	if (process_heredocs(cmd_seqs) != 0)
+		return (1);
+	if (ft_lstsize(cmd_seqs) > 1)
+		return (execute_pipeline(cmd_seqs, data));
+	// head = cmd_seqs;
 	if (cmd_seq == NULL)
 		return (1);
 	else if (ft_lstsize(cmd_seqs) == 1 && count_null_terminated_arr(cmd_seq->argv) == 0 && cmd_seq->assignment != NULL)
@@ -31,6 +37,47 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 		return (execute_command(cmd_seq, data));
 	else
 		return (1);
+}
+
+int	process_heredocs(t_lst *cmd_seqs)
+{
+	t_cmd_seq	*cmd;
+	t_lst		*io_list;
+	t_io		*io;
+	int			pipe_fd[2];
+	char		*line;
+
+	while (cmd_seqs != 0)
+	{
+		cmd = cmd_seqs->content;
+		io_list = cmd->io_list;
+		while (io_list)
+		{
+			io = io_list->content;
+			if (io->flag == REDIRECTION_DELIMITER)
+			{
+				if (pipe(pipe_fd) < 0)
+					return (perror("pipe"), 1);
+				while (1)
+				{
+					line = readline("> ");
+					if (!line || ft_strncmp(line, io->content, ft_strlen(line) + 1) == 0)
+					{
+						free(line);
+						break;
+					}
+					write(pipe_fd[1], line, ft_strlen(line));
+					write(pipe_fd[1], "\n", 1);
+					free(line);
+				}
+				close(pipe_fd[1]);
+				io->fd = pipe_fd[0];
+			}
+			io_list = io_list->next;
+		}
+		cmd_seqs = cmd_seqs->next;
+	}
+	return (0);
 }
 
 int execute_pipeline(t_lst *cmd_seqs, t_data *data)
@@ -44,16 +91,15 @@ int execute_pipeline(t_lst *cmd_seqs, t_data *data)
 	while (cmd_seqs)
 	{
 		cmd_seq = (t_cmd_seq *)cmd_seqs->content;
-
 		if (cmd_seqs->next)
 			pipe(pipe_fd);
-
+		if (DEBUG)
+			printf("forking: %s\n", cmd_seq->argv[0]);
 		pid = fork();
 		if (pid == 0)
 		{
 			signal(SIGINT, SIG_DFL);
 			signal(SIGQUIT, SIG_DFL);
-
 			if (prev_fd != -1)
 			{
 				dup2(prev_fd, 0);
@@ -82,7 +128,6 @@ int execute_pipeline(t_lst *cmd_seqs, t_data *data)
 		}
 		cmd_seqs = cmd_seqs->next;
 	}
-
 	while (wait(&status) > 0);
 	return (WEXITSTATUS(status));
 }
@@ -128,6 +173,11 @@ void apply_redirections(t_lst *io_list)
 				close(fd);
 			}
 		}
+		else if (io->flag == REDIRECTION_DELIMITER)
+		{
+			dup2(io->fd, 0);
+			close(io->fd);
+		}
 		io_list = io_list->next;
 	}
 }
@@ -170,6 +220,7 @@ void execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 {
 	char **args = cmd_seq->argv;
 	char *cmd_path;
+	// int fd;
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
@@ -179,12 +230,19 @@ void execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 		cmd_path = args[0];
 	else
 		cmd_path = find_cmd_path(args[0], data->env_var_lst);
+	// fd = open(cmd_path, O_RDONLY);
+	// if (fd != -1)
+	// 	close(fd);
+	// else if (errno == EISDIR)		errno is forbidden
+	// {
+	// 	printf("%s: Is a directory\n", cmd_path);
+	// 	free_exit(126, data);
+	// }
 	if (DEBUG == 1)
 		printf("cmd_path: %s\n", cmd_path);
 	apply_redirections(cmd_seq->io_list);
 	if (cmd_path)
 		execve(cmd_path, args, data->envp);
-	// Handle failure
 	if (get_env_var_value("PATH", data->env_var_lst) == NULL)
 		printf("%s: No such file or directory\n", args[0]);
 	else
