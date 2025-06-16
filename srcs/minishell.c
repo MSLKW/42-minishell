@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 17:24:04 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 18:38:09 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ void	shell_routine(t_data *data)
 	tokens = tokenize_line(line, data);
 	free(line);
 	data->free_ptr_tokens = tokens;
+	if (tokens == NULL)
+		return ;
 	if (DEBUG == 1)
 		debug_token_list(tokens);
 	cmd_seq_list = init_cmd_seqs(tokens);
