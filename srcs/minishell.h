@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/15 16:25:25 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/16 11:41:36 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 # define FALSE 0
 # define TOKEN_FLAG_SIZE 14
 
-# define DEBUG 0
+# define DEBUG 1
 
 // ===== Minishell Types =====
 
