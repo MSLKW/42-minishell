@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/16 17:07:38 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 20:40:25 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 		return (1);
 	if (DEBUG)
 		printf("%p\n", cmd_seqs->content);
-	if (process_heredocs(cmd_seqs) != 0)
+	if (process_heredocs(cmd_seqs, data) != 0)
+
 		return (1);
 	if (ft_lstsize(cmd_seqs) > 1)
 		status = execute_pipeline(cmd_seqs, data);
@@ -42,7 +43,7 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 	return (status);
 }
 
-int	process_heredocs(t_lst *cmd_seqs)
+int	process_heredocs(t_lst *cmd_seqs, t_data *data)
 {
 	t_cmd_seq	*cmd;
 	t_lst		*io_list;
@@ -69,6 +70,7 @@ int	process_heredocs(t_lst *cmd_seqs)
 						free(line);
 						break;
 					}
+					line = variable_expansion(line, data, NULL);
 					write(pipe_fd[1], line, ft_strlen(line));
 					write(pipe_fd[1], "\n", 1);
 					free(line);

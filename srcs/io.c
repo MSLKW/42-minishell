@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   io.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 00:40:28 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/14 17:21:14 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 19:57:40 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,11 @@ t_io	*init_io(char *content, t_flag flag)
 	t_io *io;
 
 	io = ft_calloc(1, sizeof(t_io));
+	if (!io)
+		return (NULL);
 	io->content = content;
 	io->flag = flag;
+	io->fd = -1;
 	return (io);
 }
 
