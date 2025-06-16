@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 20:42:19 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/12 15:19:13 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 16:58:58 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,13 @@ char	*find_cmd_path(char *cmd, t_lst *env_var_lst)
 		full_path = ft_strjoin(dir_path, cmd);
 		free(dir_path);
 		if (access(full_path, F_OK) == 0)
+		{
+			free_str_arr(envp_paths);
 			return (full_path);
+		}
 		free(full_path);
 		index++;
 	}
-	index = -1;
-	while (envp_paths[++index] != NULL)
-		free(envp_paths[index]);
-	free(envp_paths);
+	free_str_arr(envp_paths);
 	return (NULL);
 }
