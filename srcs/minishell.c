@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 18:38:09 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 19:39:33 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void	shell_routine(t_data *data)
 	data->free_ptr_cmd_seqs = cmd_seq_list;
 	if (cmd_seq_list == NULL)
 	{
+		free_tokens(&data->free_ptr_tokens);
 		data->last_exit_code = 2;
 		return ;
 	}
