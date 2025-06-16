@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/16 15:22:42 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 16:13:18 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,11 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 		status = execute_command(cmd_seq, data);
 	else
 		status = 1;
-	free_tokens(&data->free_ptr_tokens);
-	free_cmd_seqs(&data->free_ptr_cmd_seqs);
+	if (status != 1)
+	{
+		free_tokens(&data->free_ptr_tokens);
+		free_cmd_seqs(&data->free_ptr_cmd_seqs);
+	}
 	return (status);
 }
 
