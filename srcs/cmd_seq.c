@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 17:48:43 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/14 17:22:00 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 13:17:21 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_cmd_seq	*init_cmd_seq(t_lst	*token_list)
 	cmd_seq->io_list = get_io_list(token_list, &status);
 	if (status == 1)
 	{
-		printf("Syntax error\n");
+		// printf("Syntax error\n");
 		free_cmd_seq(cmd_seq);
 		return (NULL);
 	}
@@ -51,6 +51,13 @@ t_lst	*init_cmd_seqs(t_lst *token_list)
 		if (has_token_flag(token->flags, PIPE))
 		{
 			cmd_seq = init_cmd_seq(cmd_seq_token_list);
+			if (cmd_seq == NULL)
+			{
+				printf("Syntax error a\n");
+				// ft_lstclear(&cmd_seq_list, free_cmd_seq);
+				// ft_lstclear(&cmd_seq_token_list, free_token);
+				return (NULL);
+			}
 			ft_lstadd_back(&cmd_seq_list, ft_lstnew(cmd_seq));
 			cmd_seq_token_list = NULL;
 		}
@@ -61,8 +68,20 @@ t_lst	*init_cmd_seqs(t_lst *token_list)
 	if (cmd_seq_token_list != NULL)
 	{
 		cmd_seq = init_cmd_seq(cmd_seq_token_list);
+		if (cmd_seq == NULL)
+		{
+			printf("Syntax error b\n");
+			// ft_lstclear(&cmd_seq_list, free_cmd_seq);
+			// ft_lstclear(&cmd_seq_token_list, free_token);
+			return (NULL);
+		}
 		ft_lstadd_back(&cmd_seq_list, ft_lstnew(cmd_seq));
 		cmd_seq_token_list = NULL;
+	}
+	else if (cmd_seq_token_list == NULL && cmd_seq_list != NULL)
+	{
+		printf("Syntax error c\n");
+		return (NULL);
 	}
 	return (cmd_seq_list);
 }

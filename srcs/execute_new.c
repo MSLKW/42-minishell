@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/15 17:24:36 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/16 15:22:42 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 {
-	// t_lst	*head;
 	t_cmd_seq	*cmd_seq;
+	int			status;
 
 	if (cmd_seqs == NULL)
 		return (1);
@@ -27,16 +27,16 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 	if (process_heredocs(cmd_seqs) != 0)
 		return (1);
 	if (ft_lstsize(cmd_seqs) > 1)
-		return (execute_pipeline(cmd_seqs, data));
-	// head = cmd_seqs;
-	if (cmd_seq == NULL)
-		return (1);
+		status = execute_pipeline(cmd_seqs, data);
 	else if (ft_lstsize(cmd_seqs) == 1 && count_null_terminated_arr(cmd_seq->argv) == 0 && cmd_seq->assignment != NULL)
-		return (execute_assignment(cmd_seq, data));
+		status = execute_assignment(cmd_seq, data);
 	else if (count_null_terminated_arr(cmd_seq->argv) >= 1)
-		return (execute_command(cmd_seq, data));
+		status = execute_command(cmd_seq, data);
 	else
-		return (1);
+		status = 1;
+	free_tokens(&data->free_ptr_tokens);
+	free_cmd_seqs(&data->free_ptr_cmd_seqs);
+	return (status);
 }
 
 int	process_heredocs(t_lst *cmd_seqs)
@@ -296,8 +296,6 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 		signal(SIGINT, ctrlc_handler);
 		signal(SIGQUIT, SIG_IGN);
 	}
-	free_tokens(&data->free_ptr_tokens);
-	free_cmd_seqs(&data->free_ptr_cmd_seqs);
 	return (WEXITSTATUS(status));
 }
 
@@ -309,8 +307,6 @@ int	execute_assignment(t_cmd_seq *cmd_seq, t_data *data)
 	if (env_var == NULL || env_var->key == NULL)
 		return (1);
 	set_env_variable(data->env_var_lst, env_var, &data->envp);
-	free_tokens(&data->free_ptr_tokens);
-	free_cmd_seqs(&data->free_ptr_cmd_seqs);
 	return (0);
 }
 

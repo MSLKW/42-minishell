@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:38:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/15 14:29:13 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 15:16:59 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	set_shell_env(t_lst *env_var_lst, char ***envp)
 {
 	set_shlvl(env_var_lst, envp);
-	set_oldpwd_env(env_var_lst, envp);
+	// set_oldpwd_env(env_var_lst, envp);
 	set_pwd_env(env_var_lst, envp);
 	return (0);
 }
@@ -57,6 +57,7 @@ int	set_oldpwd_env(t_lst *env_var_lst, char ***envp)
 	old_pwd = init_env_variable("OLDPWD", NULL);
 	if (old_pwd == NULL)
 		return (1);
+	printf("old_pwd: %p\n", old_pwd);
 	set_env_variable(env_var_lst, old_pwd, envp);
 	old_pwd->is_export = TRUE;
 	return (0);
