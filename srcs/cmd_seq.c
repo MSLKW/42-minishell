@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 17:48:43 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 13:17:21 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 16:10:03 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ t_cmd_seq	*init_cmd_seq(t_lst	*token_list)
 	int			status;
 
 	status = 0;
+	if (token_list == NULL)
+		return (NULL);
 	cmd_seq = ft_calloc(1, sizeof(t_cmd_seq));
 	if (cmd_seq == NULL || token_list == NULL)
 		return (NULL);
@@ -54,8 +56,10 @@ t_lst	*init_cmd_seqs(t_lst *token_list)
 			if (cmd_seq == NULL)
 			{
 				printf("Syntax error a\n");
-				// ft_lstclear(&cmd_seq_list, free_cmd_seq);
-				// ft_lstclear(&cmd_seq_token_list, free_token);
+				// if (cmd_seq_list != NULL)
+				// 	ft_lstclear(&cmd_seq_list, free_cmd_seq);
+				// if (cmd_seq_token_list != NULL)
+				// 	ft_lstclear(&cmd_seq_token_list, free_token);
 				return (NULL);
 			}
 			ft_lstadd_back(&cmd_seq_list, ft_lstnew(cmd_seq));
@@ -71,8 +75,10 @@ t_lst	*init_cmd_seqs(t_lst *token_list)
 		if (cmd_seq == NULL)
 		{
 			printf("Syntax error b\n");
-			// ft_lstclear(&cmd_seq_list, free_cmd_seq);
-			// ft_lstclear(&cmd_seq_token_list, free_token);
+			// if (cmd_seq_list != NULL)
+			// 	ft_lstclear(&cmd_seq_list, free_cmd_seq);
+			// if (cmd_seq_token_list != NULL)
+			// 	ft_lstclear(&cmd_seq_token_list, free_token);
 			return (NULL);
 		}
 		ft_lstadd_back(&cmd_seq_list, ft_lstnew(cmd_seq));
@@ -81,6 +87,8 @@ t_lst	*init_cmd_seqs(t_lst *token_list)
 	else if (cmd_seq_token_list == NULL && cmd_seq_list != NULL)
 	{
 		printf("Syntax error c\n");
+		if (cmd_seq_list != NULL)
+			ft_lstclear(&cmd_seq_list, free_cmd_seq);
 		return (NULL);
 	}
 	return (cmd_seq_list);

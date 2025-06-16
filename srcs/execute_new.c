@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/16 15:22:42 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 17:07:38 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,11 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 		status = execute_command(cmd_seq, data);
 	else
 		status = 1;
-	free_tokens(&data->free_ptr_tokens);
-	free_cmd_seqs(&data->free_ptr_cmd_seqs);
+	if (status != 1)
+	{
+		free_tokens(&data->free_ptr_tokens);
+		free_cmd_seqs(&data->free_ptr_cmd_seqs);
+	}
 	return (status);
 }
 
@@ -242,7 +245,10 @@ void execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 		printf("cmd_path: %s\n", cmd_path);
 	apply_redirections(cmd_seq->io_list);
 	if (cmd_path)
+	{
 		execve(cmd_path, args, data->envp);
+		free(cmd_path);
+	}
 	// Handle failure somehow use perror properly?
 	if (get_env_var_value("PATH", data->env_var_lst) == NULL)
 		printf("%s: No such file or directory\n", args[0]);
@@ -271,8 +277,6 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 	if (is_builtin(args[0]) && cmd_seq->io_list == NULL)
 	{
 		status = run_builtin(args, data);
-		free_tokens(&data->free_ptr_tokens);
-		free_cmd_seqs(&data->free_ptr_cmd_seqs);
 		return (status);
 	}
 	if (DEBUG == 1)
