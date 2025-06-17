@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:26:34 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 18:03:25 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/17 16:57:00 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,23 @@ void	free_token(void *content)
 
 void	free_cmd_seqs(t_lst **cmd_seqs)
 {
+	if (cmd_seqs == NULL)
+	{
+		printf("free_cmd_seqs: got NULL pointer\n");
+		return;
+	}
+	if (*cmd_seqs == NULL)
+	{
+		printf("free_cmd_seqs: list already NULL\n");
+		return;
+	}
+	// Print debug info
+	t_lst *tmp = *cmd_seqs;
+	while (tmp)
+	{
+		printf("free_cmd_seqs: freeing cmd_seq at %p\n", tmp->content);
+		tmp = tmp->next;
+	}
 	ft_lstclear(cmd_seqs, free_cmd_seq);
 	*cmd_seqs = NULL;
 }

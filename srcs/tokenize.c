@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 19:46:13 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/17 16:03:03 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ t_bool	is_token_executable(char *path)
 	{
 		stat(path, &file_stat);
 		if (S_ISDIR(file_stat.st_mode))
-			return (FALSE);
+			return (3);
 		return (TRUE);
 	}
 	return (FALSE);
