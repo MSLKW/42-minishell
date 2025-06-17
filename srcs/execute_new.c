@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/16 17:53:45 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/17 17:20:24 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,7 +229,7 @@ void execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	if (is_builtin(args[0]))
-		exit(run_builtin(args, data));
+		free_exit(run_builtin(args, data), data);
 	error_code_flag = is_token_executable(args[0]);
 	if (error_code_flag && error_code_flag != 3)
 		cmd_path = args[0];
