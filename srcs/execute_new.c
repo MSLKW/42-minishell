@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   execute_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
 /*   Updated: 2025/06/16 17:53:45 by maxliew          ###   ########.fr       */
@@ -22,8 +22,10 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 	cmd_seq = cmd_seqs->content;
 	if (cmd_seq == NULL)
 		return (1);
-	if (process_heredocs(cmd_seqs) != 0)
-		return (-1);
+	if (DEBUG)
+		printf("%p\n", cmd_seqs->content);
+	if (process_heredocs(cmd_seqs, data) != 0)
+		return (1);
 	if (ft_lstsize(cmd_seqs) > 1)
 		status = execute_pipeline(cmd_seqs, data);
 	else if (ft_lstsize(cmd_seqs) == 1 && count_null_terminated_arr(cmd_seq->argv) == 0 && cmd_seq->assignment != NULL)
@@ -40,7 +42,7 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 	return (status);
 }
 
-int	process_heredocs(t_lst *cmd_seqs)
+int	process_heredocs(t_lst *cmd_seqs, t_data *data)
 {
 	t_cmd_seq	*cmd;
 	t_lst		*io_list;
@@ -67,6 +69,7 @@ int	process_heredocs(t_lst *cmd_seqs)
 						free(line);
 						break;
 					}
+					line = variable_expansion(line, data, NULL);
 					write(pipe_fd[1], line, ft_strlen(line));
 					write(pipe_fd[1], "\n", 1);
 					free(line);
@@ -221,24 +224,17 @@ void execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 {
 	char **args = cmd_seq->argv;
 	char *cmd_path;
-	// int fd;
+	int		error_code_flag;
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	if (is_builtin(args[0]))
 		exit(run_builtin(args, data));
-	if (is_token_executable(args[0]))
+	error_code_flag = is_token_executable(args[0]);
+	if (error_code_flag && error_code_flag != 3)
 		cmd_path = args[0];
 	else
 		cmd_path = find_cmd_path(args[0], data->env_var_lst);
-	// fd = open(cmd_path, O_RDONLY);
-	// if (fd != -1)
-	// 	close(fd);
-	// else if (errno == EISDIR)		errno is forbidden
-	// {
-	// 	printf("%s: Is a directory\n", cmd_path);
-	// 	free_exit(126, data);
-	// }
 	if (DEBUG == 1)
 		printf("cmd_path: %s\n", cmd_path);
 	apply_redirections(cmd_seq->io_list);
@@ -250,8 +246,10 @@ void execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 	// Handle failure somehow use perror properly?
 	if (get_env_var_value("PATH", data->env_var_lst) == NULL)
 		printf("%s: No such file or directory\n", args[0]);
-	else
+	else if (error_code_flag != 3)
 		printf("%s: command not found\n", args[0]);
+	else
+		printf("%s: Is a directory\n", args[0]);
 	free_exit(127, data);
 }
 
