@@ -49,14 +49,22 @@ void	shell_routine(t_data *data)
 		store_history(data, line);
 	}
 	tokens = tokenize_line(line, data);
+	free(line);
 	data->free_ptr_tokens = tokens;
+	if (tokens == NULL)
+		return ;
 	if (DEBUG == 1)
 		debug_token_list(tokens);
 	cmd_seq_list = init_cmd_seqs(tokens);
 	data->free_ptr_cmd_seqs = cmd_seq_list;
+	if (cmd_seq_list == NULL)
+	{
+		free_tokens(&data->free_ptr_tokens);
+		data->last_exit_code = 2;
+		return ;
+	}
 	if (DEBUG == 1)
 		display_cmd_seq(cmd_seq_list);
-	free(line);
 	data->last_exit_code = execute_cmd_seqs(cmd_seq_list, data);
 	// if (data->free_ptr_cmd_seqs)
 	// 	free_cmd_seqs(&data->free_ptr_cmd_seqs);

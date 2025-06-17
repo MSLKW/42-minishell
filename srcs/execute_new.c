@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/17 16:05:20 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/16 17:53:45 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 	if (DEBUG)
 		printf("%p\n", cmd_seqs->content);
 	if (process_heredocs(cmd_seqs, data) != 0)
-
 		return (1);
 	if (ft_lstsize(cmd_seqs) > 1)
 		status = execute_pipeline(cmd_seqs, data);
@@ -34,8 +33,8 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 	else if (count_null_terminated_arr(cmd_seq->argv) >= 1)
 		status = execute_command(cmd_seq, data);
 	else
-		status = 1;
-	if (status != 1)
+		status = -1;
+	if (status != -1)
 	{
 		free_tokens(&data->free_ptr_tokens);
 		free_cmd_seqs(&data->free_ptr_cmd_seqs);
