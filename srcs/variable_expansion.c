@@ -6,59 +6,77 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:30 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 00:10:10 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 02:15:41 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static void	dollar_sign_split(const char *arg, int *s, int *e, t_lst **arg_lst)
+{
+	ft_lstadd_back(arg_lst, ft_lstnew(ft_substr(arg, *s, *e)));
+	*s += *e;
+	*e = 1;
+	if (ft_isalpha(arg[*s + *e]) == TRUE || arg[*s + *e] == '?')
+	{
+		if (arg[*s + *e] == '?')
+			(*e)++;
+		else
+		{
+			while (arg[*s + *e] != '\0' && \
+(ft_isalnum(arg[*s + *e]) == TRUE || arg[*s + *e] == '_'))
+				(*e)++;
+		}
+		ft_lstadd_back(arg_lst, ft_lstnew(ft_substr(arg, *s, *e)));
+		*s += *e;
+		*e = 0;
+	}
+	else
+	{
+		ft_lstadd_back(arg_lst, ft_lstnew(ft_substr(arg, *s, *e)));
+		*s += *e;
+		*e = 1;
+	}
+}
+
 static t_lst	*split_variable_list(const char *arg)
 {
 	t_lst	*arg_list;
-	int		start_index;
-	int		end_index;
+	int		s;
+	int		e;
 
 	if (arg == NULL)
 		return (NULL);
 	arg_list = NULL;
-	start_index = 0;
-	end_index = 0;
-	while (arg[start_index + end_index] != '\0')
+	s = 0;
+	e = 0;
+	while (arg[s + e] != '\0')
 	{
-		if (arg[start_index + end_index] == '$')
-		{
-			ft_lstadd_back(&arg_list, ft_lstnew(ft_substr(arg, start_index, end_index)));
-			start_index += end_index;
-			end_index = 1;
-			if (ft_isalpha(arg[start_index + end_index]) == TRUE || arg[start_index + end_index] == '?')
-			{
-				if (arg[start_index + end_index] == '?')
-				{
-					end_index++;
-				}
-				else
-				{
-					while (arg[start_index + end_index] != '\0' && (ft_isalnum(arg[start_index + end_index]) == TRUE || arg[start_index + end_index] == '_'))
-					{
-						end_index++;
-					}
-				}
-				ft_lstadd_back(&arg_list, ft_lstnew(ft_substr(arg, start_index, end_index)));
-				start_index += end_index;
-				end_index = 0;
-			}
-			else
-			{
-				ft_lstadd_back(&arg_list, ft_lstnew(ft_substr(arg, start_index, end_index)));
-				start_index += end_index;
-				end_index = 1;
-			}
-		}
+		if (arg[s + e] == '$')
+			dollar_sign_split(arg, &s, &e, &arg_list);
 		else
-			end_index++;
+			e++;
 	}
-	ft_lstadd_back(&arg_list, ft_lstnew(ft_substr(arg, start_index, end_index)));
+	ft_lstadd_back(&arg_list, ft_lstnew(ft_substr(arg, s, e)));
 	return (arg_list);
+}
+
+static t_bool	expand_env_var(t_lst *head, char *arg, t_data *data)
+{
+	t_env_var	*var;
+
+	var = get_env_variable(arg + 1, data->env_var_lst);
+	if (var == NULL)
+		head->content = ft_strdup("");
+	free(arg);
+	if (var != NULL && var->value != NULL)
+	{
+		head->content = ft_strdup(var->value);
+		return (TRUE);
+	}
+	else if (var != NULL && var->value == NULL)
+		head->content = ft_strdup("");
+	return (FALSE);
 }
 
 /*
@@ -66,7 +84,6 @@ static t_lst	*split_variable_list(const char *arg)
 */
 static t_bool	expand_variable(t_lst *head, char *arg, t_data *data)
 {
-	t_env_var	*var;
 	t_bool		is_expanded;
 
 	arg = head->content;
@@ -79,17 +96,7 @@ static t_bool	expand_variable(t_lst *head, char *arg, t_data *data)
 			free(arg);
 			return (TRUE);
 		}
-		var = get_env_variable(arg + 1, data->env_var_lst);
-		if (var == NULL)
-			head->content = ft_strdup("");
-		free(arg);
-		if (var != NULL && var->value != NULL)
-		{
-			head->content = ft_strdup(var->value);
-			is_expanded = TRUE;
-		}
-		else if (var != NULL && var->value == NULL)
-			head->content = ft_strdup("");
+		is_expanded = expand_env_var(head, arg, data);
 	}
 	return (is_expanded);
 }
