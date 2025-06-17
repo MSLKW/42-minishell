@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/17 16:56:32 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/17 17:29:10 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	main(int argc, char *argv[], char *envp[])
 	t_data	*data;
 
 	rl_catch_signals = 0;
-
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, ctrlc_handler);
 	data = init_data(argc, argv, envp);
@@ -87,8 +86,6 @@ t_data	*init_data(int argc, char **argv, char **envp)
 	data->free_ptr_tokens = NULL;
 	data->should_exit = 0;
 	return (data);
-	// free_tokens(&data->free_ptr_tokens);
-	// free_cmd_seqs(&data->free_ptr_cmd_seqs);
 }
 
 t_lst	*init_exported_env_var_lst(char ***envp)

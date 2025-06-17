@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/16 17:53:45 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/17 17:36:24 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,7 +229,7 @@ void execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	if (is_builtin(args[0]))
-		exit(run_builtin(args, data));
+		free_exit(run_builtin(args, data), data);
 	error_code_flag = is_token_executable(args[0]);
 	if (error_code_flag && error_code_flag != 3)
 		cmd_path = args[0];
@@ -309,132 +309,3 @@ int	execute_assignment(t_cmd_seq *cmd_seq, t_data *data)
 	set_env_variable(data->env_var_lst, env_var, &data->envp);
 	return (0);
 }
-
-// int execute_pipeline(t_ast *pipe_node, t_data *data)
-// {
-// 	int pipe_fd[2];
-// 	pid_t pid1, pid2;
-// 	int	status1;
-// 	int	status2;
-
-// 	if (!pipe_node || ft_lstsize(pipe_node->node_list) != 2)
-// 		return (1);
-// 	t_ast *left = (t_ast *)pipe_node->node_list->content;
-// 	t_ast *right = (t_ast *)pipe_node->node_list->next->content;
-// 	if (pipe(pipe_fd) < 0)
-// 	{
-// 		perror("pipe");
-// 		return (1);
-// 	}
-// 	pid1 = fork();
-// 	// left side
-// 	if (pid1 == 0)
-// 	{
-// 		close(pipe_fd[0]);
-// 		dup2(pipe_fd[1], 1);
-// 		close(pipe_fd[1]);
-// 		exit(execute_ast(left, data));
-// 	}
-// 	// right side
-// 	pid2 = fork();
-// 	if (pid2 == 0)
-// 	{
-// 		close(pipe_fd[1]);
-// 		dup2(pipe_fd[0], 0);
-// 		close(pipe_fd[0]);
-// 		exit(execute_ast(right, data));
-// 	}
-// 	close(pipe_fd[0]);
-// 	close(pipe_fd[1]);
-// 	waitpid(pid1, &status1, 0);
-// 	waitpid(pid2, &status2, 0);
-// 	printf("Left exit: %d\n", WEXITSTATUS(status1));
-// 	printf("Right exit: %d\n", WEXITSTATUS(status2));
-
-// 	if (WIFEXITED(status2))
-// 		return WEXITSTATUS(status2);
-// 	else
-// 		return 1;
-// }
-
-// int execute_redirection_in(t_ast *redir_node, t_data *data)
-// {
-// 	t_ast *cmd_node = (t_ast *)redir_node->node_list->content;
-// 	t_ast *file_node = (t_ast *)redir_node->node_list->next->content;
-
-// 	if (!redir_node || !redir_node->node_list || 
-// 		ft_lstsize(redir_node->node_list) != 2)
-// 	{
-// 		fprintf(stderr, "minishell: syntax error near input redirection\n");
-// 		return (1);
-// 	}
-// 	if (!file_node->token || !file_node->token->content)
-// 	{
-// 		fprintf(stderr, "minishell: missing input filename\n");
-// 		return (1);
-// 	}
-// 	int fd = open(file_node->token->content, O_RDONLY);
-// 	if (fd < 0)
-// 	{
-// 		perror("minishell");
-// 		return (1);
-// 	}
-// 	int stdin_backup = dup(0);
-// 	if (stdin_backup < 0)
-// 	{
-// 		perror("dup");
-// 		close(fd);
-// 		return (1);
-// 	}
-
-// 	if (dup2(fd, 0) < 0)
-// 	{
-// 		perror("dup2");
-// 		close(fd);
-// 		close(stdin_backup);
-// 		return (1);
-// 	}
-// 	close(fd);
-// 	int exit_code = execute_command(cmd_node, data);
-// 	if (dup2(stdin_backup, 0) < 0)
-// 	{
-// 		perror("restore stdin");
-// 	}
-// 	close(stdin_backup);
-// 	return exit_code;
-// }
-
-// int execute_redirection_out(t_ast *redir_node, t_data *data){
-
-// 	if (!redir_node || !redir_node->node_list || 
-// 		ft_lstsize(redir_node->node_list) != 2) {
-// 		fprintf(stderr, "Syntax error near redirection\n");
-// 		return 1;
-// 	}
-
-// 	t_ast *cmd_node = (t_ast *)redir_node->node_list->content;
-// 	t_ast *file_node = (t_ast *)redir_node->node_list->next->content;
-// 	int fd = open(file_node->token->content, 
-// 				O_WRONLY | O_CREAT | O_TRUNC, 0644);
-// 	if (fd < 0) {
-// 		perror("minishell");
-// 		return 1;
-// 	}
-
-// 	int stdout_backup = dup(1);
-// 	if (stdout_backup < 0 || dup2(fd, 1) < 0) {
-// 		perror("minishell");
-// 		close(fd);
-// 		return 1;
-// 	}
-// 	close(fd);
-// 	int exit_code = execute_command(cmd_node, data);
-
-// 	if (dup2(stdout_backup, 1) < 0) {
-// 		perror("minishell");
-// 		exit_code = 1;
-// 	}
-// 	close(stdout_backup);
-
-// 	return exit_code;
-// }
