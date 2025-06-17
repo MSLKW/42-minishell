@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 16:49:16 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 20:39:04 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ typedef struct s_env_var {
 }	t_env_var;
 
 typedef struct	s_data {
+	int		should_exit;
 	int		argc;
 	char	**argv;
 	char	**envp;
@@ -111,6 +112,10 @@ typedef struct	s_data {
 	t_lst	*free_ptr_tokens;
 	t_lst	*free_ptr_cmd_seqs;
 }	t_data;
+
+// typedef struct	s_exit_data {
+// 	int		should_exit;
+// }	t_exit_data;
 
 // ===== Minishell Functions =====
 
@@ -173,7 +178,7 @@ void	execute_builtin(char *cmd_name, char **args, t_data *data);
 char	**get_args_from_ast(t_lst *node_list);
 
 // execute_new.c
-int		process_heredocs(t_lst *cmd_seqs);
+int		process_heredocs(t_lst *cmd_seqs, t_data *data);
 void	execve_wrapper(t_cmd_seq *cmd_seq, t_data *data);
 void	apply_redirections(t_lst *io_list);
 int		execute_pipeline(t_lst *cmd_seqs, t_data *data);

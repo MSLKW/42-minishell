@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 19:39:33 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/17 16:56:32 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,12 @@ int	main(int argc, char *argv[], char *envp[])
 		return (1);
 	}
 	set_shell_env(data->env_var_lst, &data->envp);
-	while (1)
+	while (data->should_exit != 1)
 	{
 		shell_routine(data);
 	}
 	rl_clear_history();
+	free_data(data);
 	return (data->last_exit_code);
 }
 
@@ -65,7 +66,10 @@ void	shell_routine(t_data *data)
 	if (DEBUG == 1)
 		display_cmd_seq(cmd_seq_list);
 	data->last_exit_code = execute_cmd_seqs(cmd_seq_list, data);
-	// free_tokens(&data->free_ptr_tokens);
+	// if (data->free_ptr_cmd_seqs)
+	// 	free_cmd_seqs(&data->free_ptr_cmd_seqs);
+	// if (data->free_ptr_tokens)	
+	// 	free_tokens(&data->free_ptr_tokens);
 }
 
 t_data	*init_data(int argc, char **argv, char **envp)
@@ -81,7 +85,10 @@ t_data	*init_data(int argc, char **argv, char **envp)
 	data->env_var_lst = init_exported_env_var_lst(&data->envp);
 	data->free_ptr_cmd_seqs = NULL;
 	data->free_ptr_tokens = NULL;
+	data->should_exit = 0;
 	return (data);
+	// free_tokens(&data->free_ptr_tokens);
+	// free_cmd_seqs(&data->free_ptr_cmd_seqs);
 }
 
 t_lst	*init_exported_env_var_lst(char ***envp)
@@ -99,8 +106,11 @@ t_lst	*init_exported_env_var_lst(char ***envp)
 		env_var = split_assignment((*envp)[i]);
 		if (env_var != NULL)
 		{
-			env_var = set_env_variable(result, env_var, envp);
-			env_var->is_export = TRUE;
+			// env_var = set_env_variable(result, env_var, envp);
+			// env_var->is_export = TRUE;
+			t_env_var *assigned_var = set_env_variable(result, env_var, envp);
+			if (assigned_var != NULL)
+				assigned_var->is_export = TRUE;
 		}
 		i++;
 	}

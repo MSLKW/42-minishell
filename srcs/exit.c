@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:20:26 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/13 15:11:43 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 19:46:35 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,24 +37,53 @@ void	free_exit(int exit_status, t_data *data)
 	exit(exit_status);
 }
 
+// int	builtin_exit(char **args, t_data *data)
+// {
+// 	int	exit_status;
+
+// 	exit_status = 0;
+// 	printf("exit\n");
+// 	if (args[1])
+// 	{
+// 		if (ft_isdigit_str(args[1]) == TRUE)
+// 			exit_status = ft_atoi(args[1]);
+// 		else
+// 		{
+// 			printf("bash: exit: %s: numeric argument required\n", args[1]);
+// 			exit_status = 2;
+// 		}
+// 	}
+// 	else
+// 		exit_status = data->last_exit_code;
+// 	free_exit(exit_status, data);
+// 	return (exit_status);
+// }
+
 int	builtin_exit(char **args, t_data *data)
 {
 	int	exit_status;
 
-	exit_status = 0;
 	printf("exit\n");
 	if (args[1])
 	{
-		if (ft_isdigit_str(args[1]) == TRUE)
-			exit_status = ft_atoi(args[1]);
-		else
+		if (ft_isdigit_str(args[1]) == FALSE)
 		{
 			printf("bash: exit: %s: numeric argument required\n", args[1]);
-			exit_status = 2;
+			data->last_exit_code = 2;
+			data->should_exit = 1;
+			return (1);
 		}
+		if (args[2])
+		{
+			printf("bash: exit: too many arguments\n");
+			data->last_exit_code = 1;
+			return (1); // DO NOT exit
+		}
+		exit_status = ft_atoi(args[1]);
 	}
 	else
 		exit_status = data->last_exit_code;
-	free_exit(exit_status, data);
-	return (exit_status);
+	data->last_exit_code = exit_status;
+	data->should_exit = 1;
+	return (0);
 }
