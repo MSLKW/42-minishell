@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 12:38:50 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 19:39:33 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,22 @@ void	shell_routine(t_data *data)
 		store_history(data, line);
 	}
 	tokens = tokenize_line(line, data);
+	free(line);
 	data->free_ptr_tokens = tokens;
+	if (tokens == NULL)
+		return ;
 	if (DEBUG == 1)
 		debug_token_list(tokens);
 	cmd_seq_list = init_cmd_seqs(tokens);
 	data->free_ptr_cmd_seqs = cmd_seq_list;
+	if (cmd_seq_list == NULL)
+	{
+		free_tokens(&data->free_ptr_tokens);
+		data->last_exit_code = 2;
+		return ;
+	}
 	if (DEBUG == 1)
 		display_cmd_seq(cmd_seq_list);
-	free(line);
 	data->last_exit_code = execute_cmd_seqs(cmd_seq_list, data);
 	// free_tokens(&data->free_ptr_tokens);
 }

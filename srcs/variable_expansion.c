@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:30 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/13 16:33:34 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/16 18:31:44 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ static t_bool	expand_variable(t_lst *head, char *arg, t_data *data)
 		if (arg[1] == '?')
 		{
 			head->content = ft_itoa(data->last_exit_code);
+			free(arg);
 			return (TRUE);
 		}
 		var = get_env_variable(arg + 1, data->env_var_lst);
