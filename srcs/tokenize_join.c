@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 11:08:44 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/14 15:26:44 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 00:05:02 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static char	*add_joint_content(char *joint_content, char *content)
 	return (joint_content);
 }
 
-static t_token *capture_new_token(char **joint_content, t_lst **new_token_list, t_flag *flags)
+static t_token	*capture_new_token(char **joint_content, t_lst **new_token_list, t_flag *flags)
 {
 	t_token	*new_token;
 
@@ -77,14 +77,12 @@ t_lst	*join_token_list(t_lst **token_list)
 		{
 			joint_content = add_joint_content(joint_content, token->content);
 			
-			if (has_token_flag(joint_flags, WORD) && has_token_flag(token->flags, ASSIGNMENT))
+			if (has_token_flag(joint_flags, WORD) && has_token_flag(token->flags, ASSIGNMENT)) 
 			{
-
+				
 			}
 			else
 				token_add_flags(joint_flags, token->flags);
-			// if there is assignment before, and current token is an operator, then don't add flag
-
 		}
 		else if (has_token_flag(token->flags, DELIMITER) == TRUE)
 		{

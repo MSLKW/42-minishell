@@ -6,20 +6,21 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 11:11:31 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/14 15:26:14 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/17 23:55:53 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-	Modifies the **token_list's token flags to more suitable token types like COMMAND and ARGUMENT
+	Modifies the **token_list's token flags to 
+	more suitable token types like COMMAND and ARGUMENT
 */
-t_lst    *assign_flags_cmd_arg(t_lst **token_list)
+t_lst	*assign_flags_cmd_arg(t_lst **token_list)
 {
-	int    cmd_line_flag;
-	t_lst    *head;
-	t_token    *token;
+	int		cmd_line_flag;
+	t_lst	*head;
+	t_token	*token;
 
 	cmd_line_flag = 0;
 	head = *token_list;

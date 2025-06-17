@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 20:39:04 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/18 00:21:56 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,7 @@ t_flag	*token_dup_flag(t_flag *flag_arr);
 int		token_add_flags_iter(t_lst *token_list, t_flag flag);
 int		apply_token_flags(t_lst	*token_list);
 int		count_token_with_flag(t_lst	*token_list, t_flag flag);
+t_bool	is_token_flags_empty(t_flag *flags_arr);
 
 // history.c
 // void	ft_show_history(void);
@@ -205,10 +206,6 @@ char		**cmd_seq_get_cmd_args(char *cmd, char **args);
 t_io	*init_io(char *content, t_flag flag);
 t_flag	get_redirection_flag(t_flag *flags);
 t_lst	*get_io_list(t_lst *token_list, int *status);
-
-// token_search.c
-t_lst	*find_token_right(t_lst *current_token_lst, t_flag token_flag, int size);
-t_lst	*find_token_left(t_lst	**token_list, t_lst *current_token_lst, t_flag token_flag, int size);
 
 // variable.c
 t_env_var	*init_env_variable(char *key, char *value);
@@ -271,14 +268,16 @@ int		builtin_temphistory(void);
 void	store_history(t_data *data, const char *line);
 
 // export.c
-int		ft_addenv(char *arg, char ***envp);
-int		ft_setenv(char *key, char *value, char ***envp);
-char	*ft_getenv(char *key, char **envp);
+char	*join_export_identifer(char *key, char *value);
 int		ft_exportcheck(t_env_var *var, char ***envp);
 int		process_args(char **args, char ***envp, t_lst *env_var_lst);
 
+// ft_envp.c
+int		ft_addenv(char *arg, char ***envp);
+int		ft_setenv(char *key, char *value, char ***envp);
+char	*ft_getenv(char *key, char **envp);
+
 // free.c
-void	free_envp(char **envp);
 void	free_data(t_data *data);
 void	free_str_arr(char **str_arr);
 void	free_tokens(t_lst **tokens_lst);
