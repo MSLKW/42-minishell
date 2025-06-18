@@ -18,6 +18,10 @@ SRCS_FILES :=	minishell.c \
 				token_search.c \
 				interactive_mode.c \
 				debug.c \
+				pipe.c \
+				redirections.c \
+				heredoc.c \
+				execute_function.c \
 				execute_new.c \
 				cd.c \
 				echo.c \

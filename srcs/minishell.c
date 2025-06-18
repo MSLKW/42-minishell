@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/17 17:29:10 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/18 13:58:53 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,6 @@ void	shell_routine(t_data *data)
 	data->free_ptr_tokens = tokens;
 	if (tokens == NULL)
 		return ;
-	if (DEBUG == 1)
-		debug_token_list(tokens);
 	cmd_seq_list = init_cmd_seqs(tokens);
 	data->free_ptr_cmd_seqs = cmd_seq_list;
 	if (cmd_seq_list == NULL)
@@ -62,13 +60,7 @@ void	shell_routine(t_data *data)
 		data->last_exit_code = 2;
 		return ;
 	}
-	if (DEBUG == 1)
-		display_cmd_seq(cmd_seq_list);
 	data->last_exit_code = execute_cmd_seqs(cmd_seq_list, data);
-	// if (data->free_ptr_cmd_seqs)
-	// 	free_cmd_seqs(&data->free_ptr_cmd_seqs);
-	// if (data->free_ptr_tokens)	
-	// 	free_tokens(&data->free_ptr_tokens);
 }
 
 t_data	*init_data(int argc, char **argv, char **envp)
@@ -90,9 +82,10 @@ t_data	*init_data(int argc, char **argv, char **envp)
 
 t_lst	*init_exported_env_var_lst(char ***envp)
 {
-	t_lst	*result;
+	t_lst		*result;
 	t_env_var	*env_var;
-	int		i;
+	int			i;
+	t_env_var	*assigned_var;
 
 	if (envp == NULL || *envp == NULL || (*envp)[0] == NULL)
 		return (ft_lstnew(NULL));
@@ -103,9 +96,7 @@ t_lst	*init_exported_env_var_lst(char ***envp)
 		env_var = split_assignment((*envp)[i]);
 		if (env_var != NULL)
 		{
-			// env_var = set_env_variable(result, env_var, envp);
-			// env_var->is_export = TRUE;
-			t_env_var *assigned_var = set_env_variable(result, env_var, envp);
+			assigned_var = set_env_variable(result, env_var, envp);
 			if (assigned_var != NULL)
 				assigned_var->is_export = TRUE;
 		}
