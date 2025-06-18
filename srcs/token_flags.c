@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 15:08:50 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 13:46:32 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 15:13:41 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,25 +67,6 @@ ft_strchr(content, '>')) && size == 1) || ((ft_strnstr(content, ">>", size) \
 			token_add_flag(flag_arr, ASSIGNMENT);
 	}
 	return (flag_arr);
-}
-
-t_flag	*token_dup_flag(t_flag *flag_arr)
-{
-	t_flag	*new_flag_arr;
-	int		i;
-
-	if (flag_arr == NULL)
-		return (NULL);
-	new_flag_arr = init_empty_token_flags();
-	if (new_flag_arr == NULL)
-		return (NULL);
-	i = 0;
-	while (i < TOKEN_FLAG_SIZE)
-	{
-		new_flag_arr[i] = flag_arr[i];
-		i++;
-	}
-	return (new_flag_arr);
 }
 
 int	token_add_flags_iter(t_lst *token_list, t_flag flag)

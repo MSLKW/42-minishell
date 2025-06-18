@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 14:20:47 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 16:22:16 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 # define FALSE 0
 # define TOKEN_FLAG_SIZE 14
 
-# define DEBUG 1
+# define DEBUG 0
 
 // ===== Minishell Types =====
 
@@ -222,6 +222,9 @@ t_env_var	*split_assignment(char *content);
 char	*variable_expansion(const char *arg, t_data *data, t_bool *status);
 t_lst	*tokens_variable_expansion(t_lst *tokens_lst, t_data *data);
 
+// split_variable_list.c
+t_lst	*split_variable_list(const char *arg);
+
 // execute_new.c
 // char	**build_cmd_args(t_ast *node);
 // int		execute_command(t_ast *node, t_data *data);
@@ -271,6 +274,8 @@ void	store_history(t_data *data, const char *line);
 char	*join_export_identifer(char *key, char *value);
 int		ft_exportcheck(t_env_var *var, char ***envp);
 int		process_args(char **args, char ***envp, t_lst *env_var_lst);
+
+int		display_export(t_lst *env_var_lst);
 
 // ft_envp.c
 int		ft_addenv(char *arg, char ***envp);

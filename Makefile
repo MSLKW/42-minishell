@@ -7,6 +7,7 @@ LIBRARIES := -lreadline
 SRCS_DIR := ./srcs/
 SRCS_FILES :=	minishell.c \
 				parse.c \
+				prompt.c \
 				history.c \
 				tokenize.c \
 				tokenize_expansion.c \
@@ -24,17 +25,20 @@ SRCS_FILES :=	minishell.c \
 				env.c \
 				exit.c \
 				export.c \
+				export_display.c \
 				ft_envp.c \
 				pwd.c \
 				unset.c \
 				variable.c \
 				variable_helper.c \
 				variable_expansion.c \
+				split_variable_list.c \
 				token_flags.c \
 				token_flags_mod.c \
 				token_flags_helper.c \
 				shell_env.c \
 				cmd_seq.c \
+				init_cmd_seqs.c \
 				io.c \
 				free.c \
 				free2.c

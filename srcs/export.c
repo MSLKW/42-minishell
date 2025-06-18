@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:45:01 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/18 11:37:54 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 15:12:06 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,30 +81,6 @@ int	process_args(char **args, char ***envp, t_lst *env_var_lst)
 				return (1);
 		}
 		i++;
-	}
-	return (0);
-}
-
-static int	display_export(t_lst *env_var_lst)
-{
-	t_lst		*head;
-	t_env_var	*env_var;
-
-	if (env_var_lst == NULL)
-		return (1);
-	head = env_var_lst;
-	while (head != NULL)
-	{
-		env_var = head->content;
-		if (env_var != NULL && env_var->key != NULL \
-&& env_var->is_export == TRUE)
-		{
-			if (env_var->value == NULL)
-				printf("declare -x %s\n", env_var->key);
-			else
-				printf("declare -x %s=\"%s\"\n", env_var->key, env_var->value);
-		}
-		head = head->next;
 	}
 	return (0);
 }
