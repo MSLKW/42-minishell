@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:42:41 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/18 19:20:27 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 19:37:58 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,9 @@ void	print_execve_error(char *cmd, int flag, t_data *data)
 	else if (flag != 3)
 		ft_put_error(cmd, "command not found");
 	else
+	{
 		ft_put_error(cmd, "Is a directory");
+		free_exit(126, data);
+	}
 	free_exit(127, data);
 }

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/18 18:37:51 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 19:34:26 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,8 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 	else if (count_null_terminated_arr(cmd_seq->argv) >= 1)
 		status = execute_command(cmd_seq, data);
 	else
-		status = -1;
-	if (status != -1)
-		cleanup_and_return(data);
+		status = 0;
+	cleanup_and_return(data);
 	return (status);
 }
 
