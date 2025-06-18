@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 11:08:44 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 11:57:33 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 13:33:49 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,12 @@ t_lst **new_token_list, t_flag *flags)
 }
 
 static void	join_token_logic(t_token *token, char **joint_content, \
-t_flag *joint_flags, t_lst *new_token_list)
+t_flag *joint_flags, t_lst **new_token_list)
 {
 	if (has_token_flag(token->flags, OPERATOR) == TRUE)
 	{
-		capture_new_token(joint_content, &new_token_list, joint_flags);
-		ft_lstadd_back(&new_token_list, \
+		capture_new_token(joint_content, new_token_list, joint_flags);
+		ft_lstadd_back(new_token_list, \
 ft_lstnew(init_token(token->content, token->handler, token->flags)));
 	}
 	else if (has_token_flag(token->flags, DELIMITER) == FALSE)
@@ -67,7 +67,7 @@ ft_lstnew(init_token(token->content, token->handler, token->flags)));
 			token_add_flags(joint_flags, token->flags);
 	}
 	else if (has_token_flag(token->flags, DELIMITER) == TRUE)
-		capture_new_token(joint_content, &new_token_list, joint_flags);
+		capture_new_token(joint_content, new_token_list, joint_flags);
 }
 
 t_lst	*join_token_list(t_lst **token_list)
@@ -89,7 +89,7 @@ t_lst	*join_token_list(t_lst **token_list)
 	while (head != NULL)
 	{
 		token = head->content;
-		join_token_logic(token, &joint_content, joint_flags, new_token_list);
+		join_token_logic(token, &joint_content, joint_flags, &new_token_list);
 		head = head->next;
 	}
 	if (joint_content != NULL)

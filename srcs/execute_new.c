@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/17 17:20:24 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 13:47:20 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,8 +235,8 @@ void execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 		cmd_path = args[0];
 	else
 		cmd_path = find_cmd_path(args[0], data->env_var_lst);
-	if (DEBUG == 1)
-		printf("cmd_path: %s\n", cmd_path);
+	// if (DEBUG == 1)
+	// 	printf("cmd_path: %s\n", cmd_path);
 	apply_redirections(cmd_seq->io_list);
 	if (cmd_path)
 	{

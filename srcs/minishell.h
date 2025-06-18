@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 00:21:56 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 14:20:47 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ int		token_rm_flags(t_flag *flag_arr);
 t_flag	*token_dup_flag(t_flag *flag_arr);
 int		token_add_flags_iter(t_lst *token_list, t_flag flag);
 int		apply_token_flags(t_lst	*token_list);
-int		count_token_with_flag(t_lst	*token_list, t_flag flag);
+int		tkn_flg_num(t_lst	*token_list, t_flag flag);
 t_bool	is_token_flags_empty(t_flag *flags_arr);
 
 // history.c

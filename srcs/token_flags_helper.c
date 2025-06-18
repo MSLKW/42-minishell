@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 00:18:26 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 11:40:15 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 14:20:47 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ t_bool	is_token_flags_empty(t_flag *flags_arr)
 	return (TRUE);
 }
 
-int	count_token_with_flag(t_lst	*token_list, t_flag flag)
+int	tkn_flg_num(t_lst	*token_list, t_flag flag)
 {
 	int		count;
 	t_lst	*head;

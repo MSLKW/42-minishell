@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 15:08:50 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 00:19:06 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 13:46:32 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,26 @@ t_flag	*init_empty_token_flags(void)
 	return (flag_arr);
 }
 
+static t_flag	*add_operator_flags(t_flag *flag_arr, char *content, int size)
+{
+	token_add_flag(flag_arr, OPERATOR);
+	if (ft_strchr(content, '|') && size == 1)
+	{
+		token_add_flag(flag_arr, PIPE);
+		return (flag_arr);
+	}
+	token_add_flag(flag_arr, REDIRECTION);
+	if (ft_strchr(content, '<') && size == 1)
+		token_add_flag(flag_arr, REDIRECTION_INPUT);
+	else if (ft_strchr(content, '>') && size == 1)
+		token_add_flag(flag_arr, REDIRECTION_OUTPUT);
+	else if (ft_strnstr(content, "<<", size) && size == 2)
+		token_add_flag(flag_arr, REDIRECTION_DELIMITER);
+	else if (ft_strnstr(content, ">>", size) && size == 2)
+		token_add_flag(flag_arr, REDIRECTION_APPEND);
+	return (flag_arr);
+}
+
 t_flag	*init_token_flags(t_token *token)
 {
 	t_flag	*flag_arr;
@@ -33,33 +53,14 @@ t_flag	*init_token_flags(t_token *token)
 		return (NULL);
 	content = token->content;
 	size = ft_strlen(content);
-	if (size == 0 && token->handler == NONE)
-	{
-		
-	}
-	else if (ft_fully_delimiter(content) && size > 0 && token->handler == NONE)
-	{
+	if (ft_fully_delimiter(content) && size > 0 && token->handler == NONE)
 		token_add_flag(flag_arr, DELIMITER);
-	}
-	else if (token->handler == NONE && (((ft_strchr(content, '|') || ft_strchr(content, '<') || ft_strchr(content, '>')) && size == 1) || ((ft_strnstr(content, ">>", size) || ft_strnstr(content, "<<", size)) && size == 2)))
-	{
-		token_add_flag(flag_arr, OPERATOR);
-		if (ft_strchr(content, '|') && size == 1)
-		{
-			token_add_flag(flag_arr, PIPE);
-			return (flag_arr);
-		}
-		token_add_flag(flag_arr, REDIRECTION);
-		if (ft_strchr(content, '<') && size == 1)
-			token_add_flag(flag_arr, REDIRECTION_INPUT);
-		else if (ft_strchr(content, '>') && size == 1)
-			token_add_flag(flag_arr, REDIRECTION_OUTPUT);
-		else if (ft_strnstr(content, "<<", size) && size == 2)
-			token_add_flag(flag_arr, REDIRECTION_DELIMITER);
-		else if (ft_strnstr(content, ">>", size) && size == 2)
-			token_add_flag(flag_arr, REDIRECTION_APPEND);
-	}
-	else
+	else if (token->handler == NONE && \
+(((ft_strchr(content, '|') || ft_strchr(content, '<') || \
+ft_strchr(content, '>')) && size == 1) || ((ft_strnstr(content, ">>", size) \
+|| ft_strnstr(content, "<<", size)) && size == 2)))
+		return (add_operator_flags(flag_arr, content, size));
+	else if (!(size == 0 && token->handler == NONE))
 	{
 		token_add_flag(flag_arr, WORD);
 		if (is_token_assignment(content) == TRUE && token->handler == NONE)
