@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:28:30 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/18 14:39:29 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/18 17:32:47 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	execute_pipeline(t_lst *cmd_seqs, t_data *data)
 	{
 		if (cmd_seqs->next)
 			pipe(pipe_fd);
-		pid = fork();
+		pid = fork();j
 		if (pid == 0)
 			child_process(cmd_seqs, data,
 				prev_fd, pipe_fd);

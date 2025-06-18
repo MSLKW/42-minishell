@@ -6,6 +6,7 @@ LIBRARIES := -lreadline
 
 SRCS_DIR := ./srcs/
 SRCS_FILES :=	minishell.c \
+				minishell_extra.c \
 				parse.c \
 				history.c \
 				tokenize.c \

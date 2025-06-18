@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 14:49:23 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/18 17:22:41 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 # define FALSE 0
 # define TOKEN_FLAG_SIZE 14
 
-# define DEBUG 1
+# define DEBUG 0
 
 // ===== Minishell Types =====
 
@@ -117,6 +117,8 @@ typedef struct	s_data {
 // 	int		should_exit;
 // }	t_exit_data;
 
+extern volatile sig_atomic_t g_sigint_received;
+
 // ===== Minishell Functions =====
 
 // minishell.c
@@ -124,6 +126,10 @@ void	shell_routine(t_data *data);
 t_data	*init_data(int argc, char **argv, char **envp);
 char	**get_envp_copy(char **envp, int extra);
 t_lst	*init_exported_env_var_lst(char ***envp);
+
+// minishell_extra.c
+void    change_exit_code(t_data *data);
+void	history_helper(char	*line, t_data *data);
 
 // shell_env.c
 int		set_shell_env(t_lst *env_var_lst, char ***envp);

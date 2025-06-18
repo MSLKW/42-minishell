@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 13:58:53 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/18 17:25:52 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,9 @@ void	shell_routine(t_data *data)
 	t_lst	*cmd_seq_list;
 
 	line = ft_get_line(data);
+	change_exit_code(data);
 	if (line && *line)
-	{
-		add_history(line);
-		store_history(data, line);
-	}
+		history_helper(line, data);
 	tokens = tokenize_line(line, data);
 	free(line);
 	data->free_ptr_tokens = tokens;
@@ -60,7 +58,10 @@ void	shell_routine(t_data *data)
 		data->last_exit_code = 2;
 		return ;
 	}
-	data->last_exit_code = execute_cmd_seqs(cmd_seq_list, data);
+	if (data->last_exit_code != 130)
+		data->last_exit_code = execute_cmd_seqs(cmd_seq_list, data);
+	else
+		execute_cmd_seqs(cmd_seq_list, data);
 }
 
 t_data	*init_data(int argc, char **argv, char **envp)
