@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:38:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 01:45:13 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 19:22:08 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ int	set_oldpwd_env(t_lst *env_var_lst, char ***envp)
 	old_pwd = init_env_variable("OLDPWD", NULL);
 	if (old_pwd == NULL)
 		return (1);
-	printf("old_pwd: %p\n", old_pwd);
 	set_env_variable(env_var_lst, old_pwd, envp);
 	old_pwd->is_export = TRUE;
 	return (0);
