@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:20:26 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/16 19:46:35 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/18 17:28:02 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,8 @@ static int	ft_isdigit_str(char *str)
 	i = 0;
 	while (str[i] != '\0')
 	{
-		if (ft_isdigit(str[i]) == FALSE)
-		{
-			printf("str[i] is not a digit: %c\n", str[i]);
+		if (ft_isdigit(str[i]) == FALSE && str[i] != '-' && str[i] != '+')
 			return (0);
-		}
 		i++;
 	}
 	return (1);
@@ -68,16 +65,16 @@ int	builtin_exit(char **args, t_data *data)
 	{
 		if (ft_isdigit_str(args[1]) == FALSE)
 		{
-			printf("bash: exit: %s: numeric argument required\n", args[1]);
+			ft_put_error(args[1], "numeric argument required");
 			data->last_exit_code = 2;
 			data->should_exit = 1;
-			return (1);
+			return (data->last_exit_code);
 		}
 		if (args[2])
 		{
-			printf("bash: exit: too many arguments\n");
+			ft_put_error("exit", "too many arguments");
 			data->last_exit_code = 1;
-			return (1); // DO NOT exit
+			return (data->last_exit_code); // DO NOT exit
 		}
 		exit_status = ft_atoi(args[1]);
 	}
@@ -85,5 +82,5 @@ int	builtin_exit(char **args, t_data *data)
 		exit_status = data->last_exit_code;
 	data->last_exit_code = exit_status;
 	data->should_exit = 1;
-	return (0);
+	return (exit_status);
 }

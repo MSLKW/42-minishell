@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:12:35 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/18 13:47:20 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 18:37:51 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,11 +245,11 @@ void execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 	}
 	// Handle failure somehow use perror properly?
 	if (get_env_var_value("PATH", data->env_var_lst) == NULL)
-		printf("%s: No such file or directory\n", args[0]);
+		ft_put_error(args[0], "No such file or directory");
 	else if (error_code_flag != 3)
-		printf("%s: command not found\n", args[0]);
+		ft_put_error(args[0], "command not found");
 	else
-		printf("%s: Is a directory\n", args[0]);
+		ft_put_error(args[0], "Is a directory");
 	free_exit(127, data);
 }
 

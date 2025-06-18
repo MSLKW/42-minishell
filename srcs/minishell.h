@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 16:22:16 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 17:01:04 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,5 +295,7 @@ void	free_io(void *content);
 
 // exit.c
 void	free_exit(int exit_status, t_data *data);
+
+void	ft_put_error(char *arg, char *error_str);
 
 #endif

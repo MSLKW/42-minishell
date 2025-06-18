@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:45:01 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/18 15:12:06 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 17:07:51 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static int	unregular_export(char *arg, char ***envp, t_lst *env_var_lst)
 		var = init_env_variable(arg, NULL);
 		if (var == NULL)
 		{
-			printf("\'%s\' is not a valid identifier\n", arg);
+			ft_put_error(arg, "not a valid identifier");
 			return (1);
 		}
 		var = set_env_variable(env_var_lst, var, envp);
@@ -92,6 +92,9 @@ int	builtin_export(char **args, char ***envp, t_data *data)
 	if (count_null_terminated_arr(args) == 1)
 		display_export(data->env_var_lst);
 	else
-		process_args(args, envp, data->env_var_lst);
+	{
+		if (process_args(args, envp, data->env_var_lst) == 1)
+			return (1);
+	}
 	return (0);
 }

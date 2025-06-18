@@ -41,7 +41,8 @@ SRCS_FILES :=	minishell.c \
 				init_cmd_seqs.c \
 				io.c \
 				free.c \
-				free2.c
+				free2.c \
+				ft_put_error.c \
 
 DEPS_FILES :=	minishell.h
 
