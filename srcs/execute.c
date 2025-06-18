@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 20:42:19 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 16:58:58 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 14:43:19 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,37 +17,71 @@
 */
 char	*find_cmd_path(char *cmd, t_lst *env_var_lst)
 {
-	int		index;
 	char	*uncut_path;
 	char	**envp_paths;
-	char	*dir_path;
-	char	*full_path;
+	char	*path;
 
 	uncut_path = get_env_var_value("PATH", env_var_lst);
-	// printf("uncut_path: %s\n", uncut_path);
 	if (uncut_path == NULL)
 		return (NULL);
 	envp_paths = ft_split(uncut_path, ':');
-	index = 0;
-	while (envp_paths[index] != NULL)
+	if (envp_paths == NULL)
+		return (NULL);
+	path = search_in_paths(cmd, envp_paths);
+	free_str_arr(envp_paths);
+	return (path);
+}
+
+char	*search_in_paths(char *cmd, char **paths)
+{
+	int		i;
+	char	*dir_path;
+	char	*full_path;
+
+	i = 0;
+	while (paths[i])
 	{
-		// printf("envp_paths[%i]: %s\n", index, envp_paths[index]);
-		index++;
-	}
-	index = 0;
-	while (envp_paths[index] != NULL)
-	{
-		dir_path = ft_strjoin(envp_paths[index], "/");
+		dir_path = ft_strjoin(paths[i], "/");
 		full_path = ft_strjoin(dir_path, cmd);
 		free(dir_path);
 		if (access(full_path, F_OK) == 0)
-		{
-			free_str_arr(envp_paths);
 			return (full_path);
-		}
 		free(full_path);
-		index++;
+		i++;
 	}
-	free_str_arr(envp_paths);
 	return (NULL);
+}
+
+int	is_builtin(char *cmd)
+{
+	return (ft_strncmp(cmd, "pwd", 4) == 0
+		|| ft_strncmp(cmd, "echo", 5) == 0
+		|| ft_strncmp(cmd, "cd", 3) == 0
+		|| ft_strncmp(cmd, "env", 4) == 0
+		|| ft_strncmp(cmd, "exit", 5) == 0
+		|| ft_strncmp(cmd, "unset", 6) == 0
+		|| ft_strncmp(cmd, "export", 7) == 0
+		|| ft_strncmp(cmd, "history", 8) == 0
+	);
+}
+
+int	run_builtin(char **args, t_data *data)
+{
+	if (ft_strncmp(args[0], "pwd", 4) == 0)
+		return (builtin_pwd());
+	if (ft_strncmp(args[0], "echo", 5) == 0)
+		return (builtin_echo(args));
+	if (ft_strncmp(args[0], "cd", 3) == 0)
+		return (builtin_cd(args + 1, data));
+	if (ft_strncmp(args[0], "env", 4) == 0)
+		return (builtin_env(data->envp));
+	if (ft_strncmp(args[0], "exit", 5) == 0)
+		return (builtin_exit(args, data));
+	if (ft_strncmp(args[0], "unset", 6) == 0)
+		return (builtin_unset(args, &data->envp, &data->env_var_lst));
+	if (ft_strncmp(args[0], "export", 7) == 0)
+		return (builtin_export(args, &data->envp, data));
+	if (ft_strncmp(args[0], "history", 8) == 0)
+		return (builtin_history(data));
+	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 20:39:04 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/18 17:22:41 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 # define FALSE 0
 # define TOKEN_FLAG_SIZE 14
 
-# define DEBUG 1
+# define DEBUG 0
 
 // ===== Minishell Types =====
 
@@ -117,6 +117,8 @@ typedef struct	s_data {
 // 	int		should_exit;
 // }	t_exit_data;
 
+extern volatile sig_atomic_t g_sigint_received;
+
 // ===== Minishell Functions =====
 
 // minishell.c
@@ -124,6 +126,10 @@ void	shell_routine(t_data *data);
 t_data	*init_data(int argc, char **argv, char **envp);
 char	**get_envp_copy(char **envp, int extra);
 t_lst	*init_exported_env_var_lst(char ***envp);
+
+// minishell_extra.c
+void    change_exit_code(t_data *data);
+void	history_helper(char	*line, t_data *data);
 
 // shell_env.c
 int		set_shell_env(t_lst *env_var_lst, char ***envp);
@@ -172,27 +178,47 @@ int		count_token_with_flag(t_lst	*token_list, t_flag flag);
 // void	ft_show_history(void);
 // void	ft_clear_history(void);
 
+// execute_function.c
+int		execute_command(t_cmd_seq *cmd_seq, t_data *data);
+void	exec_handle_parent(pid_t pid, int *status);
+void	execve_wrapper(t_cmd_seq *cmd_seq, t_data *data);
+void	print_execve_error(char *cmd, int flag, t_data *data);
+
 // execute.c
 char	*find_cmd_path(char *cmd, t_lst *env_var_lst);
-void	execute_builtin(char *cmd_name, char **args, t_data *data);
-char	**get_args_from_ast(t_lst *node_list);
+char	*search_in_paths(char *cmd, char **paths);
+int		is_builtin(char *cmd);
+int		run_builtin(char **args, t_data *data);
 
 // execute_new.c
-int		process_heredocs(t_lst *cmd_seqs, t_data *data);
-void	execve_wrapper(t_cmd_seq *cmd_seq, t_data *data);
-void	apply_redirections(t_lst *io_list);
-int		execute_pipeline(t_lst *cmd_seqs, t_data *data);
-int		execute_command(t_cmd_seq *cmd_seq, t_data *data);
+void	cleanup_and_return(t_data *data);
 int		execute_cmd_seqs(t_lst *cmd_seqs, t_data *data);
 int		execute_assignment(t_cmd_seq *cmd_seq, t_data *data);
 
+//pipe.c
+void	parent_process(int *prev_fd, int *pipe_fd, t_bool has_next);
+void	child_process(t_lst *cmd_seqs,
+			t_data *data, int prev_fd, int *pipe_fd);
+int		execute_pipeline(t_lst *cmd_seqs, t_data *data);
+
+//redirections.c
+void	apply_redirections(t_lst *io_list);
+void	handle_output(char *filename);
+void	handle_append(char *filename);
+void	handle_input(char *filename);
+void	handle_heredoc_redirection(int fd);
+
+//heredoc.c
+int		handle_heredoc(t_io *io, t_data *data);
+int		process_heredocs(t_lst *cmd_seqs, t_data *data);
+
 // helper.c
-int		ft_isalpha_str(char *str);
-int		ft_isalnum_str(char *str);
-int		count_null_terminated_arr(char **str_arr);
-t_bool	ft_has_delimiter(char *str);
-t_bool	ft_fully_delimiter(char *str);
-t_bool	ft_is_delimiter(char c);
+int			ft_isalpha_str(char *str);
+int			ft_isalnum_str(char *str);
+int			count_null_terminated_arr(char **str_arr);
+t_bool		ft_has_delimiter(char *str);
+t_bool		ft_fully_delimiter(char *str);
+t_bool		ft_is_delimiter(char c);
 
 // cmd_seq.c
 t_cmd_seq	*init_cmd_seq(t_lst	*token_list);

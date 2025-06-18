@@ -1,31 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   interactive_mode.c                                 :+:      :+:    :+:   */
+/*   minishell_extra.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/21 12:58:47 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 17:30:19 by zernest          ###   ########.fr       */
+/*   Created: 2025/06/18 17:17:03 by zernest           #+#    #+#             */
+/*   Updated: 2025/06/18 17:26:00 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-volatile sig_atomic_t	g_sigint_received = 0;
-
-void	ctrlc_handler(int sig)
+void	change_exit_code(t_data *data)
 {
-	(void)sig;
-	g_sigint_received = 1;
-	write(1, "^C\n", 3);
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
+	if (g_sigint_received)
+	{
+		data->last_exit_code = 130;
+		g_sigint_received = 0;
+	}
 }
 
-void	ctrld_handler(t_data *data)
+void	history_helper(char	*line, t_data *data)
 {
-	write(1, "exit\n", 5);
-	free_exit(data->last_exit_code, data);
+	add_history(line);
+	store_history(data, line);
 }
