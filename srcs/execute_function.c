@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_function.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:42:41 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/18 14:51:37 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/18 19:20:27 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,10 @@ void	execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 void	print_execve_error(char *cmd, int flag, t_data *data)
 {
 	if (get_env_var_value("PATH", data->env_var_lst) == NULL)
-		printf("%s: No such file or directory\n", cmd);
+		ft_put_error(cmd, "No such file or directory");
 	else if (flag != 3)
-		printf("%s: command not found\n", cmd);
+		ft_put_error(cmd, "command not found");
 	else
-		printf("%s: Is a directory\n", cmd);
+		ft_put_error(cmd, "Is a directory");
 	free_exit(127, data);
 }
