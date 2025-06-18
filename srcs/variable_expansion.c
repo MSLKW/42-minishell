@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   variable_expansion.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:30 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 18:31:44 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 23:05:07 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ static char	*rejoining_strs(t_lst *split_arg)
 	Returns argument with variables expanded in it
 	status returns TRUE if any variable is successfully expanded with content
 */
-char	*variable_expansion(const char *arg, t_data *data, t_bool *status)
+char	*variable_expansion( char *arg, t_data *data, t_bool *status)
 {
 	t_lst	*split_arg;
 	char	*result;
@@ -156,5 +156,6 @@ char	*variable_expansion(const char *arg, t_data *data, t_bool *status)
 	// ft_lststrdisplay(split_arg);
 	result = rejoining_strs(split_arg);
 	ft_lstclear(&split_arg, free);
+	free(arg);
 	return (result);
 }

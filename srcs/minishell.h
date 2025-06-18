@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 17:22:41 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/18 23:32:00 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@
 # define TOKEN_FLAG_SIZE 14
 
 # define DEBUG 0
+# define BUFFER_SIZE 20
 
 // ===== Minishell Types =====
 
@@ -121,6 +122,13 @@ extern volatile sig_atomic_t g_sigint_received;
 
 // ===== Minishell Functions =====
 
+//get_next_linestuff
+char	*ft_strjoin_free(char *s1, char *s2);
+char	*ft_readfile(int fd, char *stash);
+char	*get_line(char *stash);
+char	*process_stash(char *stash);
+char	*get_next_line(int fd);
+
 // minishell.c
 void	shell_routine(t_data *data);
 t_data	*init_data(int argc, char **argv, char **envp);
@@ -128,7 +136,7 @@ char	**get_envp_copy(char **envp, int extra);
 t_lst	*init_exported_env_var_lst(char ***envp);
 
 // minishell_extra.c
-void    change_exit_code(t_data *data);
+int		change_exit_code(t_data *data);
 void	history_helper(char	*line, t_data *data);
 
 // shell_env.c
@@ -211,6 +219,7 @@ void	handle_heredoc_redirection(int fd);
 //heredoc.c
 int		handle_heredoc(t_io *io, t_data *data);
 int		process_heredocs(t_lst *cmd_seqs, t_data *data);
+void	heredoc_sigint_handler(int sig);
 
 // helper.c
 int			ft_isalpha_str(char *str);
@@ -248,7 +257,7 @@ char		*get_env_var_value(char *key, t_lst *env_var_lst);
 t_env_var	*split_assignment(char *content);
 
 // variable_expansion.c
-char	*variable_expansion(const char *arg, t_data *data, t_bool *status);
+char	*variable_expansion(char *arg, t_data *data, t_bool *status);
 t_lst	*tokens_variable_expansion(t_lst *tokens_lst, t_data *data);
 
 // execute_new.c

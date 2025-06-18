@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:42:41 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/18 14:51:37 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/18 22:38:50 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 	char	**args;
 	pid_t	pid;
 	int		status;
-
 	args = cmd_seq->argv;
 	status = -1;
 	if (!args || !args[0])
@@ -40,13 +39,13 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 
 void	exec_handle_parent(pid_t pid, int *status)
 {
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
+	// signal(SIGINT, SIG_IGN);
+	// signal(SIGQUIT, SIG_IGN);
 	waitpid(pid, status, 0);
 	if (WIFSIGNALED(*status) && WTERMSIG(*status) == SIGINT)
 		write(STDOUT_FILENO, "\n", 1);
-	signal(SIGINT, ctrlc_handler);
-	signal(SIGQUIT, SIG_IGN);
+	// signal(SIGINT, ctrlc_handler);
+	// signal(SIGQUIT, SIG_IGN);
 }
 
 void	execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)

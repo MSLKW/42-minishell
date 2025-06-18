@@ -6,6 +6,8 @@ LIBRARIES := -lreadline
 
 SRCS_DIR := ./srcs/
 SRCS_FILES :=	minishell.c \
+				get_next_line_utils.c \
+				get_next_line.c \
 				minishell_extra.c \
 				parse.c \
 				history.c \
