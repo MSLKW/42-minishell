@@ -34,28 +34,6 @@ void	free_exit(int exit_status, t_data *data)
 	exit(exit_status);
 }
 
-// int	builtin_exit(char **args, t_data *data)
-// {
-// 	int	exit_status;
-
-// 	exit_status = 0;
-// 	printf("exit\n");
-// 	if (args[1])
-// 	{
-// 		if (ft_isdigit_str(args[1]) == TRUE)
-// 			exit_status = ft_atoi(args[1]);
-// 		else
-// 		{
-// 			printf("bash: exit: %s: numeric argument required\n", args[1]);
-// 			exit_status = 2;
-// 		}
-// 	}
-// 	else
-// 		exit_status = data->last_exit_code;
-// 	free_exit(exit_status, data);
-// 	return (exit_status);
-// }
-
 int	builtin_exit(char **args, t_data *data)
 {
 	int	exit_status;
@@ -74,7 +52,7 @@ int	builtin_exit(char **args, t_data *data)
 		{
 			ft_put_error("exit", "too many arguments");
 			data->last_exit_code = 1;
-			return (data->last_exit_code); // DO NOT exit
+			return (data->last_exit_code);
 		}
 		exit_status = ft_atoi(args[1]);
 	}

@@ -6,6 +6,7 @@ LIBRARIES := -lreadline
 
 SRCS_DIR := ./srcs/
 SRCS_FILES :=	minishell.c \
+				minishell_extra.c \
 				parse.c \
 				prompt.c \
 				history.c \
@@ -19,6 +20,10 @@ SRCS_FILES :=	minishell.c \
 				helper.c \
 				interactive_mode.c \
 				debug.c \
+				pipe.c \
+				redirections.c \
+				heredoc.c \
+				execute_function.c \
 				execute_new.c \
 				cd.c \
 				echo.c \
