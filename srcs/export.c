@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 15:45:01 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/17 23:37:00 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 11:37:54 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,30 @@ int	ft_exportcheck(t_env_var *var, char ***envp)
 	return (1);
 }
 
+static int	unregular_export(char *arg, char ***envp, t_lst *env_var_lst)
+{
+	t_env_var	*var;
+
+	var = get_env_variable(arg, env_var_lst);
+	if (var != NULL)
+	{
+		var->is_export = TRUE;
+		ft_exportcheck(var, envp);
+	}
+	else if (var == NULL)
+	{
+		var = init_env_variable(arg, NULL);
+		if (var == NULL)
+		{
+			printf("\'%s\' is not a valid identifier\n", arg);
+			return (1);
+		}
+		var = set_env_variable(env_var_lst, var, envp);
+		var->is_export = TRUE;
+	}
+	return (0);
+}
+
 int	process_args(char **args, char ***envp, t_lst *env_var_lst)
 {
 	int			i;
@@ -45,7 +69,6 @@ int	process_args(char **args, char ***envp, t_lst *env_var_lst)
 	i = 1;
 	while (args[i] != NULL)
 	{
-		// "export var=value"
 		var = split_assignment(args[i]);
 		if (var != NULL)
 		{
@@ -54,25 +77,8 @@ int	process_args(char **args, char ***envp, t_lst *env_var_lst)
 		}
 		else
 		{
-			// "var=5, export var"
-			var = get_env_variable(args[i], env_var_lst);
-			if (var != NULL)
-			{
-				var->is_export = TRUE;
-				ft_exportcheck(var, envp);
-			}
-			else if (var == NULL)
-			{
-				// "export var, var=5"
-				var = init_env_variable(args[i], NULL);
-				if (var == NULL)
-				{
-					printf("\'%s\' is not a valid identifier\n", args[i]);
-					break ;
-				}
-				var = set_env_variable(env_var_lst, var, envp);
-				var->is_export = TRUE;
-			}
+			if (unregular_export(args[i], envp, env_var_lst) == 1)
+				return (1);
 		}
 		i++;
 	}

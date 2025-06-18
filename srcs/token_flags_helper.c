@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 00:18:26 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 00:19:09 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 11:40:15 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,3 @@ int	count_token_with_flag(t_lst	*token_list, t_flag flag)
 	}
 	return (count);
 }
-
