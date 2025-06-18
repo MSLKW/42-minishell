@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   io.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 00:40:28 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 19:57:40 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/18 14:00:59 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_io	*init_io(char *content, t_flag flag)
 {
-	t_io *io;
+	t_io	*io;
 
 	io = ft_calloc(1, sizeof(t_io));
 	if (!io)
@@ -40,27 +40,31 @@ t_flag	get_redirection_flag(t_flag *flags)
 	return (NO_FLAG);
 }
 
-t_lst	*get_io_list(t_lst *token_list, int *status)
+static void	io_lst_logic(t_token *token, t_flag *io_flag, t_lst **io_list)
 {
-	t_lst	*head;
+	if (has_token_flag(token->flags, REDIRECTION))
+		*io_flag = get_redirection_flag(token->flags);
+	else if (has_token_flag(token->flags, REDIRECTION_ARGUMENT))
+	{
+		ft_lstadd_back(io_list, \
+ft_lstnew(init_io(ft_strdup(token->content), *io_flag)));
+		*io_flag = NO_FLAG;
+	}
+}
+
+t_lst	*get_io_list(t_lst *token_lst, int *status)
+{
 	t_token	*token;
 	t_flag	io_flag;
 	t_lst	*io_list;
 
 	io_list = NULL;
 	io_flag = NO_FLAG;
-	head = token_list;
-	while (head != NULL)
+	while (token_lst != NULL)
 	{
-		token = head->content;
-		if (has_token_flag(token->flags, REDIRECTION))
-			io_flag = get_redirection_flag(token->flags);
-		else if (has_token_flag(token->flags, REDIRECTION_ARGUMENT))
-		{
-			ft_lstadd_back(&io_list, ft_lstnew(init_io(ft_strdup(token->content), io_flag)));
-			io_flag = NO_FLAG;
-		}
-		head = head->next;
+		token = token_lst->content;
+		io_lst_logic(token, &io_flag, &io_list);
+		token_lst = token_lst->next;
 	}
 	if (io_flag != NO_FLAG)
 	{

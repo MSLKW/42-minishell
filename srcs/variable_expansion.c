@@ -6,59 +6,28 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:30 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 18:31:44 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 15:09:48 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_lst	*split_variable_list(const char *arg)
+static t_bool	expand_env_var(t_lst *head, char *arg, t_data *data)
 {
-	t_lst	*arg_list;
-	int		start_index;
-	int		end_index;
+	t_env_var	*var;
 
-	if (arg == NULL)
-		return (NULL);
-	arg_list = NULL;
-	start_index = 0;
-	end_index = 0;
-	while (arg[start_index + end_index] != '\0')
+	var = get_env_variable(arg + 1, data->env_var_lst);
+	if (var == NULL)
+		head->content = ft_strdup("");
+	free(arg);
+	if (var != NULL && var->value != NULL)
 	{
-		if (arg[start_index + end_index] == '$')
-		{
-			ft_lstadd_back(&arg_list, ft_lstnew(ft_substr(arg, start_index, end_index)));
-			start_index += end_index;
-			end_index = 1;
-			if (ft_isalpha(arg[start_index + end_index]) == TRUE || arg[start_index + end_index] == '?')
-			{
-				if (arg[start_index + end_index] == '?')
-				{
-					end_index++;
-				}
-				else
-				{
-					while (arg[start_index + end_index] != '\0' && (ft_isalnum(arg[start_index + end_index]) == TRUE || arg[start_index + end_index] == '_'))
-					{
-						end_index++;
-					}
-				}
-				ft_lstadd_back(&arg_list, ft_lstnew(ft_substr(arg, start_index, end_index)));
-				start_index += end_index;
-				end_index = 0;
-			}
-			else
-			{
-				ft_lstadd_back(&arg_list, ft_lstnew(ft_substr(arg, start_index, end_index)));
-				start_index += end_index;
-				end_index = 1;
-			}
-		}
-		else
-			end_index++;
+		head->content = ft_strdup(var->value);
+		return (TRUE);
 	}
-	ft_lstadd_back(&arg_list, ft_lstnew(ft_substr(arg, start_index, end_index)));
-	return (arg_list);
+	else if (var != NULL && var->value == NULL)
+		head->content = ft_strdup("");
+	return (FALSE);
 }
 
 /*
@@ -66,7 +35,6 @@ static t_lst	*split_variable_list(const char *arg)
 */
 static t_bool	expand_variable(t_lst *head, char *arg, t_data *data)
 {
-	t_env_var	*var;
 	t_bool		is_expanded;
 
 	arg = head->content;
@@ -79,17 +47,7 @@ static t_bool	expand_variable(t_lst *head, char *arg, t_data *data)
 			free(arg);
 			return (TRUE);
 		}
-		var = get_env_variable(arg + 1, data->env_var_lst);
-		if (var == NULL)
-			head->content = ft_strdup("");
-		free(arg);
-		if (var != NULL && var->value != NULL)
-		{
-			head->content = ft_strdup(var->value);
-			is_expanded = TRUE;
-		}
-		else if (var != NULL && var->value == NULL)
-			head->content = ft_strdup("");
+		is_expanded = expand_env_var(head, arg, data);
 	}
 	return (is_expanded);
 }
@@ -149,11 +107,9 @@ char	*variable_expansion(const char *arg, t_data *data, t_bool *status)
 	if (arg == NULL)
 		return (NULL);
 	split_arg = split_variable_list(arg);
-	// ft_lststrdisplay(split_arg);
 	is_expanded = domain_variable_expansion(split_arg, data);
 	if (status != NULL)
 		*status = is_expanded;
-	// ft_lststrdisplay(split_arg);
 	result = rejoining_strs(split_arg);
 	ft_lstclear(&split_arg, free);
 	return (result);

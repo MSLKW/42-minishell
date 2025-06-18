@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 11:08:44 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/14 15:26:44 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 13:33:49 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ static char	*add_joint_content(char *joint_content, char *content)
 	return (joint_content);
 }
 
-static t_token *capture_new_token(char **joint_content, t_lst **new_token_list, t_flag *flags)
+static t_token	*capture_new_token(char **joint_content, \
+t_lst **new_token_list, t_flag *flags)
 {
 	t_token	*new_token;
 
@@ -45,7 +46,28 @@ static t_token *capture_new_token(char **joint_content, t_lst **new_token_list, 
 	free(*joint_content);
 	*joint_content = NULL;
 	ft_lstadd_back(new_token_list, ft_lstnew(new_token));
+	token_rm_flags(flags);
 	return (new_token);
+}
+
+static void	join_token_logic(t_token *token, char **joint_content, \
+t_flag *joint_flags, t_lst **new_token_list)
+{
+	if (has_token_flag(token->flags, OPERATOR) == TRUE)
+	{
+		capture_new_token(joint_content, new_token_list, joint_flags);
+		ft_lstadd_back(new_token_list, \
+ft_lstnew(init_token(token->content, token->handler, token->flags)));
+	}
+	else if (has_token_flag(token->flags, DELIMITER) == FALSE)
+	{
+		*joint_content = add_joint_content(*joint_content, token->content);
+		if (!(has_token_flag(joint_flags, WORD) \
+&& has_token_flag(token->flags, ASSIGNMENT)))
+			token_add_flags(joint_flags, token->flags);
+	}
+	else if (has_token_flag(token->flags, DELIMITER) == TRUE)
+		capture_new_token(joint_content, new_token_list, joint_flags);
 }
 
 t_lst	*join_token_list(t_lst **token_list)
@@ -67,37 +89,11 @@ t_lst	*join_token_list(t_lst **token_list)
 	while (head != NULL)
 	{
 		token = head->content;
-		if (has_token_flag(token->flags, OPERATOR) == TRUE)
-		{
-			capture_new_token(&joint_content, &new_token_list, joint_flags);
-			token_rm_flags(joint_flags);
-			ft_lstadd_back(&new_token_list, ft_lstnew(init_token(token->content, token->handler, token->flags)));
-		}
-		else if (has_token_flag(token->flags, DELIMITER) == FALSE)
-		{
-			joint_content = add_joint_content(joint_content, token->content);
-			
-			if (has_token_flag(joint_flags, WORD) && has_token_flag(token->flags, ASSIGNMENT))
-			{
-
-			}
-			else
-				token_add_flags(joint_flags, token->flags);
-			// if there is assignment before, and current token is an operator, then don't add flag
-
-		}
-		else if (has_token_flag(token->flags, DELIMITER) == TRUE)
-		{
-			capture_new_token(&joint_content, &new_token_list, joint_flags);
-			token_rm_flags(joint_flags);
-		}
+		join_token_logic(token, &joint_content, joint_flags, &new_token_list);
 		head = head->next;
 	}
 	if (joint_content != NULL)
-	{
 		capture_new_token(&joint_content, &new_token_list, joint_flags);
-		token_rm_flags(joint_flags);
-	}
 	free(joint_flags);
 	return (new_token_list);
 }

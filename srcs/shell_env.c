@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:38:08 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/16 15:16:59 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 01:45:13 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int	set_shell_env(t_lst *env_var_lst, char ***envp)
 	set_pwd_env(env_var_lst, envp);
 	return (0);
 }
+
 /*
 	Returns 1 on error, returns 0 on success
 */
@@ -79,7 +80,3 @@ int	set_pwd_env(t_lst *env_var_lst, char ***envp)
 	free(cwd);
 	return (0);
 }
-
-// int	set_shell_env(t_env_var **env_var_lst)
-// {
-// }
