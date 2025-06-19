@@ -6,13 +6,13 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/17 23:53:23 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/19 17:43:34 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token	*init_token(char *content, enum token_handler handler, t_flag *flags)
+t_token	*init_token(char *content, enum e_token_handler handler, t_flag *flags)
 {
 	t_token	*token;
 
@@ -80,20 +80,26 @@ ft_lstnew(init_token(token->content, token->handler, token->flags)));
 	return (new_token_list);
 }
 
-t_bool	is_token_executable(char *path)
+t_bool	is_token_file(char *path)
 {
 	int			success;
 	struct stat	file_stat;
 
-	success = access(path, X_OK);
-	if (success == 0)
+	if (ft_strchr(path, '/'))
 	{
-		stat(path, &file_stat);
-		if (S_ISDIR(file_stat.st_mode))
-			return (3);
-		return (TRUE);
+		success = access(path, X_OK);
+		if (success == 0)
+		{
+			stat(path, &file_stat);
+			if (S_ISDIR(file_stat.st_mode))
+				return (3);
+			return (1);
+		}
+		success = access(path, F_OK);
+		if (success == 0)
+			return (2);
 	}
-	return (FALSE);
+	return (0);
 }
 
 t_bool	is_token_assignment(char *content)
