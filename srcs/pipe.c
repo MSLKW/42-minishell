@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:28:30 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/18 21:51:32 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/19 19:07:08 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 void	parent_process(int *prev_fd, int *pipe_fd, t_bool has_next)
 {
-	// signal(SIGINT, SIG_IGN);
-	// signal(SIGQUIT, SIG_IGN);
 	if (*prev_fd != -1)
 		close(*prev_fd);
 	if (has_next)
@@ -45,7 +43,7 @@ void	child_process(t_lst *cmd_seqs, t_data *data, int prev_fd, int *pipe_fd)
 		dup2(pipe_fd[1], 1);
 		close(pipe_fd[1]);
 	}
-	apply_redirections(cmd_seq->io_list);
+	apply_redirections(cmd_seq->io_list, data);
 	execve_wrapper(cmd_seq, data);
 }
 
@@ -71,6 +69,5 @@ int	execute_pipeline(t_lst *cmd_seqs, t_data *data)
 	}
 	while (wait(&status) > 0)
 		;
-	// signal(SIGINT, ctrlc_handler);
 	return (WEXITSTATUS(status));
 }

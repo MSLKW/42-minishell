@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/19 17:49:40 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/19 18:59:08 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,10 +217,10 @@ void	child_process(t_lst *cmd_seqs,
 int		execute_pipeline(t_lst *cmd_seqs, t_data *data);
 
 //redirections.c
-void	apply_redirections(t_lst *io_list);
-void	handle_output(char *filename);
-void	handle_append(char *filename);
-void	handle_input(char *filename);
+void	apply_redirections(t_lst *io_list, t_data *data);
+void	handle_output(char *filename, t_data *data);
+void	handle_append(char *filename, t_data *data);
+void	handle_input(char *filename, t_data *data);
 void	handle_heredoc_redirection(int fd);
 
 //heredoc.c
