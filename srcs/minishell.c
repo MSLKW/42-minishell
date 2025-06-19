@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:55 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 17:25:52 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/18 22:12:08 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ int	main(int argc, char *argv[], char *envp[])
 	set_shell_env(data->env_var_lst, &data->envp);
 	while (data->should_exit != 1)
 	{
+		signal(SIGINT, ctrlc_handler);
 		shell_routine(data);
 	}
 	rl_clear_history();
@@ -40,11 +41,11 @@ void	shell_routine(t_data *data)
 	char	*line;
 	t_lst	*tokens;
 	t_lst	*cmd_seq_list;
+	int		exit_code;
 
 	line = ft_get_line(data);
-	change_exit_code(data);
-	if (line && *line)
-		history_helper(line, data);
+	exit_code = change_exit_code(data);
+	history_helper(line, data);
 	tokens = tokenize_line(line, data);
 	free(line);
 	data->free_ptr_tokens = tokens;
@@ -58,7 +59,7 @@ void	shell_routine(t_data *data)
 		data->last_exit_code = 2;
 		return ;
 	}
-	if (data->last_exit_code != 130)
+	if (exit_code == 0)
 		data->last_exit_code = execute_cmd_seqs(cmd_seq_list, data);
 	else
 		execute_cmd_seqs(cmd_seq_list, data);

@@ -29,7 +29,7 @@ int	execute_cmd_seqs(t_lst *cmd_seqs, t_data *data)
 	if (cmd_seq == NULL)
 		return (1);
 	if (process_heredocs(cmd_seqs, data) != 0)
-		return (1);
+		status = 1;
 	if (ft_lstsize(cmd_seqs) > 1)
 		status = execute_pipeline(cmd_seqs, data);
 	else if (ft_lstsize(cmd_seqs) == 1

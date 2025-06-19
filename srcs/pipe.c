@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:28:30 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/18 19:17:28 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 21:51:32 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	parent_process(int *prev_fd, int *pipe_fd, t_bool has_next)
 {
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
+	// signal(SIGINT, SIG_IGN);
+	// signal(SIGQUIT, SIG_IGN);
 	if (*prev_fd != -1)
 		close(*prev_fd);
 	if (has_next)
@@ -71,5 +71,6 @@ int	execute_pipeline(t_lst *cmd_seqs, t_data *data)
 	}
 	while (wait(&status) > 0)
 		;
+	// signal(SIGINT, ctrlc_handler);
 	return (WEXITSTATUS(status));
 }

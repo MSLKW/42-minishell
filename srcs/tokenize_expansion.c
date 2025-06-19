@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 11:10:05 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/17 23:54:38 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/19 18:07:50 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ no_expand_heredoc(token_list, head, 3))
 		{
 			content_ptr = token->content;
 			token->content = variable_expansion(content_ptr, data, &status);
-			free(content_ptr);
 			if (status == TRUE && token->flags != NULL \
 && ft_strlen(token->content) > 0)
 				token_add_flag(token->flags, WORD);
