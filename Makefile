@@ -21,7 +21,6 @@ SRCS_FILES :=	minishell.c \
 				execute.c \
 				helper.c \
 				interactive_mode.c \
-				debug.c \
 				pipe.c \
 				redirections.c \
 				heredoc.c \
