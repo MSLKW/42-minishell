@@ -6,13 +6,13 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 10:46:49 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/19 17:17:11 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/19 17:43:34 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token	*init_token(char *content, enum token_handler handler, t_flag *flags)
+t_token	*init_token(char *content, enum e_token_handler handler, t_flag *flags)
 {
 	t_token	*token;
 

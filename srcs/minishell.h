@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/19 16:50:56 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/19 17:47:39 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,18 +46,19 @@
 
 // ===== Minishell Types =====
 
-typedef int t_bool;
+typedef int	t_bool;
 
 // ===== Minishell Structures =====
 
-enum	token_handler {
+enum	e_token_handler
+{
 	NONE,
 	DQUOTE,
 	SQUOTE,
-	JOINT
 };
 
-typedef enum token_flag {
+typedef enum token_flag
+{
 	NO_FLAG,
 	DELIMITER,
 	WHITESPACE,
@@ -73,34 +74,39 @@ typedef enum token_flag {
 	COMMAND,
 	ARGUMENT,
 	ASSIGNMENT,
-} t_flag;
+}	t_flag;
 
-typedef struct s_token {
-	char			*content;
-	enum	token_handler	handler;
-	t_flag				*flags;
+typedef struct s_token 
+{
+	char					*content;
+	enum	e_token_handler	handler;
+	t_flag					*flags;
 }	t_token;
 
-typedef struct s_cmd_seq {
+typedef struct s_cmd_seq
+{
 	t_lst	*token_list;
 	char	*assignment;
 	char	**argv;
 	t_lst	*io_list;
 }	t_cmd_seq;
 
-typedef struct s_io {
+typedef struct s_io
+{
 	char	*content;
 	t_flag	flag;
 	int		fd;
 }	t_io;
 
-typedef struct s_env_var {
+typedef struct s_env_var
+{
 	char	*key;
 	char	*value;
 	t_bool	is_export;
 }	t_env_var;
 
-typedef struct	s_data {
+typedef struct	s_data
+{
 	int		should_exit;
 	int		argc;
 	char	**argv;
@@ -145,7 +151,7 @@ char	*ft_get_prompt_environment(void);
 t_bool	is_line_quote_ended(char *line, t_bool is_subshell, int *index);
 
 // tokenize.c
-t_token	*init_token(char *content, enum token_handler handler, t_flag *flags);
+t_token	*init_token(char *content, enum e_token_handler handler, t_flag *flags);
 t_lst	*tokenize_line(char *line, t_data *data);
 t_lst	*tokenize_str(char *line);
 t_token	*handle_dquote(char *line, int *index);
@@ -276,7 +282,7 @@ t_bool	ft_isalnum_str(char *str);
 void	ft_lststrdisplay(t_lst *list);
 void	debug_token_list(t_lst *token_list);
 void	display_token(t_token *token);
-void	display_token_handler(enum token_handler handler);
+void	display_token_handler(enum e_token_handler handler);
 void	display_token_flag(enum token_flag flag);
 void	display_token_flags(enum token_flag *flags);
 void	display_env_var(t_data *data);
