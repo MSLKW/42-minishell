@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 15:32:10 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/14 15:06:44 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/19 18:21:51 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,6 @@ t_bool	ft_isalpha_str(char *str)
 	while (str[index] != '\0')
 	{
 		if (ft_isalpha(str[index]) == FALSE)
-			return (FALSE);
-		index++;
-	}
-	return (TRUE);
-}
-
-t_bool	ft_isalnum_str(char *str)
-{
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (ft_isalnum(str[index]) == FALSE)
 			return (FALSE);
 		index++;
 	}
