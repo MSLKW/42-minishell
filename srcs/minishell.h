@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 17:22:41 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/19 16:50:56 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@ t_lst	*split_token_none(t_lst **token_list);
 t_lst	*join_token_list(t_lst **token_list);
 t_bool	is_token_cmd(char *content, char *envp[]);
 t_bool	is_token_builtin(char *content);
-t_bool	is_token_executable(char *content);
+t_bool	is_token_file(char *content);
 t_bool	is_token_assignment(char *content);
 t_lst	*assign_flags_cmd_arg(t_lst	**token_list);
 void	assign_flags_redir_arg(t_lst *token_list);

@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:42:41 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/18 19:37:58 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/19 17:19:55 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,17 @@ void	execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 	signal(SIGQUIT, SIG_DFL);
 	if (is_builtin(args[0]))
 		free_exit(run_builtin(args, data), data);
-	error_code_flag = is_token_executable(args[0]);
-	if (error_code_flag && error_code_flag != 3)
-		cmd_path = args[0];
+	error_code_flag = is_token_file(args[0]);
+	if (error_code_flag == 3)
+		cmd_path = NULL;
+	else if (error_code_flag == 1 || error_code_flag == 2)
+		cmd_path = ft_strdup(args[0]);
 	else
 		cmd_path = find_cmd_path(args[0], data->env_var_lst);
 	apply_redirections(cmd_seq->io_list);
 	if (cmd_path)
 	{
+		// printf("flag: %i\n", error_code_flag);
 		execve(cmd_path, args, data->envp);
 		free(cmd_path);
 	}
@@ -77,13 +80,18 @@ void	execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 
 void	print_execve_error(char *cmd, int flag, t_data *data)
 {
-	if (get_env_var_value("PATH", data->env_var_lst) == NULL)
-		ft_put_error(cmd, "No such file or directory");
-	else if (flag != 3)
-		ft_put_error(cmd, "command not found");
-	else
+	if (flag == 3)
 	{
 		ft_put_error(cmd, "Is a directory");
+		free_exit(126, data);
+	}
+	else if ((flag == 0 && ft_strchr(cmd, '/')) || get_env_var_value("PATH", data->env_var_lst) == NULL)
+		ft_put_error(cmd, "No such file or directory");
+	else if (flag == 0)
+		ft_put_error(cmd, "command not found");
+	else if (flag == 2)
+	{
+		perror(cmd);
 		free_exit(126, data);
 	}
 	free_exit(127, data);
