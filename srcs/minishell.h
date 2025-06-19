@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/19 19:02:53 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/19 20:00:34 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,7 @@ int			execute_command(t_cmd_seq *cmd_seq, t_data *data);
 void		exec_handle_parent(pid_t pid, int *status);
 void		execve_wrapper(t_cmd_seq *cmd_seq, t_data *data);
 void		print_execve_error(char *cmd, int flag, t_data *data);
+void		execute_command_norminette(t_cmd_seq *cmd_seq, t_data *data);
 
 // execute.c
 char		*find_cmd_path(char *cmd, t_lst *env_var_lst);

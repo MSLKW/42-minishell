@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:42:41 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/19 19:05:44 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/19 19:59:57 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,20 +29,24 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 	}
 	pid = fork();
 	if (pid == 0)
-	{
-		apply_redirections(cmd_seq->io_list, data);
-		execve_wrapper(cmd_seq, data);
-	}
+		execute_command_norminette(cmd_seq, data);
 	else
 		exec_handle_parent(pid, &status);
-	return (WEXITSTATUS(status));
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
+	return (1);
 }
 
 void	exec_handle_parent(pid_t pid, int *status)
 {
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	waitpid(pid, status, 0);
 	if (WIFSIGNALED(*status) && WTERMSIG(*status) == SIGINT)
 		write(STDOUT_FILENO, "\n", 1);
+	signal(SIGINT, ctrlc_handler);
 }
 
 void	execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
