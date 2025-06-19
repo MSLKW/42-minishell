@@ -6,7 +6,7 @@
 /*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/18 23:32:00 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/19 17:49:40 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,6 +220,7 @@ void	handle_heredoc_redirection(int fd);
 int		handle_heredoc(t_io *io, t_data *data);
 int		process_heredocs(t_lst *cmd_seqs, t_data *data);
 void	heredoc_sigint_handler(int sig);
+void	handle_heredoc_child(t_io *io, t_data *data, int pipe_fd[2]);
 
 // helper.c
 int			ft_isalpha_str(char *str);
