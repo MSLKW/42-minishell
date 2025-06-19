@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_function.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:42:41 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/18 22:38:50 by zernest          ###   ########.fr       */
+/*   Updated: 2025/06/19 19:05:44 by zernest          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 	char	**args;
 	pid_t	pid;
 	int		status;
+
 	args = cmd_seq->argv;
 	status = -1;
 	if (!args || !args[0])
@@ -29,7 +30,7 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 	pid = fork();
 	if (pid == 0)
 	{
-		apply_redirections(cmd_seq->io_list);
+		apply_redirections(cmd_seq->io_list, data);
 		execve_wrapper(cmd_seq, data);
 	}
 	else
@@ -39,13 +40,9 @@ int	execute_command(t_cmd_seq *cmd_seq, t_data *data)
 
 void	exec_handle_parent(pid_t pid, int *status)
 {
-	// signal(SIGINT, SIG_IGN);
-	// signal(SIGQUIT, SIG_IGN);
 	waitpid(pid, status, 0);
 	if (WIFSIGNALED(*status) && WTERMSIG(*status) == SIGINT)
 		write(STDOUT_FILENO, "\n", 1);
-	// signal(SIGINT, ctrlc_handler);
-	// signal(SIGQUIT, SIG_IGN);
 }
 
 void	execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
@@ -66,7 +63,7 @@ void	execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 		cmd_path = ft_strdup(args[0]);
 	else
 		cmd_path = find_cmd_path(args[0], data->env_var_lst);
-	apply_redirections(cmd_seq->io_list);
+	apply_redirections(cmd_seq->io_list, data);
 	if (cmd_path)
 	{
 		execve(cmd_path, args, data->envp);

@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zernest <zernest@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:51:32 by maxliew           #+#    #+#             */
 /*   Updated: 2025/06/19 19:02:53 by maxliew          ###   ########.fr       */
@@ -225,10 +225,10 @@ t_data *data, int prev_fd, int *pipe_fd);
 int			execute_pipeline(t_lst *cmd_seqs, t_data *data);
 
 // redirections.c
-void		apply_redirections(t_lst *io_list);
-void		handle_output(char *filename);
-void		handle_append(char *filename);
-void		handle_input(char *filename);
+void		apply_redirections(t_lst *io_list, t_data *data);
+void		handle_output(char *filename, t_data *data);
+void		handle_append(char *filename, t_data *data);
+void		handle_input(char *filename, t_data *data);
 void		handle_heredoc_redirection(int fd);
 
 // get_next_linestuff
@@ -272,16 +272,6 @@ void		ctrld_handler(t_data *data);
 // history.c
 void		ft_show_history(void);
 void		ft_clear_history(void);
-
-// debug.c
-void		ft_lststrdisplay(t_lst *list);
-void		debug_token_list(t_lst *token_list);
-void		display_token(t_token *token);
-void		display_token_handler(enum e_token_handler handler);
-void		display_token_flag(enum token_flag flag);
-void		display_token_flags(enum token_flag *flags);
-void		display_env_var(t_data *data);
-void		display_cmd_seq(t_lst *cmd_seq_list);
 
 // --- Builtins ---
 int			builtin_echo(char **args);
