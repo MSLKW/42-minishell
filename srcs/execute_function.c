@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:42:41 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/19 17:19:55 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/19 17:24:19 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ void	execve_wrapper(t_cmd_seq *cmd_seq, t_data *data)
 	apply_redirections(cmd_seq->io_list);
 	if (cmd_path)
 	{
-		// printf("flag: %i\n", error_code_flag);
 		execve(cmd_path, args, data->envp);
 		free(cmd_path);
 	}
@@ -85,7 +84,8 @@ void	print_execve_error(char *cmd, int flag, t_data *data)
 		ft_put_error(cmd, "Is a directory");
 		free_exit(126, data);
 	}
-	else if ((flag == 0 && ft_strchr(cmd, '/')) || get_env_var_value("PATH", data->env_var_lst) == NULL)
+	else if ((flag == 0 && ft_strchr(cmd, '/')) \
+|| get_env_var_value("PATH", data->env_var_lst) == NULL)
 		ft_put_error(cmd, "No such file or directory");
 	else if (flag == 0)
 		ft_put_error(cmd, "command not found");
