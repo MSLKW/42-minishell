@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 16:09:09 by zernest           #+#    #+#             */
-/*   Updated: 2025/06/14 10:59:09 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/17 23:38:20 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	env_key_match(const char *env_entry, const char *key)
 {
-	size_t key_len;
-	
+	size_t	key_len;
+
 	key_len = strlen(key);
 	return (strncmp(env_entry, key, key_len) == 0 && env_entry[key_len] == '=');
 }

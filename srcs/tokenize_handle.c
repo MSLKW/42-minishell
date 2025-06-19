@@ -6,7 +6,7 @@
 /*   By: maxliew <maxliew@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 11:07:35 by maxliew           #+#    #+#             */
-/*   Updated: 2025/06/14 15:25:26 by maxliew          ###   ########.fr       */
+/*   Updated: 2025/06/18 01:56:18 by maxliew          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ t_lst	*tokenize_str(char *line)
 
 t_token	*handle_dquote(char *line, int *index)
 {
-	int	size;
+	int		size;
 	t_token	*token;
 	char	*content;
 
@@ -54,7 +54,7 @@ t_token	*handle_dquote(char *line, int *index)
 
 t_token	*handle_squote(char *line, int *index)
 {
-	int	size;
+	int		size;
 	t_token	*token;
 	char	*content;
 
@@ -70,49 +70,5 @@ t_token	*handle_squote(char *line, int *index)
 	if (token == NULL)
 		return (NULL);
 	(*index) += size + 1;
-	return (token);
-}
-
-// static int	handle_none_get_size(char *line, int index)
-// {
-	
-// }
-
-t_token	*handle_none(char *line, int *index)
-{
-	int	size;
-	t_token	*token;
-	char	*content;
-
-	size = 0;
-	if (ft_is_delimiter(line[*index + size]))
-	{
-		while (ft_is_delimiter(line[*index + size]))
-			size++;
-	}
-	else if (line[*index + size] == '|' || line[*index + size] == '<' || line[*index + size] == '>')
-	{
-		while ((line[*index + size] == '|' || line[*index + size] == '<' || line[*index + size] == '>') && line[*index + size] != '\0')
-			size++;
-	}
-	else if (line[*index + size] == '$')
-	{
-		size++;
-		while ((ft_isalnum(line[*index + size]) == TRUE || line[*index + size] == '_' || line[*index + size] == '?') && line[*index + size] != '\0')
-			size++;
-	}
-	else
-	{
-		while (ft_is_delimiter(line[*index + size]) == FALSE && line[*index + size] != '\"' && line[*index + size] != '\'' && line[*index + size] != '|' && line[*index + size] != '<' && line[*index + size] != '>' && line[*index + size] != '$'&& line[*index + size] != '\0')
-			size++;
-	}
-	content = ft_substr(line, *index, size);
-	if (content == NULL)
-		return (NULL);
-	token = init_token(content, NONE, NULL);
-	free(content);
-	if (token == NULL)
-		return (NULL);
-	(*index) += size;
 	return (token);
 }

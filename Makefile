@@ -10,15 +10,16 @@ SRCS_FILES :=	minishell.c \
 				get_next_line.c \
 				minishell_extra.c \
 				parse.c \
+				prompt.c \
 				history.c \
 				tokenize.c \
 				tokenize_expansion.c \
 				tokenize_flags.c \
 				tokenize_handle.c \
+				tokenize_handle_none.c \
 				tokenize_join.c \
 				execute.c \
 				helper.c \
-				token_search.c \
 				interactive_mode.c \
 				debug.c \
 				pipe.c \
@@ -31,16 +32,24 @@ SRCS_FILES :=	minishell.c \
 				env.c \
 				exit.c \
 				export.c \
+				export_display.c \
+				ft_envp.c \
 				pwd.c \
 				unset.c \
 				variable.c \
 				variable_helper.c \
 				variable_expansion.c \
+				split_variable_list.c \
 				token_flags.c \
+				token_flags_mod.c \
+				token_flags_helper.c \
 				shell_env.c \
 				cmd_seq.c \
+				init_cmd_seqs.c \
 				io.c \
-				free.c
+				free.c \
+				free2.c \
+				ft_put_error.c \
 
 DEPS_FILES :=	minishell.h
 

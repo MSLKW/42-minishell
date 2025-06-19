@@ -12,25 +12,7 @@
 
 #include "minishell.h"
 
-// t_bool	delimiter_non_expansion(t_lst *token_list, t_lst *head)
-// {
-// 	t_lst	*prev_lst;
-// 	t_token	*prev_token;
-
-// 	prev_lst = find_token_left(&token_list, head, REDIRECTION_DELIMITER, 3);
-// 	if (prev_lst == NULL)
-// 		return (TRUE);
-// 	prev_token = prev_lst->content;
-// 	if (prev_token == NULL)
-// 		return (TRUE);
-// 	if (has_token_flag(prev_token->flags, REDIRECTION_DELIMITER))
-// 	{
-// 		return (FALSE);
-// 	}
-// 	return (TRUE);
-// }
-
-t_bool	delimiter_non_expansion(t_lst *token_list, t_lst *curr_token_lst, int size)
+t_bool	no_expand_heredoc(t_lst *token_list, t_lst *curr_token_lst, int size)
 {
 	t_lst	*previous_token_lst;
 	t_token	*token;
@@ -65,12 +47,13 @@ t_lst	*expand_variable_token_list(t_lst *token_list, t_data *data)
 	{
 		token = head->content;
 		if ((token->handler == DQUOTE || token->handler == NONE) && \
-delimiter_non_expansion(token_list, head, 3))
+no_expand_heredoc(token_list, head, 3))
 		{
 			content_ptr = token->content;
 			token->content = variable_expansion(content_ptr, data, &status);
-			// free(content_ptr);
-			if (status == TRUE && token->flags != NULL && ft_strlen(token->content) > 0)
+			free(content_ptr);
+			if (status == TRUE && token->flags != NULL \
+&& ft_strlen(token->content) > 0)
 				token_add_flag(token->flags, WORD);
 		}
 		head = head->next;
